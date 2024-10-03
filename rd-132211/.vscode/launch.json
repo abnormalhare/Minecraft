@@ -9,8 +9,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": true,
-      "cwd": "D:/Storage/Documents/Games/MyGames/C/Minecraft/rd-132211",
-      "program": "D:/Storage/Documents/Games/MyGames/C/Minecraft/rd-132211/Minecraft.exe",
+      "cwd": "[DIR_TO_REPO]/Minecraft/rd-132211",
+      "program": "[DIR_TO_REPO]/Minecraft/rd-132211/Minecraft.exe",
       "MIMode": "gdb",
       "miDebuggerPath": "C:/msys64/ucrt64/bin/gdb.exe",
       "setupCommands": [
