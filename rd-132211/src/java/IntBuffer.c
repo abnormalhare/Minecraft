@@ -1,7 +1,18 @@
 #include "java/IntBuffer.h"
 
 void intBufferInit(IntBuffer* buffer, s32 capacity) {
+    buffer = (IntBuffer*)malloc(sizeof(IntBuffer));
+    if (!buffer) {
+        fprintf(stderr, "Failed to allocate for IntBuffer");
+        return;
+    }
+
     buffer->data = (int*) malloc(capacity * sizeof(int));
+    if (!buffer->data) {
+        fprintf(stderr, "Failed to allocate for IntBuffer data");
+        return;
+    }
+    
     buffer->capacity = capacity;
     buffer->position = 0;
     buffer->limit = capacity;

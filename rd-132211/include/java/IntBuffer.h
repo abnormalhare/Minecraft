@@ -2,6 +2,7 @@
 #define int_BUFFER_H
 
 #include "types.h"
+#include <stdio.h>
 
 void intBufferInit(IntBuffer* buffer, s32 capacity);
 void intBufferFlip(IntBuffer* buffer);

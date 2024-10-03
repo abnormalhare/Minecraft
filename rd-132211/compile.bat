@@ -13,6 +13,8 @@ echo - FloatBuffer
 %gcc% -c src/java/FloatBuffer.c %flags% %o%FloatBuffer.o
 echo - IntBuffer
 %gcc% -c src/java/IntBuffer.c %flags% %o%IntBuffer.o
+echo - HashMap
+%gcc% -c src/java/HashMap.c %flags% %o%HashMap.o
 echo - system
 %gcc% -c src/java/system.c %flags% %o%system.o
 echo - time
@@ -51,6 +53,6 @@ echo - RubyDung
 cd build
 
 echo Compiling
-%gcc% -o ../Minecraft.exe ArrayList.o FloatBuffer.o IntBuffer.o system.o time.o AABB.o chunk.o frustum.o level.o levelRenderer.o tesselator.o tile.o hitResult.o player.o textures.o timer.o RubyDung.o %flags%
+%gcc% -o ../Minecraft.exe ArrayList.o FloatBuffer.o IntBuffer.o HashMap.o system.o time.o AABB.o chunk.o frustum.o level.o levelRenderer.o tesselator.o tile.o hitResult.o player.o textures.o timer.o RubyDung.o %flags%
 
 cd ..

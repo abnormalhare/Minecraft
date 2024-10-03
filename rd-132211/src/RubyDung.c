@@ -204,6 +204,11 @@ void rbRender(RubyDung* this, float a) {
 void main(void) {
     RubyDung* game = malloc(sizeof(RubyDung));
 
+    if (!game) {
+        fprintf("Failed to allocate for game");
+        return;
+    }
+
     floatBufferInit(&game->fogColor, 4);
     game->timer = newTimer(60.0f);
 

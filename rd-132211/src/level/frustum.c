@@ -45,6 +45,11 @@ void normalizePlane(float frustum[6][4], s32 side) {
 
 Frustum* newFrustum(void) {
     Frustum* frustum = malloc(sizeof(Frustum));
+    if (!frustum) {
+        fprintf(stderr, "Failed to allocate to frustum");
+        return NULL;
+    }
+
 
     floatBufferInit(&frustum->_proj, 16);
     floatBufferInit(&frustum->_modl, 16);
@@ -53,6 +58,11 @@ Frustum* newFrustum(void) {
     frustum->proj = malloc(16 * sizeof(float));
     frustum->modl = malloc(16 * sizeof(float));
     frustum->clip = malloc(16 * sizeof(float));
+    if (!frustum->proj || !frustum->modl || !frustum->clip) {
+        fprintf(stderr, "Failed to allocate to frustum float list");
+        return NULL;
+    }
+
 
     return frustum;
 }

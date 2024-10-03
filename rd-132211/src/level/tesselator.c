@@ -6,7 +6,8 @@ Tesselator* newTesselator(void) {
     Tesselator* t = malloc(sizeof(Tesselator));
 
     if (!t) {
-        fprintf(stderr, "Failed to allocate memory for tesselator");
+        fprintf(stderr, "Failed to allocate to tesselator");
+        return NULL;
     }
 
     t->vertices = 0;

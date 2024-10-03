@@ -2,6 +2,11 @@
 
 Player* newPlayer(Level* level) {
     Player* player = malloc(sizeof(Player));
+    if (!player) {
+        fprintf(stderr, "Failed to allocate for player");
+        return NULL;
+    }
+
 
     player->level = level;
     player->onGround = FALSE;

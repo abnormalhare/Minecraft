@@ -1,16 +1,17 @@
 #include "level/level.h"
 
 char* readFully(Level* this, FILE* file) {
-    char* blank = malloc(1);
+    s32 size = this->width * this->height * this->depth;
+    char* uncompressed_data = malloc(size);
 
     if (!file) {
         fclose(file);
         file = fopen("level.dat", "w");
         if (!file) {
             perror("Failed to open file");
+            return uncompressed_data;
         }
         fclose(file);
-        return blank;
     }
 
     fseek(file, 0, SEEK_END);
@@ -18,7 +19,7 @@ char* readFully(Level* this, FILE* file) {
     fseek(file, 0, SEEK_SET);
 
     if (file_size == 0) {
-        return blank;
+        return uncompressed_data;
     }
 
     u8* gzip_data = (u8*)malloc(file_size);
@@ -31,11 +32,10 @@ char* readFully(Level* this, FILE* file) {
     fread(gzip_data, 1, file_size, file);
 
     uLongf buffer_size = file_size * 10; // Arbitrary
-    char* uncompressed_data = (char*)malloc(this->width * this->depth * this->height);
     if (!uncompressed_data) {
         free(gzip_data);
         perror("Failed to allocate memory for uncompressed data");
-        return NULL;
+        return uncompressed_data;
     }
 
     s32 result = uncompress((unsigned char*)uncompressed_data, &buffer_size, gzip_data, file_size);

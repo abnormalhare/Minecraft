@@ -2,6 +2,7 @@
 #define FLOAT_BUFFER_H
 
 #include "types.h"
+#include <stdio.h>
 
 void floatBufferInit(FloatBuffer* buffer, s32 capacity);
 void floatBufferFlip(FloatBuffer* buffer);

@@ -2,6 +2,7 @@
 #define AABB_H
 
 #include "types.h"
+#include <stdio.h>
 
 typedef struct _AABB {
     float epsilon;

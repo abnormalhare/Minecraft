@@ -7,6 +7,10 @@ s32 MAX_TICKS_PER_UPDATE = 100;
 Timer* newTimer(float ticksPerSecond) {
     Timer* timer = malloc(sizeof(Timer));
 
+    if (!timer) {
+        fprintf(stderr, "Failed to allocate for timer");
+    }
+
     timer->ticksPerSecond = ticksPerSecond;
     timer->lastTime = nanoTime();
     timer->ticks = 0;

@@ -55,6 +55,11 @@ void _mouseButtonCallback(GLFWwindow* window, s32 button, s32 action, s32 mods) 
 
 void mouseCreate(void) {
     mouse = malloc(sizeof(Mouse));
+    if (!mouse) {
+        fprintf(stderr, "Failed to allocate to mouse");
+        return;
+    }
+
     mouse->currX = 0;
     mouse->currY = 0;
     mouse->prevX = 0;

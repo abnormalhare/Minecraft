@@ -29,7 +29,11 @@ void removeAABB(ArrayList* list, AABB* value) {
 
 AABB* newAABB(float x0, float y0, float z0, float x1, float y1, float z1) {
     AABB* aabb = malloc(sizeof(AABB));
-    
+    if (!aabb) {
+        fprintf(stderr, "Failed to allocate to aabb");
+        return NULL;
+    }
+
     aabb->x0 = x0; aabb->y0 = y0; aabb->z0 = z0;
     aabb->x1 = x1; aabb->y1 = y1; aabb->z1 = z1;
 

@@ -5,9 +5,18 @@ Tile* grass;
 
 void initTiles(void) {
     rock = malloc(sizeof(Tile));
-    rock->tex = 0;
+    if (!rock) {
+        fprintf(stderr, "Failed to allocate rock");
+    } else {
+        rock->tex = 0;
+    }
+    
     grass = malloc(sizeof(Tile));
-    grass->tex = 1;
+    if (!grass) {
+        fprintf(stderr, "Failed to allocate grass");
+    } else {
+        grass->tex = 1;
+    }
 }
 
 static inline bool check(float br, float c1, s32 layer) {

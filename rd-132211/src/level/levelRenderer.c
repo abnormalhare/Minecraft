@@ -16,11 +16,19 @@ void _lrAllChanged(LevelRenderer* this) {
 
 LevelRenderer* newLevelRenderer(Level* level) {
     LevelRenderer* lr = malloc(sizeof(LevelRenderer));
+    if (!lr) {
+        fprintf(stderr, "Failed to allocate to level renderer");
+        return NULL;
+    }
 
     lr->t = newTesselator();
     lr->level = level;
 
     lr->levelListener = malloc(sizeof(LevelListener));
+    if (!lr->levelListener) {
+        fprintf(stderr, "Failed to allocate to level listener");
+        return NULL;
+    }
     lr->levelListener->base = lr;
     lr->levelListener->tileChanged = _lrTileChanged;
     lr->levelListener->lightColumnChanged = _lrLightColumnChanged;
@@ -31,6 +39,10 @@ LevelRenderer* newLevelRenderer(Level* level) {
     lr->yChunks = level->depth / 16;
     lr->zChunks = level->height / 16;
     lr->chunks = malloc(lr->xChunks * lr->yChunks * lr->zChunks * sizeof(Chunk));
+    if (!lr->chunks) {
+        fprintf(stderr, "Failed to allocate to level chunks");
+        return NULL;
+    }
     for (s32 x = 0; x < lr->xChunks; x++) {
         for (s32 y = 0; y < lr->yChunks; y++) {
             for (s32 z = 0; z < lr->zChunks; z++) {

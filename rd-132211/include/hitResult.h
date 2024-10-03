@@ -2,6 +2,7 @@
 #define HIT_RESULT_H
 
 #include "types.h"
+#include <stdio.h>
 
 typedef struct _HitResult {
     s32 x;

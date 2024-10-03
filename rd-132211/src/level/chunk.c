@@ -12,7 +12,11 @@ void initChunk(void) {
 
 Chunk* newChunk(Level* level, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1) {
     Chunk* chunk = malloc(sizeof(Chunk));
-    
+    if (!chunk) {
+        fprintf(stderr, "Failed to allocate to chunk");
+        return NULL;
+    }
+
     chunk->aabb = newAABB(x0, y0, z0, x1, y1, z1);
     chunk->level = level;
     chunk->x0 = x0; chunk->y0 = y0; chunk->z0 = z0;
