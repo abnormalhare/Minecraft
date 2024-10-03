@@ -3,7 +3,7 @@
     "tasks": [
         {
             "label": "compile",
-            "command": "D:/Storage/Documents/Games/MyGames/C/Minecraft/rd-132211/compile.bat",
+            "command": "[DIR_TO_REPO]/Minecraft/rd-132211/compile.bat",
             "args": [],
             "type": "shell"
         }
