@@ -1,12 +1,6 @@
 #include "java/FloatBuffer.h"
 
 void floatBufferInit(FloatBuffer* buffer, s32 capacity) {
-    buffer = (FloatBuffer*)malloc(sizeof(FloatBuffer));
-    if (!buffer) {
-        fprintf(stderr, "Failed to allocate for floatBuffer");
-        return;
-    }
-    
     buffer->data = (float*)malloc(capacity * sizeof(float));
     if (!buffer->data) {
         fprintf(stderr, "Failed to allocate for floatBuffer data");

@@ -140,7 +140,7 @@ void load(Level* this) {
     LevelListener levelListener;
     // FILE* dis = fopen("level.dat", "rb");
     // this->blocks = readFully(this, dis); //! allocs memory smaller than curr amount
-    // calcLightDepths(this, 0, 0, this->width, this->height);
+    calcLightDepths(this, 0, 0, this->width, this->height);
     for (s32 i = 0; i < this->LevelListeners->size; i++) {
         getLevelListener(this->LevelListeners, i, &levelListener);
         levelListener.allChanged(levelListener.base);

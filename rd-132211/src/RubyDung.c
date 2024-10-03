@@ -205,7 +205,7 @@ void main(void) {
     RubyDung* game = malloc(sizeof(RubyDung));
 
     if (!game) {
-        fprintf("Failed to allocate for game");
+        fprintf(stderr, "Failed to allocate for game");
         return;
     }
 
