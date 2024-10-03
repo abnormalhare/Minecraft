@@ -1,0 +1,11 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "compile",
+            "command": "D:/Storage/Documents/Games/MyGames/C/Minecraft/rd-132211/compile.bat",
+            "args": [],
+            "type": "shell"
+        }
+    ]
+}

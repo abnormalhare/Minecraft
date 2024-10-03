@@ -1,0 +1,25 @@
+#ifndef AABB_H
+#define AABB_H
+
+#include "types.h"
+
+typedef struct _AABB {
+    float epsilon;
+    float x0;
+    float y0;
+    float z0;
+    float x1;
+    float y1;
+    float z1;
+} AABB;
+
+AABB* newAABB(float x0, float y0, float z0, float x1, float y1, float z1);
+AABB* expand(AABB* this, float xa, float ya, float za);
+AABB* grow(AABB* this, float xa, float ya, float za);
+float clipXCollide(AABB* this, AABB* c, float xa);
+float clipYCollide(AABB* this, AABB* c, float ya);
+float clipZCollide(AABB* this, AABB* c, float za);
+bool intersects(AABB* this, AABB* c);
+void AABBMove(AABB* this, float xa, float ya, float za);
+
+#endif

@@ -1,0 +1,9 @@
+{
+    "files.associations": {
+        "*.csv": "plaintext",
+        "*.s": "plaintext",
+        "*.json": "jsonc",
+        "time.h": "c",
+        "hitresult.h": "c"
+    }
+}
