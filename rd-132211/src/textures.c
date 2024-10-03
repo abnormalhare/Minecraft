@@ -3,7 +3,7 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void _addHash(ArrayList* list, item value) {
+void addHash(ArrayList* list, item value) {
     item it;
     for (size_t i = 0; i < list->size; i++) {
         it = ((item*)list->data)[i];
@@ -18,7 +18,7 @@ void _addHash(ArrayList* list, item value) {
     ((item*)list->data)[list->size++] = value;
 }
 
-void _getHash(ArrayList* list, size_t index, item* retVal) {
+void getHash(ArrayList* list, size_t index, item* retVal) {
     if (index < list->size) {
         *retVal = ((item*)list->data)[index];
     } else {
@@ -26,7 +26,7 @@ void _getHash(ArrayList* list, size_t index, item* retVal) {
     }
 }
 
-void _removeHash(ArrayList* list, item value) {
+void removeHash(ArrayList* list, item value) {
     item it;
     for (size_t i = 0; i < list->size; i++) {
         it = ((item*)list->data)[i];
@@ -43,7 +43,7 @@ bool containsKey(ArrayList* map, String key) {
     item it;
 
     for (s32 i = 0; i < map->size; i++) {
-        map->get(map, i, &it);
+        getHash(map, i, &it);
         if (it.key != NULL && strcmp(it.key, key) == 0) {
             return TRUE;
         }
@@ -64,14 +64,14 @@ ArrayList* idMap;
 s32 lastId = -9999999;
 
 void initIdMap(void) {
-    idMap = newArrayList(10, _addHash, _getHash, _removeHash);
+    idMap = newArrayList(10);
 }
 
 s32 loadTexture(String resourceName, s32 mode) {
     item it;
 
     if (containsKey(idMap, resourceName)) {
-        idMap->get(idMap, resourceName, it);
+        getHash(idMap, resourceName, &it);
         return it.value;
     }
 

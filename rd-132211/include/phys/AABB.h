@@ -13,6 +13,9 @@ typedef struct _AABB {
     float z1;
 } AABB;
 
+void addAABB(ArrayList* list, AABB* value);
+void getAABB(ArrayList* list, size_t index, AABB* retVal);
+void removeAABB(ArrayList* list, AABB* value);
 AABB* newAABB(float x0, float y0, float z0, float x1, float y1, float z1);
 AABB* expand(AABB* this, float xa, float ya, float za);
 AABB* grow(AABB* this, float xa, float ya, float za);

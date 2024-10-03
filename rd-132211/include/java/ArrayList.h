@@ -6,7 +6,7 @@
 #include "types.h"
 #include "level/levelListener.h"
 
-ArrayList* newArrayList(size_t initialCapacity, callable add, callable get, callable remove);
+ArrayList* newArrayList(size_t initialCapacity);
 void freeArrayList(ArrayList* list);
 
 #endif

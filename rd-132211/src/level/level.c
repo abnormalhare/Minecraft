@@ -84,7 +84,7 @@ bool write(FILE* file, char* data) {
     return 1;
 }
 
-void _addLevelListener(ArrayList* list, LevelListener* value) {
+void addLevelListener(ArrayList* list, LevelListener* value) {
     if (list->size >= list->capacity) {
         list->capacity *= 2;
         list->data = realloc(list->data, list->capacity * sizeof(LevelListener*));
@@ -92,7 +92,7 @@ void _addLevelListener(ArrayList* list, LevelListener* value) {
     ((LevelListener**)list->data)[list->size++] = value;
 }
 
-void _getLevelListener(ArrayList* list, size_t index, LevelListener* retVal) {
+void getLevelListener(ArrayList* list, size_t index, LevelListener* retVal) {
     if (index < list->size) {
         *retVal = *((LevelListener**)list->data)[index];
     } else {
@@ -100,7 +100,7 @@ void _getLevelListener(ArrayList* list, size_t index, LevelListener* retVal) {
     }
 }
 
-void _removeLevelListener(ArrayList* list, LevelListener* value) {
+void removeLevelListener(ArrayList* list, LevelListener* value) {
     for (size_t i = 0; i < list->size; i++) {
         if (((LevelListener**)list->data)[i] == value) {
             for (size_t j = i; j < list->size - 1; j++) {
@@ -119,7 +119,7 @@ Level* newLevel(s32 w, s32 h, s32 d) {
     level->depth = d;
     level->blocks = calloc(w * h * d, sizeof(char));
     level->lightDepths = calloc(w * h, sizeof(s32));
-    level->LevelListeners = newArrayList(10, _addLevelListener, _getLevelListener, _removeLevelListener);
+    level->LevelListeners = newArrayList(10);
 
     for (s32 x = 0; x < w; x++) {
         for (s32 y = 0; y < d; y++) {
@@ -142,7 +142,7 @@ void load(Level* this) {
     // this->blocks = readFully(this, dis); //! allocs memory smaller than curr amount
     // calcLightDepths(this, 0, 0, this->width, this->height);
     for (s32 i = 0; i < this->LevelListeners->size; i++) {
-        this->LevelListeners->get(this->LevelListeners, i, &levelListener);
+        getLevelListener(this->LevelListeners, i, &levelListener);
         levelListener.allChanged(levelListener.base);
     }
 
@@ -171,7 +171,7 @@ void calcLightDepths(Level* this, s32 x0, s32 y0, s32 x1, s32 y1) {
                 s32 yl0 = (oldDepth < y) ? oldDepth : y;
                 s32 yl1 = (oldDepth > y) ? oldDepth : y;
                 for (s32 i = 0; i < this->LevelListeners->size; i++) {
-                    this->LevelListeners->get(this->LevelListeners, i, &levelListener);
+                    getLevelListener(this->LevelListeners, i, &levelListener);
                     levelListener.lightColumnChanged(levelListener.base, x, z, yl0, yl1);
                 }
             }
@@ -180,11 +180,11 @@ void calcLightDepths(Level* this, s32 x0, s32 y0, s32 x1, s32 y1) {
 }
 
 void addListener(Level* this, LevelListener* levelListener) {
-    this->LevelListeners->add(this->LevelListeners, levelListener);
+    addLevelListener(this->LevelListeners, levelListener);
 }
 
 void removeListener(Level* this, LevelListener* levelListener) {
-    this->LevelListeners->remove(this->LevelListeners, levelListener);
+    removeLevelListener(this->LevelListeners, levelListener);
 }
 
 bool isTile(Level* this, s32 x, s32 y, s32 z) {
@@ -203,33 +203,6 @@ bool isLightBlocker(Level* this, s32 x, s32 y, s32 z) {
     return isSolidTile(this, x, y, z);
 }
 
-void _addAABB(ArrayList* list, AABB* value) {
-    if (list->size >= list->capacity) {
-        list->capacity *= 2;
-        list->data = realloc(list->data, list->capacity * sizeof(AABB*));
-    }
-    ((AABB**)list->data)[list->size++] = value;
-}
-
-void _getAABB(ArrayList* list, size_t index, AABB* retVal) {
-    if (index < list->size) {
-        *retVal = *((AABB**)list->data)[index];
-    } else {
-        retVal = NULL;
-    }
-}
-
-void _removeAABB(ArrayList* list, AABB* value) {
-    for (size_t i = 0; i < list->size; i++) {
-        if (((AABB**)list->data)[i] == value) {
-            for (size_t j = i; j < list->size - 1; j++) {
-                ((AABB**)list->data)[j] = ((AABB**)list->data)[j + 1];
-            }
-            list->size--;
-        }
-    }
-}
-
 ArrayList* getCubes(Level* this, AABB* aABB) {
     s32 x0 = aABB->x0;
     s32 x1 = aABB->x1 + 1.0f;
@@ -238,7 +211,7 @@ ArrayList* getCubes(Level* this, AABB* aABB) {
     s32 z0 = aABB->z0;
     s32 z1 = aABB->z1 + 1.0f;
 
-    ArrayList* aABBs = newArrayList(10, _addAABB, _getAABB, _removeAABB);
+    ArrayList* aABBs = newArrayList(10);
 
     if (x0 < 0) x0 = 0;
     if (y0 < 0) y0 = 0;
@@ -251,7 +224,7 @@ ArrayList* getCubes(Level* this, AABB* aABB) {
         for (s32 y = y0; y < y1; y++) {
             for (s32 z = z0; z < z1; z++) {
                 if (isSolidTile(this, x, y, z))
-                    aABBs->add(aABBs, newAABB(x, y, z, (x + 1), (y + 1), (z + 1))); 
+                    addAABB(aABBs, newAABB(x, y, z, (x + 1), (y + 1), (z + 1))); 
             }
         }
     }
@@ -277,7 +250,7 @@ void setTile(Level* this, s32 x, s32 y, s32 z, s32 type) {
     this->blocks[(y * this->height + z) * this->width + x] = type;
     calcLightDepths(this, x, z, 1, 1);
     for (s32 i = 0; i < this->LevelListeners->size; i++) {
-        this->LevelListeners->get(this->LevelListeners, i, &levelListener);
+        getLevelListener(this->LevelListeners, i, &levelListener);
         levelListener.tileChanged(levelListener.base, x, y, z);
     }
 }

@@ -1,5 +1,32 @@
 #include "phys/AABB.h"
 
+void addAABB(ArrayList* list, AABB* value) {
+    if (list->size >= list->capacity) {
+        list->capacity *= 2;
+        list->data = realloc(list->data, list->capacity * sizeof(AABB*));
+    }
+    ((AABB**)list->data)[list->size++] = value;
+}
+
+void getAABB(ArrayList* list, size_t index, AABB* retVal) {
+    if (index < list->size) {
+        *retVal = *((AABB**)list->data)[index];
+    } else {
+        retVal = NULL;
+    }
+}
+
+void removeAABB(ArrayList* list, AABB* value) {
+    for (size_t i = 0; i < list->size; i++) {
+        if (((AABB**)list->data)[i] == value) {
+            for (size_t j = i; j < list->size - 1; j++) {
+                ((AABB**)list->data)[j] = ((AABB**)list->data)[j + 1];
+            }
+            list->size--;
+        }
+    }
+}
+
 AABB* newAABB(float x0, float y0, float z0, float x1, float y1, float z1) {
     AABB* aabb = malloc(sizeof(AABB));
     
