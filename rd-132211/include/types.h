@@ -34,9 +34,6 @@ typedef struct _ArrayList {
     void *data;
     size_t size;
     size_t capacity;
-    callable add;
-    callable get;
-    callable remove;
 } ArrayList;
 
 #endif

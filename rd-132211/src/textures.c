@@ -3,47 +3,64 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void addHash(ArrayList* list, item value) {
-    item it;
-    for (size_t i = 0; i < list->size; i++) {
-        it = ((item*)list->data)[i];
-        if (it.key == value.key) {
-            it.value = value.value;
+HashMap* newHashMap(void) {
+    HashMap* map = (HashMap*)malloc(sizeof(HashMap));
+    map->items = malloc(sizeof(item));
+    map->size = 0;
+    
+    return map;
+}
+
+void freeHashMap(HashMap* map) {
+    free(map->items);
+    free(map);
+}
+
+void addHash(HashMap* map, item value) {
+    item* it;
+    size_t i;
+    for (i = 0; i < map->size; i++) {
+        it = &map->items[i];
+        if (it->key == value.key) {
+            it->value = value.value;
+            return;
         }
     }
-    if (list->size >= list->capacity) {
-        list->capacity *= 2;
-        list->data = realloc(list->data, list->capacity * sizeof(item*));
-    }
-    ((item*)list->data)[list->size++] = value;
+
+    map->size++;
+    map->items = realloc(map->items, map->size * sizeof(item*));
+    map->items[map->size - 1].key = malloc(128);
+    map->items[map->size - 1] = value;
 }
 
-void getHash(ArrayList* list, size_t index, item* retVal) {
-    if (index < list->size) {
-        *retVal = ((item*)list->data)[index];
-    } else {
-        retVal = NULL;
+item* getHash(HashMap* map, String key) {
+    for (s32 i = 0; i < map->size; i++) {
+        if (map->items[i].key == key) {
+            return &map->items[i];
+        }
     }
+
+    return NULL;
 }
 
-void removeHash(ArrayList* list, item value) {
+void removeHash(HashMap* map, item value) {
     item it;
-    for (size_t i = 0; i < list->size; i++) {
-        it = ((item*)list->data)[i];
+    for (s32 i = 0; i < map->size; i++) {
+        it = map->items[i];
         if (it.key == value.key) {
-            for (size_t j = i; j < list->size - 1; j++) {
-                ((item*)list->data)[j] = ((item*)list->data)[j + 1];
+            for (s32 j = i; j < map->size - 1; j++) {
+                map->items[j] = map->items[j + 1];
             }
-            list->size--;
+            map->size--;
         }
     }
 }
 
-bool containsKey(ArrayList* map, String key) {
+bool containsKey(HashMap* map, String key) {
     item it;
 
     for (s32 i = 0; i < map->size; i++) {
-        getHash(map, i, &it);
+        it = map->items[i];
         if (it.key != NULL && strcmp(it.key, key) == 0) {
             return TRUE;
         }
@@ -60,19 +77,19 @@ void getRGB(u8* img, s32 startX, s32 startY, s32 width, s32 height, u8* pixels, 
     }
 }
 
-ArrayList* idMap;
+HashMap* idMap;
 s32 lastId = -9999999;
 
 void initIdMap(void) {
-    idMap = newArrayList(10);
+    idMap = newHashMap();
 }
 
 s32 loadTexture(String resourceName, s32 mode) {
-    item it;
+    item* it;
 
     if (containsKey(idMap, resourceName)) {
-        getHash(idMap, resourceName, &it);
-        return it.value;
+        it = getHash(idMap, resourceName);
+        return it->value;
     }
 
     IntBuffer ib;
