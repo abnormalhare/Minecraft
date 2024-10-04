@@ -3,14 +3,6 @@
 #define STB_IMAGE_IMPLEMENTATION
 #include "stb_image.h"
 
-void getRGB(u8* img, s32 startX, s32 startY, s32 width, s32 height, u8* pixels, s32 offset, s32 scansize) {
-    for (s32 x = startX; x < width; x++) {
-        for (s32 y = startY; y < height; y++) {
-            pixels[x * y] = img[offset + (y-startY)*scansize + (x-startX)];
-        }
-    }
-}
-
 HashMap* idMap;
 s32 lastId = -9999999;
 

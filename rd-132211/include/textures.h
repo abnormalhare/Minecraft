@@ -9,7 +9,6 @@
 #include "java/IntBuffer.h"
 #include "java/HashMap.h"
 
-
 void initIdMap(void);
 s32 loadTexture(String resourceName, s32 mode);
 void texturesBind(int id);
