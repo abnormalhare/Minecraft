@@ -84,20 +84,21 @@ void playerMove(Player* this, float xa, float ya, float za) {
     float yaOrg = ya;
     float zaOrg = za;
     ArrayList* aABBs = getCubes(this->level, expand(this->bb, xa, ya, za));
+
     s32 i;
     for (i = 0; i < aABBs->size; i++) {
         getAABB(aABBs, i, aABB);
-        clipYCollide(aABB, this->bb, ya);
+        ya = clipYCollide(aABB, this->bb, ya);
     }
     AABBMove(this->bb, 0.0f, ya, 0.0f);
     for (i = 0; i < aABBs->size; i++) {
         getAABB(aABBs, i, aABB);
-        clipXCollide(aABB, this->bb, xa);
+        xa = clipXCollide(aABB, this->bb, xa);
     }
     AABBMove(this->bb, xa, 0.0f, 0.0f);
     for (i = 0; i < aABBs->size; i++) {
         getAABB(aABBs, i, aABB);
-        clipZCollide(aABB, this->bb, za);
+        za = clipZCollide(aABB, this->bb, za);
     }
     AABBMove(this->bb, 0.0f, 0.0f, za);
 

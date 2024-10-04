@@ -29,7 +29,7 @@ s32 loadTexture(String resourceName, s32 mode) {
     IntBuffer ib;
     intBufferInit(&ib, 1);
     
-    glGenTextures(1, ib.data);
+    glGenTextures(256, ib.data);
     s32 id = ib.data[0];
     texturesBind(id);
 
@@ -37,13 +37,10 @@ s32 loadTexture(String resourceName, s32 mode) {
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
 
     s32 w, h, channels;
-    u8* img = stbi_load(resourceName, &w, &h, &channels, 0);
+    u8* img = stbi_load(resourceName, &w, &h, &channels, 4);
     if (!img) return -1;
 
-    char pixels[w * h * 4];
-    getRGB(img, 0, 0, w, h, pixels, 0, w);
-
-    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, pixels);
+    gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
     return id;
 }
 

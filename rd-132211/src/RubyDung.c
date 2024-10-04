@@ -214,7 +214,7 @@ void main(void) {
 
     initIdMap();
     initTiles();
-    initChunk();
+    if (!initChunk()) return;
 
     printf("Running!\n");
 

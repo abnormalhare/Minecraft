@@ -29,6 +29,7 @@ LevelRenderer* newLevelRenderer(Level* level) {
         fprintf(stderr, "Failed to allocate to level listener");
         return NULL;
     }
+
     lr->levelListener->base = lr;
     lr->levelListener->tileChanged = _lrTileChanged;
     lr->levelListener->lightColumnChanged = _lrLightColumnChanged;
@@ -61,6 +62,8 @@ LevelRenderer* newLevelRenderer(Level* level) {
             }
         }
     }
+
+    load(lr->level);
 
     return lr;
 }

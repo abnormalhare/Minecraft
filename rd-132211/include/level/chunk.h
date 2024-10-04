@@ -18,7 +18,7 @@ typedef struct _Chunk {
     s32 lists;
 } Chunk;
 
-void initChunk(void);
+bool initChunk(void);
 Chunk* newChunk(Level* level, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1);
 void rebuild(Chunk* this, s32 layer);
 void chunkRender(Chunk* this, s32 layer);

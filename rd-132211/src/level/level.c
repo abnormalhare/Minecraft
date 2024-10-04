@@ -131,7 +131,6 @@ Level* newLevel(s32 w, s32 h, s32 d) {
     }
 
     calcLightDepths(level, 0, 0, w, h);
-    load(level);
 
     return level;
 }

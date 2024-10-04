@@ -5,9 +5,14 @@ s32 chunkUpdates = 0;
 Tesselator* t = NULL;
 s32 texture;
 
-void initChunk(void) {
+bool initChunk(void) {
+    texture = loadTexture("terrain.png", GL_NEAREST);
+    if (texture == -1) {
+        fprintf(stderr, "Failed to load textures!");
+        return 0;
+    }
     t = newTesselator();
-    texture = loadTexture("/terrain.png", GL_NEAREST);
+    return 1;
 }
 
 Chunk* newChunk(Level* level, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1) {
