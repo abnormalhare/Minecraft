@@ -69,7 +69,7 @@ void tex(Tesselator* this, float u, float v) {
 }
 
 void color(Tesselator* this, float r, float g, float b) {
-    this->hasColor = FALSE;
+    this->hasColor = TRUE;
     this->r = r;
     this->g = g;
     this->b = b;
