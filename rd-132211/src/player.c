@@ -15,10 +15,12 @@ Player* newPlayer(Level* level) {
     return player;
 }
 
+#define RANDOM_FLOAT ((double)rand() / (double)RAND_MAX)
+
 void resetPos(Player* player) {
-    float x = (1 / rand()) * player->level->width;
+    float x = RANDOM_FLOAT * (float)player->level->width;
     float y = player->level->depth + 10;
-    float z = (1 / rand()) * player->level->height;
+    float z = RANDOM_FLOAT * player->level->height;
     setPos(player, x, y, z);
 }
 
