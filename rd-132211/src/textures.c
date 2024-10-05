@@ -21,8 +21,8 @@ s32 loadTexture(String resourceName, s32 mode) {
     IntBuffer ib;
     intBufferInit(&ib, 1);
     
-    glGenTextures(256, ib.data);
-    s32 id = ib.data[0];
+    glGenTextures(1, (u32*)ib.data);
+    s32 id = intBufferGeti(&ib, 0);
     texturesBind(id);
 
     glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);
@@ -30,9 +30,14 @@ s32 loadTexture(String resourceName, s32 mode) {
 
     s32 w, h, channels;
     u8* img = stbi_load(resourceName, &w, &h, &channels, 4);
-    if (!img) return -1;
+    if (!img) {
+        fprintf(stderr, "Failed to load image: %s\n", resourceName);
+        return -1;
+    }
 
     gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
+
+    stbi_image_free(img);
     return id;
 }
 

@@ -20,9 +20,9 @@ typedef struct _Chunk {
 
 bool initChunk(void);
 Chunk* newChunk(Level* level, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1);
-void rebuild(Chunk* this, s32 layer);
-void chunkRender(Chunk* this, s32 layer);
-void chunkSetDirty(Chunk* this);
+void rebuild(Chunk* chunk, s32 layer);
+void chunkRender(Chunk* chunk, s32 layer);
+void chunkSetDirty(Chunk* chunk);
 
 extern s32 rebuiltThisFrame;
 extern s32 chunkUpdates;

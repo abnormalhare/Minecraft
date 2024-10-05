@@ -1,5 +1,5 @@
 CC = gcc
-CFLAGS = -g -Iinclude -lglfw3 -lz -lopengl32 -lgdi32 -lglu32 -m64
+CFLAGS = -g -Iinclude -lglfw3 -lz -lopengl32 -lgdi32 -lglu32 -m64 -Wall
 
 # Directories
 SRC_DIR = src
@@ -25,7 +25,7 @@ $(EXEC): $(OBJ_FILES)
 
 # Rule to compile each .c file into a .o file
 %.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $(OBJ_DIR)/$(notdir $@)
+	$(CC) $(CFLAGS) -c $< -o $(OBJ)
 
 # Clean rule to remove compiled files
 clean:

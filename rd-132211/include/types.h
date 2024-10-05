@@ -24,7 +24,7 @@ typedef struct _FloatBuffer {
 } FloatBuffer;
 
 typedef struct _IntBuffer {
-    int* data;
+    s32* data;
     s32 capacity;
     s32 position;
     s32 limit;

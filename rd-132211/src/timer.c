@@ -21,10 +21,10 @@ Timer* newTimer(float ticksPerSecond) {
     return timer;
 }
 
-void advanceTime(Timer* this) {
+void advanceTime(Timer* timer) {
     s64 now = nanoTime();
-    s64 passedNs = now - this->lastTime;
-    this->lastTime = now;
+    s64 passedNs = now - timer->lastTime;
+    timer->lastTime = now;
     
     if (passedNs < 0) {
         passedNs = 0;
@@ -32,12 +32,12 @@ void advanceTime(Timer* this) {
     if (passedNs > 1000000000) {
         passedNs = 1000000000;
     }
-    this->fps = 1000000000 / (float)passedNs;
-    this->passedTime += (float)passedNs * this->timeScale * this->ticksPerSecond / 1000000000.0f;
-    this->ticks = (s32)this->passedTime;
-    if (this->ticks > 100) {
-        this->ticks = 100;
+    timer->fps = 1000000000 / (float)passedNs;
+    timer->passedTime += (float)passedNs * timer->timeScale * timer->ticksPerSecond / 1000000000.0f;
+    timer->ticks = (s32)timer->passedTime;
+    if (timer->ticks > 100) {
+        timer->ticks = 100;
     }
-    this->passedTime -= this->ticks;
-    this->a = this->passedTime;
+    timer->passedTime -= timer->ticks;
+    timer->a = timer->passedTime;
 }

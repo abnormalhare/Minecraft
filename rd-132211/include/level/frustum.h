@@ -19,10 +19,10 @@ typedef struct _Frustum {
 } Frustum;
 
 Frustum* getFrustum(void);
-void normalizePlane(float frustum[6][4], s32 side);
+void normalizePlane(float mFrustum[6][4], s32 side);
 Frustum* newFrustum(void);
-void calculateFrustum(Frustum* this);
-bool cubeInFrustum(Frustum* this, float x0, float y0, float z0, float x1, float y1, float z1);
-bool cubeInFrustumA(Frustum* this, AABB* aabb);
+void calculateFrustum(Frustum* frustum);
+bool cubeInFrustum(Frustum* frustum, float x0, float y0, float z0, float x1, float y1, float z1);
+bool cubeInFrustumA(Frustum* frustum, AABB* aabb);
 
 #endif

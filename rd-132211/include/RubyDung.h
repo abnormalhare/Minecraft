@@ -27,10 +27,10 @@ typedef struct _RubyDung {
     HitResult* hitResult;
 } RubyDung;
 
-s32 rbInit(RubyDung* this);
-void rbRun(RubyDung* this);
-void rbDestroy(RubyDung* this);
-void rbRender(RubyDung* this, float a);
-void main(void);
+s32 rbInit(RubyDung* game);
+void rbRun(RubyDung* game);
+void rbDestroy(RubyDung* game);
+void rbRender(RubyDung* game, float a);
+int main(void);
 
 #endif

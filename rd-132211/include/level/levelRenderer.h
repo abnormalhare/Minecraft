@@ -25,10 +25,10 @@ typedef struct {
 } LevelRenderer;
 
 LevelRenderer* newLevelRenderer(Level* level);
-void lrRender(LevelRenderer* this, Player* player, s32 layer);
-void lrPick(LevelRenderer* this, Player* player);
-void lrRenderHit(LevelRenderer* this, HitResult* h);
-void lrSetDirty(LevelRenderer* this, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1);
+void lrRender(LevelRenderer* lr, Player* player, s32 layer);
+void lrPick(LevelRenderer* lr, Player* player);
+void lrRenderHit(LevelRenderer* lr, HitResult* h);
+void lrSetDirty(LevelRenderer* lr, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1);
 
 
 #endif

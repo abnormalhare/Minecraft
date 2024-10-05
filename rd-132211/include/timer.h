@@ -19,6 +19,6 @@ typedef struct _Timer {
 } Timer;
 
 Timer* newTimer(float ticksPerSecond);
-void advanceTime(Timer* this);
+void advanceTime(Timer* timer);
 
 #endif

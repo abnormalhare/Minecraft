@@ -2,16 +2,16 @@
 
 s32 CHUNK_SIZE = 16;
 
-void _lrTileChanged(LevelRenderer* this, s32 x, s32 y, s32 z) {
-    lrSetDirty(this, x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
+void _lrTileChanged(LevelRenderer* lr, s32 x, s32 y, s32 z) {
+    lrSetDirty(lr, x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
 }
 
-void _lrLightColumnChanged(LevelRenderer* this, s32 x, s32 z, s32 y0, s32 y1) {
-    lrSetDirty(this, x - 1, y0 - 1, z - 1, x + 1, y1 + 1, z + 1);
+void _lrLightColumnChanged(LevelRenderer* lr, s32 x, s32 z, s32 y0, s32 y1) {
+    lrSetDirty(lr, x - 1, y0 - 1, z - 1, x + 1, y1 + 1, z + 1);
 }
 
-void _lrAllChanged(LevelRenderer* this) {
-    lrSetDirty(this, 0, 0, 0, this->level->width, this->level->depth, this->level->height);
+void _lrAllChanged(LevelRenderer* lr) {
+    lrSetDirty(lr, 0, 0, 0, lr->level->width, lr->level->depth, lr->level->height);
 }
 
 LevelRenderer* newLevelRenderer(Level* level) {
@@ -68,21 +68,21 @@ LevelRenderer* newLevelRenderer(Level* level) {
     return lr;
 }
 
-void lrRender(LevelRenderer* this, Player* player, s32 layer) {
+void lrRender(LevelRenderer* lr, Player* player, s32 layer) {
     Frustum* frustum;
     
-    s32 chunkLength = this->xChunks * this->yChunks * this->zChunks;
+    s32 chunkLength = lr->xChunks * lr->yChunks * lr->zChunks;
 
     rebuiltThisFrame = 0;
     frustum = getFrustum();
     for (s32 i = 0; i < chunkLength; i++) {
-        if (cubeInFrustumA(frustum, this->chunks[i]->aabb)) {
-            chunkRender(this->chunks[i], layer);
+        if (cubeInFrustumA(frustum, lr->chunks[i]->aabb)) {
+            chunkRender(lr->chunks[i], layer);
         }
     }
 }
 
-void lrPick(LevelRenderer* this, Player* player) {
+void lrPick(LevelRenderer* lr, Player* player) {
     float r = 3.0f;
     AABB* box = grow(player->bb, r, r, r);
     s32 x0 = box->x0;
@@ -99,13 +99,13 @@ void lrPick(LevelRenderer* this, Player* player) {
             glPushName(y);
             for (s32 z = z0; z < z1; z++) {
                 glPushName(z);
-                if (isSolidTile(this->level, x, y, z)) {
+                if (isSolidTile(lr->level, x, y, z)) {
                     glPushName(0);
                     for (s32 i = 0; i < 6; i++) {
                         glPushName(i);
-                        tesselatorInit(this->t);
-                        tileRenderFace(rock, this->t, x, y, z, i);
-                        flush(this->t);
+                        tesselatorInit(lr->t);
+                        tileRenderFace(rock, lr->t, x, y, z, i);
+                        flush(lr->t);
                         glPopName();
                     }
                     glPopName();
@@ -118,17 +118,17 @@ void lrPick(LevelRenderer* this, Player* player) {
     }
 }
 
-void lrRenderHit(LevelRenderer* this, HitResult* h) {
+void lrRenderHit(LevelRenderer* lr, HitResult* h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
     glColor4f(1.0f, 1.0f, 1.0f, sin(currentTimeMillis() / 100.0) * 0.2f + 0.4f);
-    tesselatorInit(this->t);
-    tileRenderFace(rock, this->t, h->x, h->y, h->z, h->f);
-    flush(this->t);
+    tesselatorInit(lr->t);
+    tileRenderFace(rock, lr->t, h->x, h->y, h->z, h->f);
+    flush(lr->t);
     glDisable(GL_BLEND);
 }
 
-void lrSetDirty(LevelRenderer* this, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1) {
+void lrSetDirty(LevelRenderer* lr, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1) {
     x0 /= 16;
     x1 /= 16;
     y0 /= 16;
@@ -139,15 +139,15 @@ void lrSetDirty(LevelRenderer* this, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32
     if (x0 < 0) x0 = 0;
     if (y0 < 0) y0 = 0;
     if (z0 < 0) z0 = 0;
-    if (x1 >= this->xChunks) x1 = this->xChunks - 1;
-    if (y1 >= this->xChunks) y1 = this->yChunks - 1;
-    if (z1 >= this->xChunks) z1 = this->zChunks - 1;
+    if (x1 >= lr->xChunks) x1 = lr->xChunks - 1;
+    if (y1 >= lr->xChunks) y1 = lr->yChunks - 1;
+    if (z1 >= lr->xChunks) z1 = lr->zChunks - 1;
 
     
     for (s32 x = x0; x < x1; x++) {
         for (s32 y = y0; y < y1; y++) {
             for (s32 z = z0; z < z1; z++) {
-                chunkSetDirty(this->chunks[(x + y * this->xChunks) * this->zChunks + z]);
+                chunkSetDirty(lr->chunks[(x + y * lr->xChunks) * lr->zChunks + z]);
             }
         }
     }

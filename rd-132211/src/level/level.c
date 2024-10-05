@@ -1,7 +1,7 @@
 #include "level/level.h"
 
-char* readFully(Level* this, FILE* file) {
-    s32 size = this->width * this->height * this->depth;
+char* readFully(Level* level, FILE* file) {
+    s32 size = level->width * level->height * level->depth;
     char* uncompressed_data = malloc(size);
 
     if (!file) {
@@ -135,42 +135,42 @@ Level* newLevel(s32 w, s32 h, s32 d) {
     return level;
 }
 
-void load(Level* this) {
+void load(Level* level) {
     LevelListener levelListener;
     // FILE* dis = fopen("level.dat", "rb");
-    // this->blocks = readFully(this, dis); //! allocs memory smaller than curr amount
-    calcLightDepths(this, 0, 0, this->width, this->height);
-    for (s32 i = 0; i < this->LevelListeners->size; i++) {
-        getLevelListener(this->LevelListeners, i, &levelListener);
+    // level->blocks = readFully(level, dis); //! allocs memory smaller than curr amount
+    calcLightDepths(level, 0, 0, level->width, level->height);
+    for (s32 i = 0; i < level->LevelListeners->size; i++) {
+        getLevelListener(level->LevelListeners, i, &levelListener);
         levelListener.allChanged(levelListener.base);
     }
 
     // fclose(dis);
 }
 
-void save(Level* this) {
-    FILE* dos = fopen("level.dat", "wb");
-    write(dos, this->blocks);
-    fclose(dos);
+void save(Level* level) {
+    // FILE* dos = fopen("level.dat", "wb");
+    // write(dos, level->blocks);
+    // fclose(dos);
 }
 
-void calcLightDepths(Level* this, s32 x0, s32 y0, s32 x1, s32 y1) {
+void calcLightDepths(Level* level, s32 x0, s32 y0, s32 x1, s32 y1) {
     LevelListener levelListener;
 
     for (s32 x = x0; x < x0 + x1; x++) {
         for (s32 z = y0; z < y0 + y1; z++) {
-            s32 oldDepth = this->lightDepths[x + z * this->width];
-            s32 y = this->depth - 1;
-            while (y > 0 && !isLightBlocker(this, x, y, z))
+            s32 oldDepth = level->lightDepths[x + z * level->width];
+            s32 y = level->depth - 1;
+            while (y > 0 && !isLightBlocker(level, x, y, z))
                 y--;
             
-            this->lightDepths[x + z * this->width] = y;
+            level->lightDepths[x + z * level->width] = y;
 
             if (oldDepth != y) {
                 s32 yl0 = (oldDepth < y) ? oldDepth : y;
                 s32 yl1 = (oldDepth > y) ? oldDepth : y;
-                for (s32 i = 0; i < this->LevelListeners->size; i++) {
-                    getLevelListener(this->LevelListeners, i, &levelListener);
+                for (s32 i = 0; i < level->LevelListeners->size; i++) {
+                    getLevelListener(level->LevelListeners, i, &levelListener);
                     levelListener.lightColumnChanged(levelListener.base, x, z, yl0, yl1);
                 }
             }
@@ -178,31 +178,31 @@ void calcLightDepths(Level* this, s32 x0, s32 y0, s32 x1, s32 y1) {
     }
 }
 
-void addListener(Level* this, LevelListener* levelListener) {
-    addLevelListener(this->LevelListeners, levelListener);
+void addListener(Level* level, LevelListener* levelListener) {
+    addLevelListener(level->LevelListeners, levelListener);
 }
 
-void removeListener(Level* this, LevelListener* levelListener) {
-    removeLevelListener(this->LevelListeners, levelListener);
+void removeListener(Level* level, LevelListener* levelListener) {
+    removeLevelListener(level->LevelListeners, levelListener);
 }
 
-bool isTile(Level* this, s32 x, s32 y, s32 z) {
-    if (x < 0 || y < 0 || z < 0 || x >= this->width || y >= this->depth || z >= this->height)
+bool isTile(Level* level, s32 x, s32 y, s32 z) {
+    if (x < 0 || y < 0 || z < 0 || x >= level->width || y >= level->depth || z >= level->height)
         return FALSE;
     else {
-        return this->blocks[(y * this->height + z) * this->width + x] == 1;
+        return level->blocks[(y * level->height + z) * level->width + x] == 1;
     }
 }
 
-bool isSolidTile(Level* this, s32 x, s32 y, s32 z) {
-    return isTile(this, x, y, z);
+bool isSolidTile(Level* level, s32 x, s32 y, s32 z) {
+    return isTile(level, x, y, z);
 }
 
-bool isLightBlocker(Level* this, s32 x, s32 y, s32 z) {
-    return isSolidTile(this, x, y, z);
+bool isLightBlocker(Level* level, s32 x, s32 y, s32 z) {
+    return isSolidTile(level, x, y, z);
 }
 
-ArrayList* getCubes(Level* this, AABB* aABB) {
+ArrayList* getCubes(Level* level, AABB* aABB) {
     s32 x0 = aABB->x0;
     s32 x1 = aABB->x1 + 1.0f;
     s32 y0 = aABB->y0;
@@ -215,14 +215,14 @@ ArrayList* getCubes(Level* this, AABB* aABB) {
     if (x0 < 0) x0 = 0;
     if (y0 < 0) y0 = 0;
     if (z0 < 0) z0 = 0;
-    if (x1 > this->width) x1 = this->width;
-    if (y1 > this->width) y1 = this->depth;
-    if (z1 > this->width) z1 = this->height;
+    if (x1 > level->width) x1 = level->width;
+    if (y1 > level->width) y1 = level->depth;
+    if (z1 > level->width) z1 = level->height;
 
     for (s32 x = x0; x < x1; x++) {
         for (s32 y = y0; y < y1; y++) {
             for (s32 z = z0; z < z1; z++) {
-                if (isSolidTile(this, x, y, z))
+                if (isSolidTile(level, x, y, z))
                     addAABB(aABBs, newAABB(x, y, z, (x + 1), (y + 1), (z + 1))); 
             }
         }
@@ -230,26 +230,26 @@ ArrayList* getCubes(Level* this, AABB* aABB) {
     return aABBs;
 }
 
-float getBrightness(Level* this, s32 x, s32 y, s32 z) {
+float getBrightness(Level* level, s32 x, s32 y, s32 z) {
     float dark = 0.8f;
     float light = 1.0f;
 
-    if (x < 0 || y < 0 || z < 0 || x >= this->width || y >= this->depth || z >= this->height)
+    if (x < 0 || y < 0 || z < 0 || x >= level->width || y >= level->depth || z >= level->height)
         return light;
-    if (y < this->lightDepths[x + z * this->width])
+    if (y < level->lightDepths[x + z * level->width])
         return dark;
     return light;
 }
 
-void setTile(Level* this, s32 x, s32 y, s32 z, s32 type) {
+void setTile(Level* level, s32 x, s32 y, s32 z, s32 type) {
     LevelListener levelListener;
 
-    if (x < 0 || y < 0 || z < 0 || x >= this->width || y >= this->depth || z >= this->height)
+    if (x < 0 || y < 0 || z < 0 || x >= level->width || y >= level->depth || z >= level->height)
         return;
-    this->blocks[(y * this->height + z) * this->width + x] = type;
-    calcLightDepths(this, x, z, 1, 1);
-    for (s32 i = 0; i < this->LevelListeners->size; i++) {
-        getLevelListener(this->LevelListeners, i, &levelListener);
+    level->blocks[(y * level->height + z) * level->width + x] = type;
+    calcLightDepths(level, x, z, 1, 1);
+    for (s32 i = 0; i < level->LevelListeners->size; i++) {
+        getLevelListener(level->LevelListeners, i, &levelListener);
         levelListener.tileChanged(levelListener.base, x, y, z);
     }
 }

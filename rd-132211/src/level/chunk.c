@@ -7,10 +7,8 @@ s32 texture;
 
 bool initChunk(void) {
     texture = loadTexture("terrain.png", GL_NEAREST);
-    if (texture == -1) {
-        fprintf(stderr, "Failed to load textures!");
-        return 0;
-    }
+    if (texture == -1) return 0;
+
     t = newTesselator();
     return 1;
 }
@@ -22,38 +20,38 @@ Chunk* newChunk(Level* level, s32 x0, s32 y0, s32 z0, s32 x1, s32 y1, s32 z1) {
         return NULL;
     }
 
-    chunk->aabb = newAABB(x0, y0, z0, x1, y1, z1);
+    chunk->dirty = TRUE;
     chunk->level = level;
     chunk->x0 = x0; chunk->y0 = y0; chunk->z0 = z0;
     chunk->x1 = x1; chunk->y1 = y1; chunk->z1 = z1;
-    chunk->dirty = TRUE;
+    chunk->aabb = newAABB(x0, y0, z0, x1, y1, z1);
     chunk->lists = glGenLists(2);
 
     return chunk;
 }
 
-void rebuild(Chunk* this, s32 layer) {
+void rebuild(Chunk* chunk, s32 layer) {
     if (rebuiltThisFrame == 2) return;
 
-    this->dirty = FALSE;
+    chunk->dirty = FALSE;
     chunkUpdates++;
     rebuiltThisFrame++;
-    glNewList(this->lists + layer, GL_COMPILE);
+    glNewList(chunk->lists + layer, GL_COMPILE);
     glEnable(GL_TEXTURE_2D);
     glBindTexture(GL_TEXTURE_2D, texture);
     tesselatorInit(t);
 
     s32 tiles = 0;
-    for (s32 x = this->x0; x < this->x1; x++) {
-        for (s32 y = this->y0; y < this->y1; y++) {
-            for (s32 z = this->z0; z < this->z1; z++) {
-                if (isTile(this->level, x, y, z)) {
-                    s32 tex = (y == this->level->depth * 2 / 3) ? 0 : 1;
+    for (s32 x = chunk->x0; x < chunk->x1; x++) {
+        for (s32 y = chunk->y0; y < chunk->y1; y++) {
+            for (s32 z = chunk->z0; z < chunk->z1; z++) {
+                if (isTile(chunk->level, x, y, z)) {
+                    s32 tex = (y == chunk->level->depth * 2 / 3) ? 0 : 1;
                     tiles++;
                     if (tex == 0) {
-                        tileRender(rock, t, this->level, layer, x, y, z);
+                        tileRender(rock, t, chunk->level, layer, x, y, z);
                     } else {
-                        tileRender(grass, t, this->level, layer, x, y, z);
+                        tileRender(grass, t, chunk->level, layer, x, y, z);
                     }
                 }
             }
@@ -65,14 +63,14 @@ void rebuild(Chunk* this, s32 layer) {
     glEndList();
 }
 
-void chunkRender(Chunk* this, s32 layer) {
-    if (this->dirty) {
-        rebuild(this, 0);
-        rebuild(this, 1);
+void chunkRender(Chunk* chunk, s32 layer) {
+    if (chunk->dirty) {
+        rebuild(chunk, 0);
+        rebuild(chunk, 1);
     }
-    glCallList(this->lists + layer);
+    glCallList(chunk->lists + layer);
 }
 
-void chunkSetDirty(Chunk* this) {
-    this->dirty = TRUE;
+void chunkSetDirty(Chunk* chunk) {
+    chunk->dirty = TRUE;
 }

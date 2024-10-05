@@ -10,5 +10,6 @@ void intBufferClear(IntBuffer* buffer);
 bool intBufferPut(IntBuffer* buffer, s32 index, int value);
 void intBufferLimit(IntBuffer* buffer, s32 limit);
 s32 intBufferGet(IntBuffer* buffer);
+s32 intBufferGeti(IntBuffer* buffer, s32 index);
 
 #endif

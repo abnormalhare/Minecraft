@@ -45,11 +45,7 @@ float floatBufferGeti(FloatBuffer* buffer, s32 index) {
 }
 
 void floatBufferGetv(FloatBuffer* buffer, float* dst) {
-    s32 dstLength = sizeof(dst) / sizeof(float);
-    s32 bufLength = sizeof(buffer->data) / sizeof(float);
-    s32 length = min(dstLength, bufLength);
-
-    for (s32 i = 0; i < length; i++) {
+    for (s32 i = 0; i < buffer->limit; i++) {
         dst[i] = buffer->data[i];
     }
 }

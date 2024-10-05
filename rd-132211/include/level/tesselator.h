@@ -21,11 +21,11 @@ typedef struct _Tesselator {
 } Tesselator;
 
 Tesselator* newTesselator(void);
-void flush(Tesselator* this);
-void clear(Tesselator* this);
-void tesselatorInit(Tesselator* this);
-void tex(Tesselator* this, float u, float v);
-void color(Tesselator* this, float r, float g, float b);
-void vertex(Tesselator* this, float x, float y, float z);
+void flush(Tesselator* t);
+void clear(Tesselator* t);
+void tesselatorInit(Tesselator* t);
+void tex(Tesselator* t, float u, float v);
+void color(Tesselator* t, float r, float g, float b);
+void vertex(Tesselator* t, float x, float y, float z);
 
 #endif

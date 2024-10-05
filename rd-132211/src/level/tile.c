@@ -23,11 +23,11 @@ static inline bool check(float br, float c1, s32 layer) {
     return (br == c1) ^ (layer == 1);
 }
 
-void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y, s32 z) {
-    float u0 = this->tex / 16.0f;
-    float u1 = u0 + (0.999f * (1.0f / 16.0f));
+void tileRender(Tile* tile, Tesselator* t, Level* level, s32 layer, s32 x, s32 y, s32 z) {
+    float u0 = tile->tex / 16.0f;
+    float u1 = u0 + 0.0624375f;
     float v0 = 0.0f;
-    float v1 = v0 + (0.999f * (1.0f / 16.0f));
+    float v1 = v0 + 0.0624375f;
     
     float c1 = 1.0f;
     float c2 = 0.8f;
@@ -40,7 +40,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
     float z0 = z + 0.0f;
     float z1 = z + 1.0f;
 
-    // x, y0, z
+    // bottom
     if (!isSolidTile(level, x, y - 1, z)) {
         float br = getBrightness(level, x, y - 1, z) * c1;
 
@@ -57,7 +57,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
         }
     }
 
-    // x, y1, z
+    // top
     if (!isSolidTile(level, x, y + 1, z)) {
         float br = getBrightness(level, x, y - 1, z) * c1;
 
@@ -74,7 +74,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
         }
     }
 
-    // x, y, z0
+    // back
     if (!isSolidTile(level, x, y, z - 1)) {
         float br = getBrightness(level, x, y, z - 1) * c2;
 
@@ -91,7 +91,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
         }
     }
 
-    // x, y, z1
+    // front
     if (!isSolidTile(level, x, y, z + 1)) {
         float br = getBrightness(level, x, y, z + 1) * c2;
 
@@ -108,7 +108,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
         }
     }
 
-    // x0, y, z
+    // left
     if (!isSolidTile(level, x - 1, y, z)) {
         float br = getBrightness(level, x - 1, y, z) * c3;
 
@@ -125,7 +125,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
         }
     }
 
-    // x1, y, z
+    // right
     if (!isSolidTile(level, x + 1, y, z)) {
         float br = getBrightness(level, x + 1, y, z) * c3;
 
@@ -143,7 +143,7 @@ void tileRender(Tile* this, Tesselator* t, Level* level, s32 layer, s32 x, s32 y
     }
 }
 
-void tileRenderFace(Tile* this, Tesselator* t, s32 x, s32 y, s32 z, s32 face) {
+void tileRenderFace(Tile* tile, Tesselator* t, s32 x, s32 y, s32 z, s32 face) {
     float x0 = x + 0.0f;
     float x1 = x + 1.0f;
     float y0 = y + 0.0f;

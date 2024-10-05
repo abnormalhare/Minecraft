@@ -8,10 +8,14 @@ bool setDisplayMode(s32 width, s32 height) {
         printf("Failed to Init GLFW");
         return 1;
     }
+    
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
+    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
     window = glfwCreateWindow(width, height, "Game", NULL, NULL);
     if (!window) {
         printf("Failed to create GLFW Window");
+        glfwTerminate();
         return 1;
     }
 
