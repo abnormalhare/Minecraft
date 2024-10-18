@@ -32,3 +32,6 @@
 *.app
 
 build
+*.dat
+.vs
+.vscode

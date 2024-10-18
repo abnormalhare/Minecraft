@@ -90,6 +90,7 @@ class RubyDung {
 
         void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+                this->level->save();
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
             }
         }
@@ -248,9 +249,6 @@ class RubyDung {
             float yo = getMouseDY();
             this->player->turn(xo, yo);
             pick(a);
-            if (GetAsyncKeyState(VK_ESCAPE) & 0x8000) {
-                this->level->save();
-            }
 
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             setupCamera(a);
@@ -288,7 +286,6 @@ void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    printf("KeyCallback\n");
     rubyDung->keyCallback(window, key, scancode, action, mods);
 }
 

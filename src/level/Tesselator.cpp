@@ -28,9 +28,6 @@ void Tesselator::flush(void) {
 
 void Tesselator::clear(void) {
     this->vertices = 0;
-    std::fill(this->vertexBuffer, this->vertexBuffer + MAX_VERTICES * 3, 0.0f);
-    std::fill(this->texCoordBuffer, this->texCoordBuffer + MAX_VERTICES * 2, 0.0f);
-    std::fill(this->colorBuffer, this->colorBuffer + MAX_VERTICES * 3, 0.0f);
 }
 
 void Tesselator::init(void) {

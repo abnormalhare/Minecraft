@@ -83,7 +83,11 @@ void LevelRenderer::pick(Player* player) {
 void LevelRenderer::renderHit(HitResult* h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
-    glColor4f(1.0f, 0.0f, 0.0f, sinf(Timer::getTimeInMilliSeconds() / 100.0) * 0.2f + 0.4f);
+
+    int time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
+    float alpha = sinf(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
+    glColor4f(1.0f, 0.0f, 0.0f, alpha);
+
     this->t->init();
     Tile::rock->renderFace(this->t, h->x, h->y, h->z, h->f);
     this->t->flush();
@@ -115,11 +119,11 @@ void LevelRenderer::setDirty(std::int32_t x0, std::int32_t y0, std::int32_t z0, 
 }
 
 void LevelRenderer::tileChanged(std::int32_t x, std::int32_t y, std::int32_t z) {
-setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
+    setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
 }
 
 void LevelRenderer::lightColumnChanged(std::int32_t x, std::int32_t z, std::int32_t y0, std::int32_t y1) {
-setDirty(x - 1, y0 - 1, z - 1, x + 1, y1 + 1, z + 1);
+    setDirty(x - 1, y0 - 1, z - 1, x + 1, y1 + 1, z + 1);
 }
 
 void LevelRenderer::allChanged(void) {

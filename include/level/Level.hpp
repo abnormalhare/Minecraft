@@ -12,7 +12,7 @@ class Level {
     private:
         char* blocks;
         std::int32_t* lightDepths;
-        std::vector<LevelListener>* levelListeners = new std::vector<LevelListener>();
+        std::vector<LevelListener*>* levelListeners = new std::vector<LevelListener*>();
         
     public:
         const std::int32_t width;

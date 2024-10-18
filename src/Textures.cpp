@@ -27,11 +27,11 @@ std::int32_t Textures::loadTexture(const std::string resourceName, std::int32_t 
 
         // read in image
         int w, h, nrChannels;
-        std::uint8_t* data = stbi_load(resourceName.c_str(), &w, &h, &nrChannels, 0);
+        std::uint8_t* img = stbi_load(resourceName.c_str(), &w, &h, &nrChannels, 4);
         
-        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, data);
+        gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
 
-        stbi_image_free(data);
+        stbi_image_free(img);
         return id;
     } catch (const std::exception& e) {
         std::cerr << "!!" << std::endl;
