@@ -1,3 +1,8 @@
+build
+*.dat
+.vs
+**/.vscode/
+
 # Prerequisites
 *.d
 
@@ -30,8 +35,3 @@
 *.exe
 *.out
 *.app
-
-build
-*.dat
-.vs
-.vscode
