@@ -85,7 +85,7 @@ void LevelRenderer::renderHit(HitResult* h) {
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
     int time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
-    float alpha = sinf(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
+    float alpha = sin(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
     this->t->init();
