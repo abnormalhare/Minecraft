@@ -28,9 +28,9 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
             t->color(br, br, br);
             t->tex(u0, v1);
             t->vertex(x0, y0, z1);
-            t->tex(u0, u0);
+            t->tex(u0, v0);
             t->vertex(x0, y0, z0);
-            t->tex(u1, u0);
+            t->tex(u1, v0);
             t->vertex(x1, y0, z0);
             t->tex(u1, v1);
             t->vertex(x1, y0, z1);
@@ -42,9 +42,9 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
             t->color(br, br, br);
             t->tex(u1, v1);
             t->vertex(x1, y1, z1);
-            t->tex(u1, u0);
+            t->tex(u1, v0);
             t->vertex(x1, y1, z0);
-            t->tex(u0, u0);
+            t->tex(u0, v0);
             t->vertex(x0, y1, z0);
             t->tex(u0, v1);
             t->vertex(x0, y1, z1);
@@ -56,9 +56,9 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
             t->color(br, br, br);
             t->tex(u1, v0);
             t->vertex(x0, y1, z0);
-            t->tex(u0, u0);
+            t->tex(u0, v0);
             t->vertex(x1, y1, z0);
-            t->tex(u0, u1);
+            t->tex(u0, v1);
             t->vertex(x1, y0, z0);
             t->tex(u1, v1);
             t->vertex(x0, y0, z0);
@@ -86,9 +86,9 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
             t->vertex(x0, y1, z1);
             t->tex(u0, v0);
             t->vertex(x0, y1, z0);
-            t->tex(u0, u1);
+            t->tex(u0, v1);
             t->vertex(x0, y0, z0);
-            t->tex(u1, u1);
+            t->tex(u1, v1);
             t->vertex(x0, y0, z1);
         }
     }
@@ -96,9 +96,9 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
         float br = level->getBrightness(x + 1, y, z) * c3;
         if ((br == c3) ^ (layer == 1)) {
             t->color(br, br, br);
-            t->tex(u0, u1);
+            t->tex(u0, v1);
             t->vertex(x1, y0, z1);
-            t->tex(u1, u1);
+            t->tex(u1, v1);
             t->vertex(x1, y0, z0);
             t->tex(u1, v0);
             t->vertex(x1, y1, z0);

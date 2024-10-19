@@ -6,8 +6,8 @@ LevelRenderer::LevelRenderer(Level* level) {
     this->level->addListener(this);
 
     this->xChunks = level->width / CHUNK_SIZE;
-    this->yChunks = level->height / CHUNK_SIZE;
-    this->zChunks = level->depth / CHUNK_SIZE;
+    this->yChunks = level->depth / CHUNK_SIZE;
+    this->zChunks = level->height / CHUNK_SIZE;
 
     this->chunks = new Chunk*[xChunks * yChunks * zChunks];
     for (int x = 0; x < xChunks; x++) {
@@ -21,8 +21,8 @@ LevelRenderer::LevelRenderer(Level* level) {
                 int z1 = (z + 1) * CHUNK_SIZE;
                 
                 if (x1 > level->width) x1 = level->width;
-                if (y1 > level->height) y1 = level->height;
-                if (z1 > level->depth) z1 = level->depth;
+                if (y1 > level->depth) y1 = level->depth;
+                if (z1 > level->height) z1 = level->height;
 
                 this->chunks[(x + y * xChunks) * this->zChunks + z] = new Chunk(level, x0, y0, z0, x1, y1, z1);
             }
@@ -86,7 +86,7 @@ void LevelRenderer::renderHit(HitResult* h) {
 
     int time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
     float alpha = sinf(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
-    glColor4f(1.0f, 0.0f, 0.0f, alpha);
+    glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
     this->t->init();
     Tile::rock->renderFace(this->t, h->x, h->y, h->z, h->f);
