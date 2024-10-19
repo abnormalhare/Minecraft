@@ -1,12 +1,16 @@
 #include "level/Chunk.hpp"
 
-std::int32_t Chunk::texture = Textures::loadTexture("terrain.png", GL_NEAREST);
+std::int32_t Chunk::texture = -1;
 Tesselator* Chunk::t = new Tesselator();
 
 std::int32_t Chunk::rebuiltThisFrame = 0;
 std::int32_t Chunk::updates = 0;
 
 Chunk::Chunk(Level* level, int x0, int y0, int z0, int x1, int y1, int z1) : x0(x0), y0(y0), z0(z0), x1(x1), y1(y1), z1(z1) {
+    if (Chunk::texture == -1) {
+        Chunk::texture = Textures::loadTexture("terrain.png", GL_NEAREST);
+    }
+    
     this->level = level;
     this->aabb = new AABB(x0, y0, z0, x1, y1, z1);
     this->lists = glGenLists(2);

@@ -50,15 +50,15 @@ void Tesselator::color(float r, float g, float b) {
 }
 
 void Tesselator::vertex(float x, float y, float z) {
-    this->vertexBuffer[this->vertices * 3] = x;
+    this->vertexBuffer[this->vertices * 3 + 0] = x;
     this->vertexBuffer[this->vertices * 3 + 1] = y;
     this->vertexBuffer[this->vertices * 3 + 2] = z;
     if (this->hasTexture) {
-        this->texCoordBuffer[this->vertices * 2] = this->u;
+        this->texCoordBuffer[this->vertices * 2 + 0] = this->u;
         this->texCoordBuffer[this->vertices * 2 + 1] = this->v;
     }
     if (this->hasColor) {
-        this->colorBuffer[this->vertices * 3] = this->r;
+        this->colorBuffer[this->vertices * 3 + 0] = this->r;
         this->colorBuffer[this->vertices * 3 + 1] = this->g;
         this->colorBuffer[this->vertices * 3 + 2] = this->b;
     }

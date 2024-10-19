@@ -190,7 +190,7 @@ class RubyDung {
         void setupCamera(float a) {
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
-            gluPerspective(70.0f, this->width / this->height, 0.05f, 1000.0f);
+            gluPerspective(70.0f, this->width / (double)this->height, 0.05f, 1000.0f);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             moveCameraToPlayer(a);
@@ -201,8 +201,9 @@ class RubyDung {
             glLoadIdentity();
             std::fill(std::begin(this->viewportBuffer), std::end(this->viewportBuffer), 0);
             glGetIntegerv(GL_VIEWPORT, this->viewportBuffer);
+            this->checkError();
             gluPickMatrix(x, y, 5.0f, 5.0f, this->viewportBuffer);
-            gluPerspective(70.0f, this->width / this->height, 0.05f, 1000.0f);
+            gluPerspective(70.0f, this->width / (double)this->height, 0.05f, 1000.0f);
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             moveCameraToPlayer(a);
