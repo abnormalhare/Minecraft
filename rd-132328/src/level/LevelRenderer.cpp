@@ -43,7 +43,7 @@ void LevelRenderer::render(Player* player, std::int32_t layer) {
 
 void LevelRenderer::pick(Player* player) {
     float r = 3.0f;
-    AABB* box = player->bb->grow(r, r, r);
+    AABB* box = player->bb.grow(r, r, r);
 
     int x0 = (int)(box->x0);
     int x1 = (int)(box->x1 + 1.0f);
@@ -84,7 +84,7 @@ void LevelRenderer::renderHit(HitResult* h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    int time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
+    std::int64_t time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
     float alpha = sin(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
 

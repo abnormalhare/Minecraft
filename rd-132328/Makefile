@@ -5,10 +5,11 @@ CFLAGS = -g -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall
 SRC_DIR = src
 LEVEL_DIR = $(SRC_DIR)/level
 PHYS_DIR = $(SRC_DIR)/phys
+CHAR_DIR = $(SRC_DIR)/character
 OBJ_DIR = build
 
 # Files
-C_FILES = $(wildcard $(SRC_DIR)/*.cpp $(LEVEL_DIR)/*.cpp $(PHYS_DIR)/*.cpp)
+C_FILES = $(wildcard $(SRC_DIR)/*.cpp $(LEVEL_DIR)/*.cpp $(PHYS_DIR)/*.cpp $(CHAR_DIR)/*.cpp)
 OBJ_FILES = $(C_FILES:.cpp=.o)
 
 # Build

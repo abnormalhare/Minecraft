@@ -23,8 +23,8 @@ void Level::load(void) {
         dis.read(this->blocks, this->width * this->height * this->depth);
         calcLightDepths(0, 0, this->width, this->height);
 
-        for (size_t i = 0; i < this->levelListeners->size(); i++) {
-            this->levelListeners->at(i)->allChanged();
+        for (size_t i = 0; i < this->levelListeners.size(); i++) {
+            this->levelListeners.at(i)->allChanged();
         }
         dis.close();
         
@@ -58,8 +58,8 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
             if (oldDepth != y) {
                 int yl0 = (oldDepth < y) ? oldDepth : y;
                 int yl1 = (oldDepth > y) ? oldDepth : y;
-                for (size_t i = 0; i < this->levelListeners->size(); i++) {
-                    this->levelListeners->at(i)->lightColumnChanged(x, z, yl0, yl1);
+                for (size_t i = 0; i < this->levelListeners.size(); i++) {
+                    this->levelListeners.at(i)->lightColumnChanged(x, z, yl0, yl1);
                 }
             }
         }
@@ -67,13 +67,13 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
 }
 
 void Level::addListener(LevelListener* listener) {
-    this->levelListeners->push_back(listener);
+    this->levelListeners.push_back(listener);
 }
 
 void Level::removeListener(LevelListener* listener) {
-    this->levelListeners->erase(std::remove(
-        this->levelListeners->begin(),
-        this->levelListeners->end(),
+    this->levelListeners.erase(std::remove(
+        this->levelListeners.begin(),
+        this->levelListeners.end(),
         listener
     ));
 }
@@ -147,7 +147,7 @@ void Level::setTile(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t
     this->blocks[(y * this->height + z) * this->width + x] = type;
     calcLightDepths(x, z, 1, 1);
 
-    for (size_t i = 0; i < this->levelListeners->size(); i++) {
-        this->levelListeners->at(i)->tileChanged(x, y, z);
+    for (size_t i = 0; i < this->levelListeners.size(); i++) {
+        this->levelListeners.at(i)->tileChanged(x, y, z);
     }
 }

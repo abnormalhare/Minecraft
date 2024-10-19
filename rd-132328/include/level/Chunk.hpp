@@ -12,7 +12,6 @@ class Chunk {
     private:
         bool dirty = true;
         std::int32_t lists = -1;
-        static std::int32_t texture;
         static Tesselator* t;
 
         void rebuild(std::int32_t layer);

@@ -10,6 +10,7 @@ class RubyDung {
         Level* level = nullptr;
         LevelRenderer* levelRenderer = nullptr;
         Player* player = nullptr;
+        std::vector<Zombie*> zombies;
         HitResult* hitResult = nullptr;
 
         std::int32_t viewportBuffer[16];
@@ -61,119 +62,6 @@ class RubyDung {
             lastMouseY = ypos;
 
             return mouseDY;
-        }
-
-    public:
-        void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
-            if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-                if (this->hitResult != nullptr) {
-                    this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
-                }
-            }
-            if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
-                if (this->hitResult != nullptr) {
-                    int x = this->hitResult->x;
-                    int y = this->hitResult->y;
-                    int z = this->hitResult->z;
-
-                    if (this->hitResult->f == 0) y--;
-                    if (this->hitResult->f == 1) y++;
-                    if (this->hitResult->f == 2) z--;
-                    if (this->hitResult->f == 3) z++;
-                    if (this->hitResult->f == 4) x--;
-                    if (this->hitResult->f == 5) x++;
-
-                    this->level->setTile(x, y, z, 1);
-                }
-            }
-        }
-
-        void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-                this->level->save();
-                glfwSetWindowShouldClose(window, GLFW_TRUE);
-            }
-        }
-
-        void init(void) {
-            std::int32_t col = 0x0E0B0A;
-            float fr = 0.5f;
-            float fg = 0.8f;
-            float fb = 1.0f;
-
-            this->fogColor[0] = ((col >> 16) & 0xFF) / 255.0f;
-            this->fogColor[1] = ((col >> 8 ) & 0xFF) / 255.0f;
-            this->fogColor[2] = ((col >> 0 ) & 0xFF) / 255.0f;
-            this->fogColor[3] = 1.0f;
-
-            this->width = 1024;
-            this->height = 768;
-            setDisplayMode(this->width, this->height);
-            cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
-            glfwSetCursor(this->window, this->cursor);
-
-            glEnable(GL_TEXTURE_2D);
-            glShadeModel(GL_SMOOTH);
-            glClearColor(fr, fg, fb, 0.0f);
-            glClearDepth(1.0f);
-            glEnable(GL_DEPTH_TEST);
-            glDepthFunc(GL_LEQUAL);
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glMatrixMode(GL_MODELVIEW);
-
-            this->level = new Level(256, 256, 64);
-            this->levelRenderer = new LevelRenderer(this->level);
-            this->player = new Player(this->level, this->window);
-
-            glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
-        }
-
-        void destroy(void) {
-            this->level->save();
-
-            glfwDestroyCursor(this->cursor);
-            glfwDestroyWindow(this->window);
-            glfwTerminate();
-        }
-
-        void run(void) {
-            try {
-                init();
-            } catch (const std::exception& e) {
-                std::cerr << "Failed to start RubyDung:\n" << e.what() << std::endl;
-                exit(EXIT_SUCCESS);
-            }
-
-            // get time in milliseconds
-            std::int64_t lastTime = Timer::getTimeInMilliSeconds();
-            int frames = 0;
-            try {
-                while (!glfwWindowShouldClose(this->window)) {
-                    this->timer->advanceTime();
-                    for (int i = 0; i < this->timer->ticks; i++) {
-                        tick();
-                    }
-                    render(this->timer->a);
-                    frames++;
-
-                    while (Timer::getTimeInMilliSeconds() >= lastTime + 1000) {
-                        std::cout << frames << " fps, " << Chunk::updates << std::endl;
-                        Chunk::updates = 0;
-                        lastTime += 1000;
-                        frames = 0;
-                    }
-                }
-            } catch (const std::exception& e) {
-                std::cerr << e.what() << std::endl;
-                exit(EXIT_FAILURE);
-            }
-
-            destroy();
-        }
-
-        void tick(void) {
-            this->player->tick();
         }
 
         void moveCameraToPlayer(float a) {
@@ -245,6 +133,127 @@ class RubyDung {
             }
         }
 
+    public:
+        void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+            if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
+                if (this->hitResult != nullptr) {
+                    this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
+                }
+            }
+            if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+                if (this->hitResult != nullptr) {
+                    int x = this->hitResult->x;
+                    int y = this->hitResult->y;
+                    int z = this->hitResult->z;
+
+                    if (this->hitResult->f == 0) y--;
+                    if (this->hitResult->f == 1) y++;
+                    if (this->hitResult->f == 2) z--;
+                    if (this->hitResult->f == 3) z++;
+                    if (this->hitResult->f == 4) x--;
+                    if (this->hitResult->f == 5) x++;
+
+                    this->level->setTile(x, y, z, 1);
+                }
+            }
+        }
+
+        void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
+                this->level->save();
+                glfwSetWindowShouldClose(window, GLFW_TRUE);
+            }
+        }
+
+        void init(void) {
+            std::int32_t col = 0x0E0B0A;
+            float fr = 0.5f;
+            float fg = 0.8f;
+            float fb = 1.0f;
+
+            this->fogColor[0] = ((col >> 16) & 0xFF) / 255.0f;
+            this->fogColor[1] = ((col >> 8 ) & 0xFF) / 255.0f;
+            this->fogColor[2] = ((col >> 0 ) & 0xFF) / 255.0f;
+            this->fogColor[3] = 1.0f;
+
+            this->width = 1024;
+            this->height = 768;
+            setDisplayMode(this->width, this->height);
+            cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
+            glfwSetCursor(this->window, this->cursor);
+
+            glEnable(GL_TEXTURE_2D);
+            glShadeModel(GL_SMOOTH);
+            glClearColor(fr, fg, fb, 0.0f);
+            glClearDepth(1.0f);
+            glEnable(GL_DEPTH_TEST);
+            glDepthFunc(GL_LEQUAL);
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glMatrixMode(GL_MODELVIEW);
+
+            this->level = new Level(256, 256, 64);
+            this->levelRenderer = new LevelRenderer(this->level);
+            this->player = new Player(this->level, this->window);
+
+            glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+
+            this->zombies = std::vector<Zombie*>();
+            for (int i = 0; i < 100; i++) {
+                this->zombies.push_back(new Zombie(this->level, this->window, 128.0f, 0.0f, 128.0f));
+            }
+        }
+
+        void destroy(void) {
+            this->level->save();
+
+            glfwDestroyCursor(this->cursor);
+            glfwDestroyWindow(this->window);
+            glfwTerminate();
+        }
+
+        void run(void) {
+            try {
+                init();
+            } catch (const std::exception& e) {
+                std::cerr << "Failed to start RubyDung:\n" << e.what() << std::endl;
+                exit(EXIT_SUCCESS);
+            }
+
+            // get time in milliseconds
+            std::int64_t lastTime = Timer::getTimeInMilliSeconds();
+            int frames = 0;
+            try {
+                while (!glfwWindowShouldClose(this->window)) {
+                    this->timer->advanceTime();
+                    for (int i = 0; i < this->timer->ticks; i++) {
+                        tick();
+                    }
+                    render(this->timer->a);
+                    frames++;
+
+                    while (Timer::getTimeInMilliSeconds() >= lastTime + 1000) {
+                        std::cout << frames << " fps, " << Chunk::updates << std::endl;
+                        Chunk::updates = 0;
+                        lastTime += 1000;
+                        frames = 0;
+                    }
+                }
+            } catch (const std::exception& e) {
+                std::cerr << e.what() << std::endl;
+                exit(EXIT_FAILURE);
+            }
+
+            destroy();
+        }
+
+        void tick(void) {
+            for (size_t i = 0; i < this->zombies.size(); i++) {
+                this->zombies.at(i)->tick();
+            }
+            this->player->tick();
+        }
+
         void render(float a) {
             float xo = getMouseDX();
             float yo = getMouseDY();
@@ -260,6 +269,9 @@ class RubyDung {
             glFogfv(GL_FOG_COLOR, this->fogColor);
             glDisable(GL_FOG);
             this->levelRenderer->render(this->player, 0);
+            for (size_t i = 0; i < this->zombies.size(); i++) {
+                this->zombies.at(i)->render(a);
+            }
             glEnable(GL_FOG);
             this->levelRenderer->render(this->player, 1);
             glDisable(GL_TEXTURE_2D);
