@@ -6,6 +6,11 @@ Entity::Entity(Level* level, GLFWwindow* window) {
     resetPos();
 }
 
+bool Entity::isKeyDown(int key) {
+    int state = glfwGetKey(this->window, key);
+    return state == GLFW_PRESS;
+}
+
 void Entity::resetPos(void) {
     float x = randf * this->level->width;
     float y = this->level->depth + 10;

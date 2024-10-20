@@ -25,6 +25,7 @@ class Entity {
         bool onGround = false;
 
         Entity(Level* level, GLFWwindow* window);
+        bool isKeyDown(int key);
         void turn(float xo, float yo);
         void tick(void);
         void move(float xa, float ya, float za);

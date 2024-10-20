@@ -8,7 +8,7 @@ Zombie::Zombie(Level* level, GLFWwindow* window, float x, float y, float z) : En
     this->z = z;
 
     this->timeOffs = randf * 1239813.0f;
-    this->rot = randf * PI * 2;
+    this->rot = randf * PI * 2.0;
     this->speed = 1.0f;
 
     this->head = new Cube(0, 0);

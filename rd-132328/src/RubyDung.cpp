@@ -249,7 +249,10 @@ class RubyDung {
 
         void tick(void) {
             for (size_t i = 0; i < this->zombies.size(); i++) {
-                this->zombies.at(i)->tick();
+                Zombie* z = this->zombies.at(i);
+                z->tick();
+                if (i == 50)
+                    printf("Zombie@ %f %f %f\n", z->x, z->y, z->z);
             }
             this->player->tick();
         }

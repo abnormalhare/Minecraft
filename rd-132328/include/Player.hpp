@@ -14,8 +14,6 @@ class Player: public Entity {
         Level* level = nullptr;
         GLFWwindow* window = nullptr;
 
-        bool isKeyDown(int key);
-
     protected:
         float heightOffset;
 

@@ -1,14 +1,6 @@
 #include "Player.hpp"
 
-bool Player::isKeyDown(int key) {
-    int state = glfwGetKey(this->window, key);
-    return state == GLFW_PRESS;
-}
-
 Player::Player(Level* level, GLFWwindow* window) : Entity(level, window) {
-    this->level = level;
-    this->window = window;
-    
     this->heightOffset = 1.62f;
 }
 

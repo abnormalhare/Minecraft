@@ -1,8 +1,7 @@
 #include "character/Cube.hpp"
 
 Cube::Cube(std::int32_t xTexOffs, std::int32_t yTexOffs) 
- : xTexOffs(xTexOffs), yTexOffs(yTexOffs) {
-}
+ : xTexOffs(xTexOffs), yTexOffs(yTexOffs) {}
 
 void Cube::setTexOffs(std::int32_t xTexOffs, std::int32_t yTexOffs) {
     this->xTexOffs = xTexOffs;
@@ -34,18 +33,18 @@ void Cube::addBox(float x0, float y0, float z0, std::int32_t w, std::int32_t h, 
     this->vertices[6] = l2;
     this->vertices[7] = l3;
 
-    Vertex verts[4] = { l1, u1, u2, l2 };
-    this->polygons[0] = PolygonRD(verts, 4, this->xTexOffs + d + w, this->yTexOffs + d, this->xTexOffs + d + w + d, this->yTexOffs + d + h);
-    SET_VERTICES(vertices, u0, l0, l3, u3);
-    this->polygons[1] = PolygonRD(verts, 4, this->xTexOffs + 0, this->yTexOffs + d, this->xTexOffs + d, this->yTexOffs + d + h);
-    SET_VERTICES(vertices, l1, l0, u0, u1);
-    this->polygons[2] = PolygonRD(verts, 4, this->xTexOffs + d, this->yTexOffs + 0, this->xTexOffs + d + w, this->yTexOffs + d);
-    SET_VERTICES(vertices, u2, u3, l3, l2);
-    this->polygons[3] = PolygonRD(verts, 4, this->xTexOffs + d + w, this->yTexOffs + 0, this->xTexOffs + d + w + w, this->yTexOffs + d);
-    SET_VERTICES(vertices, u1, u0, u3, u2);
-    this->polygons[4] = PolygonRD(verts, 4, this->xTexOffs + d, this->yTexOffs + d, this->xTexOffs + d + w, this->yTexOffs + d + h);
-    SET_VERTICES(vertices, l0, l1, l2, l3);
-    this->polygons[5] = PolygonRD(verts, 4, this->xTexOffs + d + w + d, this->yTexOffs + d, this->xTexOffs + d + w + d + w, this->yTexOffs + d + h);
+    Vertex verts0[4] = { l1, u1, u2, l2 };
+    this->polygons[0] = PolygonRD(verts0, 4, this->xTexOffs + d + w, this->yTexOffs + d, this->xTexOffs + d + w + d, this->yTexOffs + d + h);
+    Vertex verts1[4] = { u0, l0, l3, u3 };
+    this->polygons[1] = PolygonRD(verts1, 4, this->xTexOffs + 0, this->yTexOffs + d, this->xTexOffs + d, this->yTexOffs + d + h);
+    Vertex verts2[4] = { l1, l0, u0, u1 };
+    this->polygons[2] = PolygonRD(verts2, 4, this->xTexOffs + d, this->yTexOffs + 0, this->xTexOffs + d + w, this->yTexOffs + d);
+    Vertex verts3[4] = { u2, u3, l3, l2 };
+    this->polygons[3] = PolygonRD(verts3, 4, this->xTexOffs + d + w, this->yTexOffs + 0, this->xTexOffs + d + w + w, this->yTexOffs + d);
+    Vertex verts4[4] = { u1, u0, u3, u2 };
+    this->polygons[4] = PolygonRD(verts4, 4, this->xTexOffs + d, this->yTexOffs + d, this->xTexOffs + d + w, this->yTexOffs + d + h);
+    Vertex verts5[4] = { l0, l1, l2, l3 };
+    this->polygons[5] = PolygonRD(verts5, 4, this->xTexOffs + d + w + d, this->yTexOffs + d, this->xTexOffs + d + w + d + w, this->yTexOffs + d + h);
 }
 
 void Cube::setPos(float x, float y, float z) {
