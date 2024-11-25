@@ -9,13 +9,14 @@
 class Cube {
     private:
         std::array<Vertex, 8> vertices;
-        std::array<Polygon, 6> polygons;
+        std::array<PolygonRD, 6> polygons;
         int xTexOffs, yTexOffs;
     
     public:
         float x, y, z;
         float xRot, yRot, zRot;
 
+        Cube();
         Cube(int xTexOffs, int yTexOffs);
         void setTexOffs(int xTexOffs, int yTexOffs);
         void addBox(float x0, float y0, float z0, int w, int h, int d);

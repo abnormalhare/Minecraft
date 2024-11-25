@@ -11,8 +11,6 @@ Player::Player(std::shared_ptr<Level>& level, GLFWwindow* window) {
     resetPos();
 }
 
-#define randf static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
-
 void Player::resetPos(void) {
     float x = randf * this->level->width;
     float y = this->level->depth + 10;

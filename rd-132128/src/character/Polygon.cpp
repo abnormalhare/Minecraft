@@ -1,11 +1,11 @@
 #include "character/Polygon.hpp"
 
-Polygon::Polygon(void) {}
+PolygonRD::PolygonRD(void) {}
 
-Polygon::Polygon(std::vector<Vertex>& vertices)
+PolygonRD::PolygonRD(std::vector<Vertex>& vertices)
     : vertices(vertices), vertexCount(vertices.size()) {}
 
-Polygon::Polygon(std::vector<Vertex>& vertices, int u0, int v0, int u1, int v1)
+PolygonRD::PolygonRD(std::vector<Vertex>& vertices, int u0, int v0, int u1, int v1)
     : vertices(vertices), vertexCount(vertices.size()) {
 
     vertices[0] = vertices[0].remap(u1, v0);
@@ -14,7 +14,7 @@ Polygon::Polygon(std::vector<Vertex>& vertices, int u0, int v0, int u1, int v1)
     vertices[3] = vertices[3].remap(u1, v1);
 }
 
-void Polygon::render(void) {
+void PolygonRD::render(void) {
     glColor3f(1.0f, 1.0f, 1.0f);
 
     for (int i = 3; i >= 0; i--) {

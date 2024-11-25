@@ -1,5 +1,7 @@
 #include "Cube.hpp"
 
+Cube::Cube(void) {}
+
 Cube::Cube(int xTexOffs, int yTexOffs)
     : xTexOffs(xTexOffs), yTexOffs(yTexOffs) {}
 
@@ -34,37 +36,37 @@ void Cube::addBox(float x0, float y0, float z0, int w, int h, int d) {
     this->vertices[7] = l3;
 
     tempVerts = std::vector<Vertex>{ l1, u1, u2, l2 };
-    this->polygons[0] = Polygon(tempVerts,
+    this->polygons[0] = PolygonRD(tempVerts,
         this->xTexOffs + d + w, this->yTexOffs + d,
         this->xTexOffs + d + w + d, this->yTexOffs + d + h
     );
 
     tempVerts = std::vector<Vertex>{ u0, l0, l3, u3 };
-    this->polygons[1] = Polygon(tempVerts,
+    this->polygons[1] = PolygonRD(tempVerts,
         this->xTexOffs + 0, this->yTexOffs + d,
         this->xTexOffs + d, this->yTexOffs + d + h
     );
 
     tempVerts = std::vector<Vertex>{ l1, l0, u0, u1 };
-    this->polygons[2] = Polygon(tempVerts,
+    this->polygons[2] = PolygonRD(tempVerts,
         this->xTexOffs + d, this->yTexOffs + 0,
         this->xTexOffs + d + w, this->yTexOffs + d
     );
 
     tempVerts = std::vector<Vertex>{ u2, u3, l3, l2 };
-    this->polygons[3] = Polygon(tempVerts,
+    this->polygons[3] = PolygonRD(tempVerts,
         this->xTexOffs + d + w, this->yTexOffs + 0,
         this->xTexOffs + d + w + w, this->yTexOffs + d
     );
 
     tempVerts = std::vector<Vertex>{ u1, u0, u3, u2 };
-    this->polygons[4] = Polygon(tempVerts,
+    this->polygons[4] = PolygonRD(tempVerts,
         this->xTexOffs + d, this->yTexOffs + d,
         this->xTexOffs + d + w, this->yTexOffs + d + h
     );
 
     tempVerts = std::vector<Vertex>{ l0, l1, l2, l3 };
-    this->polygons[5] = Polygon(tempVerts,
+    this->polygons[5] = PolygonRD(tempVerts,
         this->xTexOffs + d + w + d, this->yTexOffs + d,
         this->xTexOffs + d + w + d + w, this->yTexOffs + d + h
     );
