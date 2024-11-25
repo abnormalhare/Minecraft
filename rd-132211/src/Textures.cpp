@@ -37,7 +37,7 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
         return id;
     } catch (const std::exception& e) {
         std::cerr << "!!" << std::endl;
-        exit(1);
+        exit(EXIT_FAILURE);
     }
 }
 
