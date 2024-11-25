@@ -17,7 +17,7 @@ class Chunk {
 
         void rebuild(std::int32_t layer);
     public:
-        std::unique_ptr<AABB> aabb;
+        AABB aabb;
         std::shared_ptr<Level> level;
         const std::int32_t x0, y0, z0;
         const std::int32_t x1, y1, z1;

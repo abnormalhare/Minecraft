@@ -36,5 +36,5 @@ class Frustum {
         bool sphereInFrustum(float x, float y, float z, float radius);
         bool cubeFullyInFrustum(float x1, float y1, float z1, float x2, float y2, float z2);
         bool cubeInFrustum(float x1, float y1, float z1, float x2, float y2, float z2);
-        bool cubeInFrustum(std::unique_ptr<AABB>& aabb);
+        bool cubeInFrustum(AABB& aabb);
 };

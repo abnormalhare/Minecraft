@@ -143,6 +143,6 @@ bool Frustum::cubeInFrustum(float x1, float y1, float z1, float x2, float y2, fl
     return true;
 }
 
-bool Frustum::cubeInFrustum(std::unique_ptr<AABB>& aabb) {
-    return cubeInFrustum(aabb->x0, aabb->y0, aabb->z0, aabb->x1, aabb->y1, aabb->z1);
+bool Frustum::cubeInFrustum(AABB& aabb) {
+    return cubeInFrustum(aabb.x0, aabb.y0, aabb.z0, aabb.x1, aabb.y1, aabb.z1);
 }
