@@ -12,7 +12,7 @@ class Level {
     private:
         char* blocks;
         std::int32_t* lightDepths;
-        std::vector<LevelListener> levelListeners = std::vector<LevelListener>();
+        std::vector<LevelListener*> levelListeners = std::vector<LevelListener*>();
         
     public:
         const std::int32_t width;
@@ -28,7 +28,7 @@ class Level {
         bool isTile(std::int32_t x, std::int32_t y, std::int32_t z);
         bool isSolidTile(std::int32_t x, std::int32_t y, std::int32_t z);
         bool isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z);
-        std::unique_ptr<std::vector<AABB>> getCubes(std::unique_ptr<AABB>& aabb);
+        std::vector<AABB> getCubes(AABB& aabb);
         float getBrightness(std::int32_t x, std::int32_t y, std::int32_t z);
         void setTile(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
 };

@@ -23,8 +23,8 @@ void Level::load(void) {
         dis.read(this->blocks, this->width * this->height * this->depth);
         calcLightDepths(0, 0, this->width, this->height);
 
-        for (size_t i = 0; i < this->levelListeners->size(); i++) {
-            this->levelListeners->at(i)->allChanged();
+        for (size_t i = 0; i < this->levelListeners.size(); i++) {
+            this->levelListeners.at(i)->allChanged();
         }
         dis.close();
         
@@ -58,8 +58,8 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
             if (oldDepth != y) {
                 int yl0 = (oldDepth < y) ? oldDepth : y;
                 int yl1 = (oldDepth > y) ? oldDepth : y;
-                for (size_t i = 0; i < this->levelListeners->size(); i++) {
-                    this->levelListeners->at(i)->lightColumnChanged(x, z, yl0, yl1);
+                for (size_t i = 0; i < this->levelListeners.size(); i++) {
+                    this->levelListeners.at(i)->lightColumnChanged(x, z, yl0, yl1);
                 }
             }
         }
@@ -67,13 +67,13 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
 }
 
 void Level::addListener(LevelListener* listener) {
-    this->levelListeners->push_back(listener);
+    this->levelListeners.push_back(listener);
 }
 
 void Level::removeListener(LevelListener* listener) {
-    this->levelListeners->erase(std::remove(
-        this->levelListeners->begin(),
-        this->levelListeners->end(),
+    this->levelListeners.erase(std::remove(
+        this->levelListeners.begin(),
+        this->levelListeners.end(),
         listener
     ));
 }
@@ -94,14 +94,14 @@ bool Level::isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z) {
     return isSolidTile(x, y, z);
 }
 
-std::unique_ptr<std::vector<AABB>> Level::getCubes(std::unique_ptr<AABB>& aabb) {
-    std::unique_ptr<std::vector<AABB>> aABBs = std::make_unique<std::vector<AABB>>();
-    int x0 = (int)aabb->x0;
-    int x1 = (int)(aabb->x1 + 1.0f);
-    int y0 = (int)aabb->y0;
-    int y1 = (int)(aabb->y1 + 1.0f);
-    int z0 = (int)aabb->z0;
-    int z1 = (int)(aabb->z1 + 1.0f);
+std::vector<AABB> Level::getCubes(AABB& aabb) {
+    std::vector<AABB> aABBs = std::vector<AABB>();
+    int x0 = (int)aabb.x0;
+    int x1 = (int)(aabb.x1 + 1.0f);
+    int y0 = (int)aabb.y0;
+    int y1 = (int)(aabb.y1 + 1.0f);
+    int z0 = (int)aabb.z0;
+    int z1 = (int)(aabb.z1 + 1.0f);
 
     if (x0 < 0) x0 = 0;
     if (y0 < 0) y0 = 0;
@@ -114,7 +114,7 @@ std::unique_ptr<std::vector<AABB>> Level::getCubes(std::unique_ptr<AABB>& aabb) 
         for (int y = y0; y < y1; y++) {
             for (int z = z0; z < z1; z++) {
                 if (isSolidTile(x, y, z)) {
-                    aABBs->push_back(AABB(
+                    aABBs.push_back(AABB(
                         x, y, z,
                         x + 1, y + 1, z + 1
                     ));
@@ -147,7 +147,7 @@ void Level::setTile(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t
     this->blocks[(y * this->height + z) * this->width + x] = type;
     calcLightDepths(x, z, 1, 1);
 
-    for (size_t i = 0; i < this->levelListeners->size(); i++) {
-        this->levelListeners->at(i)->tileChanged(x, y, z);
+    for (size_t i = 0; i < this->levelListeners.size(); i++) {
+        this->levelListeners.at(i)->tileChanged(x, y, z);
     }
 }

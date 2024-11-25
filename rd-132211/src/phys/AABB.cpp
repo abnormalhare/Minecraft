@@ -9,7 +9,9 @@ AABB::AABB(float x0, float y0, float z0, float x1, float y1, float z1) {
     this->z1 = z1;
 }
 
-std::unique_ptr<AABB> AABB::expand(float xa, float ya, float za) {
+AABB::AABB(void) {}
+
+AABB AABB::expand(float xa, float ya, float za) {
     float _x0 = this->x0;
     float _y0 = this->y0;
     float _z0 = this->z0;
@@ -35,10 +37,10 @@ std::unique_ptr<AABB> AABB::expand(float xa, float ya, float za) {
     if (za > 0.0f) {
         _z1 += za;
     }
-    return std::make_unique<AABB>(_x0, _y0, _z0, _x1, _y1, _z1);
+    return AABB(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-std::unique_ptr<AABB> AABB::grow(float xa, float ya, float za) {
+AABB AABB::grow(float xa, float ya, float za) {
     float _x0 = this->x0 - xa;
     float _y0 = this->y0 - ya;
     float _z0 = this->z0 - za;
@@ -46,24 +48,24 @@ std::unique_ptr<AABB> AABB::grow(float xa, float ya, float za) {
     float _y1 = this->y1 + ya;
     float _z1 = this->z1 + za;
 
-    return std::make_unique<AABB>(_x0, _y0, _z0, _x1, _y1, _z1);
+    return AABB(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-float AABB::clipXCollide(std::unique_ptr<AABB>& c, float xa) {
-    if (c->y1 <= this->y0 || c->y0 >= this->y1) {
+float AABB::clipXCollide(AABB& c, float xa) {
+    if (c.y1 <= this->y0 || c.y0 >= this->y1) {
         return xa;
     }
-    if (c->z1 <= this->z0 || c->z0 >= this->z1) {
+    if (c.z1 <= this->z0 || c.z0 >= this->z1) {
         return xa;
     }
-    if (xa > 0.0f && c->x1 <= this->x0) {
-        float max = this->x0 - c->x1 - this->epsilon;
+    if (xa > 0.0f && c.x1 <= this->x0) {
+        float max = this->x0 - c.x1 - this->epsilon;
         if (max < xa) {
             xa = max;
         }
     }
-    if (xa < 0.0f && c->x0 >= this->x1) {
-        float max = this->x1 - c->x0 + this->epsilon;
+    if (xa < 0.0f && c.x0 >= this->x1) {
+        float max = this->x1 - c.x0 + this->epsilon;
         if (max > xa) {
             xa = max;
         }
@@ -71,21 +73,21 @@ float AABB::clipXCollide(std::unique_ptr<AABB>& c, float xa) {
     return xa;
 }
 
-float AABB::clipYCollide(std::unique_ptr<AABB>& c, float ya) {
-    if (c->x1 <= this->x0 || c->x0 >= this->x1) {
+float AABB::clipYCollide(AABB& c, float ya) {
+    if (c.x1 <= this->x0 || c.x0 >= this->x1) {
         return ya;
     }
-    if (c->z1 <= this->z0 || c->z0 >= this->z1) {
+    if (c.z1 <= this->z0 || c.z0 >= this->z1) {
         return ya;
     }
-    if (ya > 0.0f && c->y1 <= this->y0) {
-        float max = this->y0 - c->y1 - this->epsilon;
+    if (ya > 0.0f && c.y1 <= this->y0) {
+        float max = this->y0 - c.y1 - this->epsilon;
         if (max < ya) {
             ya = max;
         }
     }
-    if (ya < 0.0f && c->y0 >= this->y1) {
-        float max = this->y1 - c->y0 + this->epsilon;
+    if (ya < 0.0f && c.y0 >= this->y1) {
+        float max = this->y1 - c.y0 + this->epsilon;
         if (max > ya) {
             ya = max;
         }
@@ -93,21 +95,21 @@ float AABB::clipYCollide(std::unique_ptr<AABB>& c, float ya) {
     return ya;
 }
 
-float AABB::clipZCollide(std::unique_ptr<AABB>& c, float za) {
-    if (c->x1 <= this->x0 || c->x0 >= this->x1) {
+float AABB::clipZCollide(AABB& c, float za) {
+    if (c.x1 <= this->x0 || c.x0 >= this->x1) {
         return za;
     }
-    if (c->y1 <= this->y0 || c->y0 >= this->y1) {
+    if (c.y1 <= this->y0 || c.y0 >= this->y1) {
         return za;
     }
-    if (za > 0.0f && c->z1 <= this->z0) {
-        float max = this->z0 - c->z1 - this->epsilon;
+    if (za > 0.0f && c.z1 <= this->z0) {
+        float max = this->z0 - c.z1 - this->epsilon;
         if (max < za) {
             za = max;
         }
     }
-    if (za < 0.0f && c->z0 >= this->z1) {
-        float max = this->z1 - c->z0 + this->epsilon;
+    if (za < 0.0f && c.z0 >= this->z1) {
+        float max = this->z1 - c.z0 + this->epsilon;
         if (max > za) {
             za = max;
         }
@@ -115,14 +117,14 @@ float AABB::clipZCollide(std::unique_ptr<AABB>& c, float za) {
     return za;
 }
 
-bool AABB::intersects(std::unique_ptr<AABB>& c) {
-    if (c->x1 <= this->x0 || c->x0 >= this->x1) {
+bool AABB::intersects(AABB& c) {
+    if (c.x1 <= this->x0 || c.x0 >= this->x1) {
         return false;
     }
-    if (c->y1 <= this->y0 || c->y0 >= this->y1) {
+    if (c.y1 <= this->y0 || c.y0 >= this->y1) {
         return false;
     }
-    if (c->z1 <= this->z0 || c->z0 >= this->z1) {
+    if (c.z1 <= this->z0 || c.z0 >= this->z1) {
         return false;
     }
     return true;

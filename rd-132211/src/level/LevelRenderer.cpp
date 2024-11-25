@@ -1,5 +1,7 @@
 #include "level/LevelRenderer.hpp"
 
+LevelRenderer::LevelRenderer(void) {}
+
 LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) {
     this->t = std::make_unique<Tesselator>();
     this->level = level;
@@ -43,14 +45,14 @@ void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) 
 
 void LevelRenderer::pick(std::shared_ptr<Player>& player) {
     float r = 3.0f;
-    std::unique_ptr<AABB> box = player->bb->grow(r, r, r);
+    AABB box = player->bb.grow(r, r, r);
 
-    int x0 = (int)(box->x0);
-    int x1 = (int)(box->x1 + 1.0f);
-    int y0 = (int)(box->y0);
-    int y1 = (int)(box->y1 + 1.0f);
-    int z0 = (int)(box->z0);
-    int z1 = (int)(box->z1 + 1.0f);
+    int x0 = (int)(box.x0);
+    int x1 = (int)(box.x1 + 1.0f);
+    int y0 = (int)(box.y0);
+    int y1 = (int)(box.y1 + 1.0f);
+    int z0 = (int)(box.z0);
+    int z1 = (int)(box.z1 + 1.0f);
 
     glInitNames();
     for (int x = x0; x < x1; x++) {

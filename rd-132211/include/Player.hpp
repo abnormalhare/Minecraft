@@ -21,7 +21,7 @@ class Player {
         float x, y, z;
         float xd, yd, zd;
         float yRot, xRot;
-        std::unique_ptr<AABB> bb = nullptr;
+        AABB bb;
         bool onGround = false;
 
         void resetPos(void);

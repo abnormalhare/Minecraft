@@ -6,7 +6,7 @@ class RubyDung {
         int width;
         std::int32_t height;
         float fogColor[4];
-        std::unique_ptr<Timer> timer = std::make_unique<Timer>(60.0f);
+        Timer timer = Timer(60.0f);
         std::shared_ptr<Level> level = nullptr;
         std::shared_ptr<LevelRenderer> levelRenderer = nullptr;
         std::shared_ptr<Player> player = nullptr;
@@ -150,11 +150,11 @@ class RubyDung {
             int frames = 0;
             try {
                 while (!glfwWindowShouldClose(this->window)) {
-                    this->timer->advanceTime();
-                    for (int i = 0; i < this->timer->ticks; i++) {
+                    this->timer.advanceTime();
+                    for (int i = 0; i < this->timer.ticks; i++) {
                         tick();
                     }
-                    render(this->timer->a);
+                    render(this->timer.a);
                     frames++;
 
                     while (Timer::getTimeInMilliSeconds() >= lastTime + 1000) {

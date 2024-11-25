@@ -21,6 +21,7 @@ class LevelRenderer: public LevelListener {
         std::unique_ptr<Tesselator> t;
 
     public:
+        LevelRenderer(void);
         LevelRenderer(std::shared_ptr<Level>& level);
         void render(std::shared_ptr<Player>& player, std::int32_t layer);
         void pick(std::shared_ptr<Player>& player);
