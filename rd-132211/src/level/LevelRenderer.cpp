@@ -1,13 +1,13 @@
 #include "level/LevelRenderer.hpp"
 
-LevelRenderer::LevelRenderer(Level* level) {
-    this->t = new Tesselator();
-    this->level = level;
+LevelRenderer::LevelRenderer(std::unique_ptr<Level>& level) {
+    this->t = std::make_unique<Tesselator>();
+    this->level = std::move(level);
     this->level->addListener(this);
 
-    this->xChunks = level->width / CHUNK_SIZE;
-    this->yChunks = level->depth / CHUNK_SIZE;
-    this->zChunks = level->height / CHUNK_SIZE;
+    this->xChunks = this->level->width / CHUNK_SIZE;
+    this->yChunks = this->level->depth / CHUNK_SIZE;
+    this->zChunks = this->level->height / CHUNK_SIZE;
 
     this->chunks = new Chunk*[xChunks * yChunks * zChunks];
     for (int x = 0; x < xChunks; x++) {
@@ -20,11 +20,11 @@ LevelRenderer::LevelRenderer(Level* level) {
                 int y1 = (y + 1) * CHUNK_SIZE;
                 int z1 = (z + 1) * CHUNK_SIZE;
                 
-                if (x1 > level->width) x1 = level->width;
-                if (y1 > level->depth) y1 = level->depth;
-                if (z1 > level->height) z1 = level->height;
+                if (x1 > this->level->width) x1 = this->level->width;
+                if (y1 > this->level->depth) y1 = this->level->depth;
+                if (z1 > this->level->height) z1 = this->level->height;
 
-                this->chunks[(x + y * xChunks) * this->zChunks + z] = new Chunk(level, x0, y0, z0, x1, y1, z1);
+                this->chunks[(x + y * xChunks) * this->zChunks + z] = new Chunk(this->level, x0, y0, z0, x1, y1, z1);
             }
         }
     }

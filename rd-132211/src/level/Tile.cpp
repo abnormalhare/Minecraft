@@ -5,7 +5,7 @@ Tile* Tile::grass = new Tile(1);
 
 Tile::Tile(std::int32_t tex) : tex(tex) {}
 
-void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t x, std::int32_t y, std::int32_t z) {
+void Tile::render(std::unique_ptr<Tesselator>& t, std::unique_ptr<Level>& level, std::int32_t layer, std::int32_t x, std::int32_t y, std::int32_t z) {
     float u0 = this->tex / 16.0f;
     float u1 = u0 + 0.0624375f;
     float v0 = 0.0f;
@@ -108,7 +108,7 @@ void Tile::render(Tesselator* t, Level* level, std::int32_t layer, std::int32_t 
     }
 }
 
-void Tile::renderFace(Tesselator* t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
+void Tile::renderFace(std::unique_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
     float x0 = x + 0.0f;
     float x1 = x + 1.0f;
     float y0 = y + 0.0f;

@@ -5,8 +5,8 @@ bool Player::isKeyDown(int key) {
     return state == GLFW_PRESS;
 }
 
-Player::Player(Level* level, GLFWwindow* window) {
-    this->level = level;
+Player::Player(std::unique_ptr<Level>& level, GLFWwindow* window) {
+    this->level = std::move(level);
     this->window = window;
     resetPos();
 }

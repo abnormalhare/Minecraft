@@ -13,15 +13,15 @@
 class LevelRenderer: public LevelListener {
     private:
         static const std::int32_t CHUNK_SIZE = 16;
-        Level* level;
+        std::unique_ptr<Level> level;
         Chunk** chunks;
         std::int32_t xChunks;
         std::int32_t yChunks;
         std::int32_t zChunks;
-        Tesselator* t;
+        std::unique_ptr<Tesselator> t;
 
     public:
-        LevelRenderer(Level* level);
+        LevelRenderer(std::unique_ptr<Level>& level);
         void render(Player* player, std::int32_t layer);
         void pick(Player* player);
         void renderHit(HitResult* h);

@@ -11,7 +11,7 @@
 
 class Player {
     private:
-        Level* level = nullptr;
+        std::unique_ptr<Level> level = nullptr;
         GLFWwindow* window = nullptr;
         bool isKeyDown(int key);
         void setPos(float x, float y, float z);
@@ -25,7 +25,7 @@ class Player {
         bool onGround = false;
 
         void resetPos(void);
-        Player(Level* level, GLFWwindow* window);
+        Player(std::unique_ptr<Level>& level, GLFWwindow* window);
         void turn(float xo, float yo);
         void tick(void);
         void move(float xa, float ya, float za);

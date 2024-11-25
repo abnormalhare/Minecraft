@@ -7,7 +7,7 @@ class RubyDung {
         std::int32_t height;
         float fogColor[4];
         Timer* timer = new Timer(60.0f);
-        Level* level = nullptr;
+        std::unique_ptr<Level> level = nullptr;
         LevelRenderer* levelRenderer = nullptr;
         Player* player = nullptr;
         HitResult* hitResult = nullptr;
@@ -122,7 +122,7 @@ class RubyDung {
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
 
-            this->level = new Level(256, 256, 64);
+            this->level = std::make_unique<Level>(256, 256, 64);
             this->levelRenderer = new LevelRenderer(this->level);
             this->player = new Player(this->level, this->window);
 
