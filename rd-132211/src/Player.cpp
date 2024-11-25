@@ -5,8 +5,8 @@ bool Player::isKeyDown(int key) {
     return state == GLFW_PRESS;
 }
 
-Player::Player(std::unique_ptr<Level>& level, GLFWwindow* window) {
-    this->level = std::move(level);
+Player::Player(std::shared_ptr<Level>& level, GLFWwindow* window) {
+    this->level = level;
     this->window = window;
     resetPos();
 }
@@ -29,10 +29,7 @@ void Player::setPos(float x, float y, float z) {
     float w = 0.3f;
     float h = 0.9f;
 
-    if (this->bb != nullptr) {
-        delete this->bb;
-    }
-    this->bb = new AABB(x - w, y - h, z - w, x + w, y + h, z + w);
+    this->bb = std::make_unique<AABB>(x - w, y - h, z - w, x + w, y + h, z + w);
 }
 
 void Player::turn(float xo, float yo) {
@@ -90,7 +87,8 @@ void Player::move(float xa, float ya, float za) {
     float yaOrg = ya;
     float zaOrg = za;
 
-    std::vector<AABB>* cubes = this->level->getCubes(this->bb->expand(xa, ya, za));
+    std::unique_ptr<AABB> bb = this->bb->expand(xa, ya, za);
+    std::unique_ptr<std::vector<AABB>> cubes = this->level->getCubes(bb);
 
     size_t i;
     for (i = 0; i < cubes->size(); i++) {
@@ -115,8 +113,6 @@ void Player::move(float xa, float ya, float za) {
     this->x = (this->bb->x0 + this->bb->x1) / 2.0f;
     this->y = this->bb->y0 + 1.62f;
     this->z = (this->bb->z0 + this->bb->z1) / 2.0f;
-
-    delete cubes;
 }
 
 void Player::moveRelative(float xa, float za, float speed) {

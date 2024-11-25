@@ -6,11 +6,11 @@ class RubyDung {
         int width;
         std::int32_t height;
         float fogColor[4];
-        Timer* timer = new Timer(60.0f);
-        std::unique_ptr<Level> level = nullptr;
-        LevelRenderer* levelRenderer = nullptr;
-        Player* player = nullptr;
-        HitResult* hitResult = nullptr;
+        std::unique_ptr<Timer> timer = std::make_unique<Timer>(60.0f);
+        std::shared_ptr<Level> level = nullptr;
+        std::shared_ptr<LevelRenderer> levelRenderer = nullptr;
+        std::shared_ptr<Player> player = nullptr;
+        std::unique_ptr<HitResult> hitResult = nullptr;
 
         std::int32_t viewportBuffer[16];
         std::uint32_t selectBuffer[2000];
@@ -122,9 +122,9 @@ class RubyDung {
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
 
-            this->level = std::make_unique<Level>(256, 256, 64);
-            this->levelRenderer = new LevelRenderer(this->level);
-            this->player = new Player(this->level, this->window);
+            this->level = std::make_shared<Level>(256, 256, 64);
+            this->levelRenderer = std::make_shared<LevelRenderer>(this->level);
+            this->player = std::make_shared<Player>(this->level, this->window);
 
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
         }
@@ -238,8 +238,7 @@ class RubyDung {
                 }
             }
             if (hitNameCount > 0) {
-                if (this->hitResult != nullptr) delete this->hitResult;
-                this->hitResult = new HitResult(names[0], names[1], names[2], names[3], names[4]);
+                this->hitResult = std::make_unique<HitResult>(names[0], names[1], names[2], names[3], names[4]);
             } else {
                 this->hitResult = nullptr;
             }
@@ -280,18 +279,17 @@ class RubyDung {
         }
 };
 
-RubyDung* rubyDung;
+RubyDung rubyDung;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    rubyDung->mouseButtonCallback(window, button, action, mods);
+    rubyDung.mouseButtonCallback(window, button, action, mods);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    rubyDung->keyCallback(window, key, scancode, action, mods);
+    rubyDung.keyCallback(window, key, scancode, action, mods);
 }
 
 int main(void) {
-    rubyDung = new RubyDung();
-    rubyDung->run();
-    delete rubyDung;
+    rubyDung = RubyDung();
+    rubyDung.run();
 }

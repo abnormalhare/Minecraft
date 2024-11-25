@@ -94,8 +94,8 @@ bool Level::isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z) {
     return isSolidTile(x, y, z);
 }
 
-std::vector<AABB>* Level::getCubes(AABB* aabb) {
-    std::vector<AABB>* aABBs = new std::vector<AABB>();
+std::unique_ptr<std::vector<AABB>> Level::getCubes(std::unique_ptr<AABB>& aabb) {
+    std::unique_ptr<std::vector<AABB>> aABBs = std::make_unique<std::vector<AABB>>();
     int x0 = (int)aabb->x0;
     int x1 = (int)(aabb->x1 + 1.0f);
     int y0 = (int)aabb->y0;

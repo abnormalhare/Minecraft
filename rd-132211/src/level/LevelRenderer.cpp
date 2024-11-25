@@ -1,15 +1,15 @@
 #include "level/LevelRenderer.hpp"
 
-LevelRenderer::LevelRenderer(std::unique_ptr<Level>& level) {
+LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) {
     this->t = std::make_unique<Tesselator>();
-    this->level = std::move(level);
+    this->level = level;
     this->level->addListener(this);
 
-    this->xChunks = this->level->width / CHUNK_SIZE;
-    this->yChunks = this->level->depth / CHUNK_SIZE;
-    this->zChunks = this->level->height / CHUNK_SIZE;
+    this->xChunks = level->width / CHUNK_SIZE;
+    this->yChunks = level->depth / CHUNK_SIZE;
+    this->zChunks = level->height / CHUNK_SIZE;
 
-    this->chunks = new Chunk*[xChunks * yChunks * zChunks];
+    this->chunks.resize(xChunks * yChunks * zChunks);
     for (int x = 0; x < xChunks; x++) {
         for (int y = 0; y < yChunks; y++) {
             for (int z = 0; z < zChunks; z++) {
@@ -20,17 +20,17 @@ LevelRenderer::LevelRenderer(std::unique_ptr<Level>& level) {
                 int y1 = (y + 1) * CHUNK_SIZE;
                 int z1 = (z + 1) * CHUNK_SIZE;
                 
-                if (x1 > this->level->width) x1 = this->level->width;
-                if (y1 > this->level->depth) y1 = this->level->depth;
-                if (z1 > this->level->height) z1 = this->level->height;
+                if (x1 > level->width) x1 = level->width;
+                if (y1 > level->depth) y1 = level->depth;
+                if (z1 > level->height) z1 = level->height;
 
-                this->chunks[(x + y * xChunks) * this->zChunks + z] = new Chunk(this->level, x0, y0, z0, x1, y1, z1);
+                this->chunks[(x + y * xChunks) * this->zChunks + z] = std::make_unique<Chunk>(this->level, x0, y0, z0, x1, y1, z1);
             }
         }
     }
 }
 
-void LevelRenderer::render(Player* player, std::int32_t layer) {
+void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) {
     Chunk::rebuiltThisFrame = 0;
     Frustum* frustum = Frustum::getFrustum();
 
@@ -41,9 +41,9 @@ void LevelRenderer::render(Player* player, std::int32_t layer) {
     }
 }
 
-void LevelRenderer::pick(Player* player) {
+void LevelRenderer::pick(std::shared_ptr<Player>& player) {
     float r = 3.0f;
-    AABB* box = player->bb->grow(r, r, r);
+    std::unique_ptr<AABB> box = player->bb->grow(r, r, r);
 
     int x0 = (int)(box->x0);
     int x1 = (int)(box->x1 + 1.0f);
@@ -76,11 +76,9 @@ void LevelRenderer::pick(Player* player) {
         }
         glPopName();
     }
-
-    delete box;
 }
 
-void LevelRenderer::renderHit(HitResult* h) {
+void LevelRenderer::renderHit(std::unique_ptr<HitResult>& h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 

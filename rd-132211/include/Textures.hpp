@@ -12,6 +12,6 @@ class Textures {
         static std::int32_t lastId;
 
     public:
-        static std::int32_t loadTexture(const std::string resourceName, std::int32_t mode);
+        static std::int32_t loadTexture(const char* resourceName, std::int32_t mode);
         static void bind(std::int32_t id);
 };

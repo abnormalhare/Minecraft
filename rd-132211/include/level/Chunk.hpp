@@ -18,13 +18,13 @@ class Chunk {
         void rebuild(std::int32_t layer);
     public:
         std::unique_ptr<AABB> aabb;
-        std::unique_ptr<Level> level;
+        std::shared_ptr<Level> level;
         const std::int32_t x0, y0, z0;
         const std::int32_t x1, y1, z1;
         static std::int32_t rebuiltThisFrame;
         static std::int32_t updates;
         
-        Chunk(std::unique_ptr<Level>& level, int x0, int y0, int z0, int x1, int y1, int z1);
+        Chunk(std::shared_ptr<Level>& level, int x0, int y0, int z0, int x1, int y1, int z1);
         void render(std::int32_t layer);
         void setDirty(void);
 };

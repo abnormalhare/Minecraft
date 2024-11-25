@@ -9,7 +9,7 @@ AABB::AABB(float x0, float y0, float z0, float x1, float y1, float z1) {
     this->z1 = z1;
 }
 
-AABB* AABB::expand(float xa, float ya, float za) {
+std::unique_ptr<AABB> AABB::expand(float xa, float ya, float za) {
     float _x0 = this->x0;
     float _y0 = this->y0;
     float _z0 = this->z0;
@@ -35,10 +35,10 @@ AABB* AABB::expand(float xa, float ya, float za) {
     if (za > 0.0f) {
         _z1 += za;
     }
-    return new AABB(_x0, _y0, _z0, _x1, _y1, _z1);
+    return std::make_unique<AABB>(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-AABB* AABB::grow(float xa, float ya, float za) {
+std::unique_ptr<AABB> AABB::grow(float xa, float ya, float za) {
     float _x0 = this->x0 - xa;
     float _y0 = this->y0 - ya;
     float _z0 = this->z0 - za;
@@ -46,10 +46,10 @@ AABB* AABB::grow(float xa, float ya, float za) {
     float _y1 = this->y1 + ya;
     float _z1 = this->z1 + za;
 
-    return new AABB(_x0, _y0, _z0, _x1, _y1, _z1);
+    return std::make_unique<AABB>(_x0, _y0, _z0, _x1, _y1, _z1);
 }
 
-float AABB::clipXCollide(AABB* c, float xa) {
+float AABB::clipXCollide(std::unique_ptr<AABB>& c, float xa) {
     if (c->y1 <= this->y0 || c->y0 >= this->y1) {
         return xa;
     }
@@ -71,7 +71,7 @@ float AABB::clipXCollide(AABB* c, float xa) {
     return xa;
 }
 
-float AABB::clipYCollide(AABB* c, float ya) {
+float AABB::clipYCollide(std::unique_ptr<AABB>& c, float ya) {
     if (c->x1 <= this->x0 || c->x0 >= this->x1) {
         return ya;
     }
@@ -93,7 +93,7 @@ float AABB::clipYCollide(AABB* c, float ya) {
     return ya;
 }
 
-float AABB::clipZCollide(AABB* c, float za) {
+float AABB::clipZCollide(std::unique_ptr<AABB>& c, float za) {
     if (c->x1 <= this->x0 || c->x0 >= this->x1) {
         return za;
     }
@@ -115,7 +115,7 @@ float AABB::clipZCollide(AABB* c, float za) {
     return za;
 }
 
-bool AABB::intersects(AABB* c) {
+bool AABB::intersects(std::unique_ptr<AABB>& c) {
     if (c->x1 <= this->x0 || c->x0 >= this->x1) {
         return false;
     }

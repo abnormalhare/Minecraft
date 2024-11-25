@@ -13,6 +13,6 @@ class Tile {
         static Tile* rock;
         static Tile* grass;
         std::int32_t tex;
-        void render(std::unique_ptr<Tesselator>& t, std::unique_ptr<Level>& level, std::int32_t layer, std::int32_t x, std::int32_t y, std::int32_t z);
+        void render(std::unique_ptr<Tesselator>& t, std::shared_ptr<Level>& level, std::int32_t layer, std::int32_t x, std::int32_t y, std::int32_t z);
         void renderFace(std::unique_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face);
 };

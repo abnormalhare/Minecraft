@@ -6,14 +6,16 @@
 std::unordered_map<std::string, std::int32_t>* Textures::idMap;
 std::int32_t Textures::lastId = -9999999;
 
-std::int32_t Textures::loadTexture(const std::string resourceName, std::int32_t mode) {
+std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) {
     try {
         if (idMap == nullptr) {
             idMap = new std::unordered_map<std::string, std::int32_t>();
         }
         if (!idMap->empty()) {
-            if (idMap->find(resourceName) != idMap->end()) {
-                return idMap->at(resourceName);
+            std::string rNameStr(resourceName);
+
+            if (idMap->find(rNameStr) != idMap->end()) {
+                return idMap->at(rNameStr);
             }
         }
 
@@ -27,7 +29,7 @@ std::int32_t Textures::loadTexture(const std::string resourceName, std::int32_t 
 
         // read in image
         int w, h, nrChannels;
-        std::uint8_t* img = stbi_load(resourceName.c_str(), &w, &h, &nrChannels, 4);
+        std::uint8_t* img = stbi_load(resourceName, &w, &h, &nrChannels, 4);
         
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
 
