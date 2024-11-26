@@ -1,3 +1,5 @@
+#pragma once
+
 #include "base.hpp"
 #include "Entity.hpp"
 #include "Textures.hpp"
@@ -18,7 +20,7 @@ class Zombie : public Entity {
         float speed;
         float rotA;
 
-        Zombie(std::shared_ptr<Level>& level, float x, float y, float z);
+        Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float y, float z);
         void tick(void);
         void render(float a);
 };

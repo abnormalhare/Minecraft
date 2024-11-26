@@ -8,7 +8,7 @@
 class PolygonRD {
     public:
         std::vector<Vertex> vertices;
-        int vertexCount = 0;
+        size_t vertexCount = 0;
 
         PolygonRD(void);
         PolygonRD(std::vector<Vertex>& vertices);

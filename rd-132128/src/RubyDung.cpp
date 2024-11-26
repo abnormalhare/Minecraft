@@ -129,7 +129,7 @@ class RubyDung {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             for (int i = 0; i < 100; i++) {
-                this->zombies.push_back(Zombie(this->level, 128.0f, 0.0f, 128.0f));
+                this->zombies.push_back(Zombie(this->level, this->window, 128.0f, 0.0f, 128.0f));
             }
         }
 
@@ -175,12 +175,13 @@ class RubyDung {
         }
 
         void tick(void) {
-            for (int i = 0; i < this->zombies.size(); i++) {
+            for (size_t i = 0; i < this->zombies.size(); i++) {
                 this->zombies[i].tick();
             }
             this->player->tick();
         }
 
+    private:
         void moveCameraToPlayer(float a) {
             glTranslatef(0.0f, 0.0f, -0.3f);
             glRotatef(this->player->xRot, 1.0f, 0.0f, 0.0f);
@@ -192,4 +193,105 @@ class RubyDung {
 
             glTranslatef(-x, -y, -z);
         }
+
+        void setupCamera(float a) {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            gluPerspective(70.0f, this->width / (double)this->height, 0.05f, 1000.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            moveCameraToPlayer(a);
+        }
+
+        void setupPickCamera(float a, int x, int y) {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            std::fill(std::begin(this->viewportBuffer), std::end(this->viewportBuffer), 0);
+            glGetIntegerv(GL_VIEWPORT, this->viewportBuffer);
+            gluPickMatrix(x, y, 5.0f, 5.0f, this->viewportBuffer);
+            gluPerspective(70.0f, this->width / (double)this->height, 0.05f, 1000.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            moveCameraToPlayer(a);
+        }
+
+        void pick(float a) {
+            std::fill(std::begin(this->selectBuffer), std::end(this->selectBuffer), 0);
+            glSelectBuffer(2000, this->selectBuffer);
+            glRenderMode(GL_SELECT);
+            setupPickCamera(a, this->width / 2, this->height / 2);
+            levelRenderer->pick(this->player);
+            
+            int hits = glRenderMode(GL_RENDER);
+            std::int64_t closest = 0;
+            std::int32_t names[10];
+            int hitNameCount = 0;
+            int index = 0;
+            for (int i = 0; i < hits; i++) {
+                int nameCount = this->selectBuffer[index++];
+                std::int64_t minZ = this->selectBuffer[index++];
+                index++;
+
+                std::int64_t dist = minZ;
+                if (dist < closest || i == 0) {
+                    closest = dist;
+                    hitNameCount = nameCount;
+                    for (int j = 0; j < nameCount; j++) {
+                        names[j] = this->selectBuffer[index++];
+                    }
+                } else {
+                    index += nameCount;
+                }
+            }
+            if (hitNameCount > 0) {
+                this->hitResult = std::make_unique<HitResult>(names[0], names[1], names[2], names[3], names[4]);
+            } else {
+                this->hitResult = nullptr;
+            }
+        }
+
+    public:
+        void render(float a) {
+            float xo = getMouseDX();
+            float yo = getMouseDY();
+            this->player->turn(xo, yo);
+            pick(a);
+
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+            setupCamera(a);
+            glEnable(GL_CULL_FACE);
+            glEnable(GL_FOG);
+            glFogi(GL_FOG_MODE, 2048);
+            glFogf(GL_FOG_DENSITY, 0.2f);
+            glFogfv(GL_FOG_COLOR, this->fogColor);
+            glDisable(GL_FOG);
+            this->levelRenderer->render(this->player, 0);
+            for (size_t i = 0; i < this->zombies.size(); i++) {
+                this->zombies[i].render(a);
+            }
+            glEnable(GL_FOG);
+            this->levelRenderer->render(this->player, 1);
+            glDisable(GL_TEXTURE_2D);
+            if (this->hitResult != nullptr) {
+                this->levelRenderer->renderHit(this->hitResult);
+            }
+            glDisable(GL_FOG);
+            glfwSwapBuffers(this->window);
+            glfwPollEvents();
+        }
 };
+
+RubyDung rubyDung;
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
+    rubyDung.mouseButtonCallback(window, button, action, mods);
+}
+
+void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+    rubyDung.keyCallback(window, key, scancode, action, mods);
+}
+
+int main(void) {
+    rubyDung = RubyDung();
+    rubyDung.run();
+}

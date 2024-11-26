@@ -1,3 +1,5 @@
+#pragma once
+
 #include <GLFW/glfw3.h>
 #include "base.hpp"
 #include "Entity.hpp"
@@ -5,9 +7,8 @@
 
 class Player : public Entity {
     private:
-        GLFWwindow* window = nullptr;
         bool isKeyDown(int key);
     public:
-        Player(std::shared_ptr<Level>& level);
+        Player(std::shared_ptr<Level>& level, GLFWwindow* window);
         void tick(void);
 };

@@ -1,4 +1,4 @@
-#include "Vertex.hpp"
+#include "character/Vertex.hpp"
 
 Vertex::Vertex(void) {}
 

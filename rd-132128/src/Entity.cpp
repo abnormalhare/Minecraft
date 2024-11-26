@@ -1,7 +1,11 @@
 #include "Entity.hpp"
 
-Entity::Entity(std::shared_ptr<Level>& level) : level(level) {
+Entity::Entity(std::shared_ptr<Level>& level, GLFWwindow* window) : level(level), window(window) {
     resetPos();
+}
+
+GLFWwindow* Entity::getWindow(void) {
+    return this->window;
 }
 
 void Entity::resetPos(void) {
@@ -43,21 +47,21 @@ void Entity::move(float xa, float ya, float za) {
     float yaOrg = ya;
     float zaOrg = za;
 
-    AABB bb = this->bb.expand(xa, ya, za);
-    std::vector<AABB> aabbs = this->level->getCubes(bb);
+    AABB aabb = this->bb.expand(xa, ya, za);
+    std::vector<AABB> aabbs = this->level->getCubes(aabb);
 
-    for (int i = 0; i < aabbs.size(); i++) {
-        ya = aabbs[i].clipYCollide(bb, ya);
+    for (size_t i = 0; i < aabbs.size(); i++) {
+        ya = aabbs[i].clipYCollide(this->bb, ya);
     }
     this->bb.move(0.0f, ya, 0.0f);
 
-    for (int i = 0; i < aabbs.size(); i++) {
-        xa = aabbs[i].clipXCollide(bb, xa);
+    for (size_t i = 0; i < aabbs.size(); i++) {
+        xa = aabbs[i].clipXCollide(this->bb, xa);
     }
     this->bb.move(xa, 0.0f, 0.0f);
 
-    for (int i = 0; i < aabbs.size(); i++) {
-        za = aabbs[i].clipZCollide(bb, za);
+    for (size_t i = 0; i < aabbs.size(); i++) {
+        za = aabbs[i].clipZCollide(this->bb, za);
     }
     this->bb.move(0.0f, 0.0f, za);
 
@@ -79,9 +83,9 @@ void Entity::moveRelative(float xa, float za, float speed) {
     xa *= dist;
     za *= dist;
 
-    float _sin = sin(this->yRot * PI / 180.0f);
-    float _cos = cos(this->yRot * PI / 180.0f);
+    float _sin = sin(this->yRot * PI / 180.0);
+    float _cos = cos(this->yRot * PI / 180.0);
 
-    this->xd += xa * _cos + za * _sin;
-    this->zd += za * _cos - xa * _sin;
+    this->xd += xa * _cos - za * _sin;
+    this->zd += za * _cos + xa * _sin;
 }

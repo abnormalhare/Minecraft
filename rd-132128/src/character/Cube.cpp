@@ -1,4 +1,4 @@
-#include "Cube.hpp"
+#include "character/Cube.hpp"
 
 Cube::Cube(void) {}
 
@@ -89,7 +89,7 @@ void Cube::render(void) {
     glRotatef(this->xRot * c, 1.0f, 0.0f, 0.0f);
 
     glBegin(7);
-    for (int i = 0; i < this->polygons.size(); i++) {
+    for (size_t i = 0; i < this->polygons.size(); i++) {
         this->polygons[i].render();
     }
     glEnd();

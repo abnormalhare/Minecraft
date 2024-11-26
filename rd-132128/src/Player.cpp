@@ -1,11 +1,11 @@
 #include "Player.hpp"
 
 bool Player::isKeyDown(int key) {
-    int state = glfwGetKey(this->window, key);
+    int state = glfwGetKey(this->getWindow(), key);
     return state == GLFW_PRESS;
 }
 
-Player::Player(std::shared_ptr<Level>& level) : Entity(level) {
+Player::Player(std::shared_ptr<Level>& level, GLFWwindow* window) : Entity(level, window) {
     this->heightOffset = 1.62f;
 }
 
@@ -32,10 +32,10 @@ void Player::tick(void) {
         xa++;
     }
     if (this->isKeyDown(GLFW_KEY_SPACE) || this->isKeyDown(GLFW_KEY_MENU)) {
-        if (this->onGround) 0.12f;
+        if (this->onGround) this->yd = 0.12f;
     }
 
-    this->moveRelative(xa, ya, this->onGround ? 0.2f : 0.005f);
+    this->moveRelative(xa, ya, this->onGround ? 0.02f : 0.005f);
     this->yd -= 0.005;
     this->move(this->xd, this->yd, this->zd);
     this->xd *= 0.91f;
