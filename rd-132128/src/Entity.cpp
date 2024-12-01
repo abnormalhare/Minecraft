@@ -9,9 +9,9 @@ GLFWwindow* Entity::getWindow(void) {
 }
 
 void Entity::resetPos(void) {
-    float x = randf * this->level->width;
+    float x = randd * this->level->width;
     float y = this->level->depth + 10;
-    float z = randf * this->level->height;
+    float z = randd * this->level->height;
     setPos(x, y, z);
 }
 

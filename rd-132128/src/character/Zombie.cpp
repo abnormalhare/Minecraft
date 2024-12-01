@@ -3,32 +3,32 @@
 Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float y, float z)
     : Entity(level, window) {
 
-    this->rotA = (float)(randf + 1.0) * 0.01f;
+    this->rotA = (randd + 1.0) * 0.01f;
     
     this->x = x;
     this->y = y;
     this->z = z;
     
-    this->timeOffs = randf * 1239813.0f;
-    this->rot = randf * PI * 2.0;
+    this->timeOffs = randd * 1239813.0f;
+    this->rot = randd * PI * 2.0;
     this->speed = 1.0f;
 
     this->head = Cube(0, 0);
-    this->head.addBox(-4.0F, -8.0F, -4.0F, 8, 8, 8);
+    this->head.addBox(-4.0f, -8.0f, -4.0f, 8, 8, 8);
     this->body = Cube(16, 16);
-    this->body.addBox(-4.0F, 0.0F, -2.0F, 8, 12, 4);
+    this->body.addBox(-4.0f, 0.0f, -2.0f, 8, 12, 4);
     this->arm0 = Cube(40, 16);
-    this->arm0.addBox(-3.0F, -2.0F, -2.0F, 4, 12, 4);
-    this->arm0.setPos(-5.0F, 2.0F, 0.0F);
+    this->arm0.addBox(-3.0f, -2.0f, -2.0f, 4, 12, 4);
+    this->arm0.setPos(-5.0f, 2.0f, 0.0f);
     this->arm1 = Cube(40, 16);
-    this->arm1.addBox(-1.0F, -2.0F, -2.0F, 4, 12, 4);
-    this->arm1.setPos(5.0F, 2.0F, 0.0F);
+    this->arm1.addBox(-1.0f, -2.0f, -2.0f, 4, 12, 4);
+    this->arm1.setPos(5.0f, 2.0f, 0.0f);
     this->leg0 = Cube(0, 16);
-    this->leg0.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4);
-    this->leg0.setPos(-2.0F, 12.0F, 0.0F);
+    this->leg0.addBox(-2.0f, 0.0f, -2.0f, 4, 12, 4);
+    this->leg0.setPos(-2.0f, 12.0f, 0.0f);
     this->leg1 = Cube(0, 16);
-    this->leg1.addBox(-2.0F, 0.0F, -2.0F, 4, 12, 4);
-    this->leg1.setPos(2.0F, 12.0F, 0.0F);
+    this->leg1.addBox(-2.0f, 0.0f, -2.0f, 4, 12, 4);
+    this->leg1.setPos(2.0f, 12.0f, 0.0f);
 }
 
 void Zombie::tick(void) {
@@ -41,12 +41,12 @@ void Zombie::tick(void) {
 
     this->rot += this->rotA;
     this->rotA *= 0.99;
-    this->rotA = this->rotA + (randf - randf) * randf * randf * 0.01;
+    this->rotA = this->rotA + (randd - randd) * randd * randd * 0.01;
 
     xa = sin(this->rot);
     ya = cos(this->rot);
     
-    if (this->onGround && randf < 0.01) this->yd = 0.12f;
+    if (this->onGround && randd < 0.01) this->yd = 0.12f;
 
     this->moveRelative(xa, ya, this->onGround ? 0.02f : 0.005f);
     this->yd -= 0.005;
@@ -73,7 +73,7 @@ void Zombie::render(float a) {
     float size = 0.058333334f;
     float yy = abs(sin(time * 0.6662)) * 5.0 - 23.0;
 
-    glTranslatef(this->xo + (this->x - this->xo) * a, this->yo + (this->y - this->yo) * a - yy, this->zo + (this->z - this->zo) * a);
+    glTranslatef(this->xo + (this->x - this->xo) * a, this->yo + (this->y - this->yo) * a, this->zo + (this->z - this->zo) * a);
     glScalef(1.0f, -1.0f, 1.0f);
     glScalef(size, size, size);
     glTranslatef(0.0f, yy, 0.0f);
@@ -82,13 +82,13 @@ void Zombie::render(float a) {
     glRotatef(this->rot * c + 180.0f, 0.0f, 1.0f, 0.0f);
 
     this->head.yRot = sin(time * 0.83) * 1.0f;
-    this->head.xRot = sin(time) * 0.8F;
-    this->arm0.xRot = sin(time * 0.6662 + PI) * 2.0F;
-    this->arm0.zRot = (sin(time * 0.2312) + 1.0) * 1.0F;
-    this->arm1.xRot = sin(time * 0.6662) * 2.0F;
-    this->arm1.zRot = (sin(time * 0.2812) - 1.0) * 1.0F;
-    this->leg0.xRot = sin(time * 0.6662) * 1.4F;
-    this->leg1.xRot = sin(time * 0.6662 + PI) * 1.4F;
+    this->head.xRot = sin(time) * 0.8f;
+    this->arm0.xRot = sin(time * 0.6662 + PI) * 2.0f;
+    this->arm0.zRot = (sin(time * 0.2312) + 1.0) * 1.0f;
+    this->arm1.xRot = sin(time * 0.6662) * 2.0f;
+    this->arm1.zRot = (sin(time * 0.2812) - 1.0) * 1.0f;
+    this->leg0.xRot = sin(time * 0.6662) * 1.4f;
+    this->leg1.xRot = sin(time * 0.6662 + PI) * 1.4f;
     this->head.render();
     this->body.render();
     this->arm0.render();

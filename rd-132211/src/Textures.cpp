@@ -30,10 +30,9 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
         // read in image
         int w, h, nrChannels;
         std::uint8_t* img = stbi_load(resourceName, &w, &h, &nrChannels, 4);
-        
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
-
         stbi_image_free(img);
+        
         return id;
     } catch (const std::exception& e) {
         std::cerr << "!!" << std::endl;

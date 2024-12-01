@@ -12,9 +12,8 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
             return idMap.at(resourceName);
         }
 
-        std::uint32_t ib[1];
-        glGenTextures(1, ib);
-        int id = ib[0];
+        std::uint32_t id;
+        glGenTextures(1, &id);
         idMap.insert(std::pair<std::string, std::int32_t>(resourceName, id));
         std::cout << resourceName << " -> " << id << std::endl;
 
@@ -23,7 +22,7 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, mode);
 
         int w, h, nrChannels;
-        std::uint8_t* img = stbi_load(resourceName, &w, &h, &nrChannels, 0);
+        std::uint8_t* img = stbi_load(resourceName, &w, &h, &nrChannels, 4);
         gluBuild2DMipmaps(GL_TEXTURE_2D, GL_RGBA, w, h, GL_RGBA, GL_UNSIGNED_BYTE, img);
         stbi_image_free(img);
         

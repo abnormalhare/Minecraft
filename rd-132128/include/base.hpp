@@ -4,5 +4,5 @@
 #include <iostream>
 #include <memory>
 
-double constexpr PI = 3.14159265358979323846;
-#define randf static_cast<float>(rand()) / static_cast<float>(RAND_MAX)
+#define PI 3.141592653589793
+#define randd static_cast<double>(rand()) / static_cast<double>(RAND_MAX)
