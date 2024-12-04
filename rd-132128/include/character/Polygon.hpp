@@ -2,6 +2,7 @@
 
 #include "base.hpp"
 #include "character/Vertex.hpp"
+#include <GL/gl.h>
 #include <GLFW/glfw3.h>
 #include <vector>
 

@@ -3,6 +3,7 @@
 #include "base.hpp"
 #include "character/Vertex.hpp"
 #include "character/Polygon.hpp"
+#include <GL/gl.h>
 #include <array>
 #include <vector>
 

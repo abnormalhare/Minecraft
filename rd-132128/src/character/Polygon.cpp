@@ -15,10 +15,11 @@ PolygonRD::PolygonRD(std::vector<Vertex>& vertices, int u0, int v0, int u1, int 
 }
 
 void PolygonRD::render(void) {
+    Vertex v;
     glColor3f(1.0f, 1.0f, 1.0f);
 
     for (int i = 3; i >= 0; i--) {
-        Vertex& v = vertices[i];
+        v = vertices[i];
         glTexCoord2f(v.u / 64.0f, v.v / 32.0f);
         glVertex3f(v.pos.x, v.pos.y, v.pos.z);
     }
