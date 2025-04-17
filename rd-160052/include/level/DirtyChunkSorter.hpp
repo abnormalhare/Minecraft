@@ -5,14 +5,5 @@
 #include "Player.hpp"
 #include "Timer.hpp"
 
-class DirtyChunkSorter {
-    private:
-        std::shared_ptr<Player>& player;
-        Frustum* frustum;
-        std::int64_t now;
-
-    public:
-        DirtyChunkSorter(std::shared_ptr<Player>& player, Frustum* frustum);
-        
-        int compare(std::unique_ptr<Chunk>& c0, std::unique_ptr<Chunk>& c1);
-};
+void chunkSorterInit(std::shared_ptr<Player>& p, Frustum* f);
+bool chunkCompare(const std::shared_ptr<Chunk>& c0, const std::shared_ptr<Chunk>& c1);

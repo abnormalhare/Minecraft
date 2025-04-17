@@ -10,7 +10,7 @@ Particle::Particle(std::shared_ptr<Level>& level, GLFWwindow* window, float x, f
     this->yd = ya + (randd * 2.0 - 1.0) * 0.4f;
     this->zd = za + (randd * 2.0 - 1.0) * 0.4f;
     
-    float speed = (random + random + 1.0) * 0.15f;
+    float speed = (randd + randd + 1.0) * 0.15f;
     float dd = sqrt(this->xd * this->xd + this->yd * this->yd + this->zd * this->zd);
     this->xd = this->xd / dd * speed * 0.7;
     this->yd = this->yd / dd * speed;
@@ -51,8 +51,8 @@ void Particle::render(std::shared_ptr<Tesselator>& t, float a, float xa, float y
     float y = this->yo + (this->y - this->yo) * a;
     float z = this->zo + (this->z - this->zo) * a;
 
-    t->vertexUV(x - xa * r, y - ya * r, z - za * r, u0, u1);
-    t->vertexUV(x - xa * r, y + ya * r, z - za * r, u0, u0);
-    t->vertexUV(x + xa * r, y + ya * r, z + za * r, u1, u0);
-    t->vertexUV(x + xa * r, y - ya * r, z + za * r, u1, u1);
+    t->vertexUV(x - xa * r, y - ya * r, z - za * r, u0, v1);
+    t->vertexUV(x - xa * r, y + ya * r, z - za * r, u0, v0);
+    t->vertexUV(x + xa * r, y + ya * r, z + za * r, u1, v0);
+    t->vertexUV(x + xa * r, y - ya * r, z + za * r, u1, v1);
 }

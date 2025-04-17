@@ -1,5 +1,8 @@
 #include "tile/Tile.hpp"
 
+#include "tile/DirtTile.hpp"
+#include "tile/GrassTile.hpp"
+
 Tile* empty = nullptr;
 Tile* rock = new Tile(1, 1);
 Tile* grass = new GrassTile(2);
@@ -11,7 +14,7 @@ Tile::Tile(std::int32_t id) : id(id) {
     tiles[id] = this;
 }
 
-Tile::Tile(std::int32_t id, std::int32_t id) : id(id), tex(tex) {
+Tile::Tile(std::int32_t id, std::int32_t tex) : id(id), tex(tex) {
     tiles[id] = this;
 }
 
@@ -24,13 +27,33 @@ void Tile::render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level,
         t->color(c1, c1, c1);
         this->renderFace(t, x, y, z, 0);
     }
+    if (this->shouldRenderFace(level, x, y + 1, z, layer)) {
+        t->color(c1, c1, c1);
+        this->renderFace(t, x, y, z, 1);
+    }
+    if (this->shouldRenderFace(level, x, y, z - 1, layer)) {
+        t->color(c2, c2, c2);
+        this->renderFace(t, x, y, z, 2);
+    }
+    if (this->shouldRenderFace(level, x, y, z + 1, layer)) {
+        t->color(c2, c2, c2);
+        this->renderFace(t, x, y, z, 3);
+    }
+    if (this->shouldRenderFace(level, x - 1, y, z, layer)) {
+        t->color(c3, c3, c3);
+        this->renderFace(t, x, y, z, 4);
+    }
+    if (this->shouldRenderFace(level, x + 1, y, z, layer)) {
+        t->color(c3, c3, c3);
+        this->renderFace(t, x, y, z, 5);
+    }
 }
 
 bool Tile::shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer) {
-    return !level->isSolidTile(x, y, z) && level->isLit(x, y, z) ^ layer == 1;
+    return !level->isSolidTile(x, y, z) && (level->isLit(x, y, z) ^ layer) == 1;
 }
 
-std::int32_t getTexture(std::int32_t face) {
+std::int32_t Tile::getTexture(UNUSED std::int32_t face) {
     return this->tex;
 }
 
@@ -137,17 +160,17 @@ void Tile::renderFaceNoTexture(std::shared_ptr<Tesselator>& t, std::int32_t x, s
     }
 }
 
-std::shared_ptr<AABB> getAABB(std::int32_t x, std::int32_t y, std::int32_t z) {
+std::shared_ptr<AABB> Tile::getAABB(std::int32_t x, std::int32_t y, std::int32_t z) {
     return std::make_shared<AABB>(x, y, z, x + 1, y + 1, z + 1);
 }
 
-bool blocksLight() { return true; } // cant wait for this one
+bool Tile::blocksLight() { return true; } // cant wait for this one
 
-bool isSolid() { return true; } // ...whats the difference?
+bool Tile::isSolid() { return true; } // ...whats the difference?
 
-void tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::mt19937 random) {}
+void Tile::tick(UNUSED std::shared_ptr<Level>& level, UNUSED std::int32_t x, UNUSED std::int32_t y, UNUSED std::int32_t z, UNUSED std::mt19937 random) {}
 
-void destroy(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::shared_ptr<ParticleEngine>& particleEngine) {
+void Tile::destroy(std::shared_ptr<Level>& level, GLFWwindow* window, std::int32_t x, std::int32_t y, std::int32_t z, std::shared_ptr<ParticleEngine>& particleEngine) {
     int SD = 4;
 
     for (int xx = 0; xx < SD; xx++) {
@@ -156,7 +179,8 @@ void destroy(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std:
                 float xp = x + (xx + 0.5f) / SD;
                 float yp = y + (yy + 0.5f) / SD;
                 float zp = z + (zz + 0.5f) / SD;
-                particleEngine->add(Particle(level, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, this->tex));
+                Particle p = Particle(level, window, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, this->tex);
+                particleEngine->add(p);
             }
         }
     }

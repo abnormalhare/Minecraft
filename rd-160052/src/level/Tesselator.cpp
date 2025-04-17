@@ -40,7 +40,7 @@ void Tesselator::flush(void) {
 
 void Tesselator::clear(void) {
     this->vertices = 0;
-    memset(this->buffer, 0x00, MAX_FLOATS);
+    memset(this->buffer, 0x00, MAX_FLOATS * sizeof(float));
     this->p = 0;
 }
 

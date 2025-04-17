@@ -25,11 +25,10 @@ void Chunk::rebuild(std::int32_t layer) {
     for (int x = this->x0; x < this->x1; x++) {
         for (int y = this->y0; y < this->y1; y++) {
             for (int z = this->z0; z < this->z1; z++) {
-                if (this->level->isTile(x, y, z) != 0) {
-                    int tileId = this->level->getTile(x, y, z);
-                    if (tileId > 0) {
-                        Tile::tiles[tileId]->render(t, this->level, layer, x, y, z);
-                    }
+                int tileId = this->level->getTile(x, y, z);
+                if (tileId > 0) {
+                    Tile::tiles[tileId]->render(t, this->level, layer, x, y, z);
+                    tiles++;
                 }
             }
         }

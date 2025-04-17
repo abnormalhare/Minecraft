@@ -7,11 +7,9 @@
 #include <random>
 
 #include "level/LevelListener.hpp"
-#include "level/PerlinNoiseFilter.hpp"
-#include "level/Tile.hpp"
 #include "phys/AABB.hpp"
 
-class Level {
+class Level : public std::enable_shared_from_this<Level> {
     private:
         static const int TILE_UPDATE_INTERVAL = 400;
         char* blocks;
@@ -26,7 +24,6 @@ class Level {
         const std::int32_t width;
         const std::int32_t height;
         const std::int32_t depth;
-
 
         Level(std::int32_t w, std::int32_t h, std::int32_t d);
         bool load();

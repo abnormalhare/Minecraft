@@ -3,6 +3,6 @@
 #include "tile/Tile.hpp"
 
 class DirtTile : public Tile {
-    protected:
+    public:
         DirtTile(int id, int tex);
 };

@@ -18,7 +18,6 @@ class Entity {
 
         void setSize(float w, float h);
         void setPos(float x, float y, float z);
-        void resetPos();
 
     public:
         float xo, yo, zo;
@@ -31,6 +30,7 @@ class Entity {
         
         Entity(std::shared_ptr<Level>& level, GLFWwindow* window);
         GLFWwindow* getWindow(void);
+        void resetPos();
         void remove();
         void turn(float xo, float yo);
         void tick(void);

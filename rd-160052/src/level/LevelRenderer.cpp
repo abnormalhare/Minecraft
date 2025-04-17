@@ -32,9 +32,9 @@ LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) : level(level) {
 
 std::vector<std::shared_ptr<Chunk>> LevelRenderer::getAllDirtyChunks() {
     std::vector<std::shared_ptr<Chunk>> dirty = std::vector<std::shared_ptr<Chunk>>();
-    Frustum* frustum = Frustum::getFrustum();
+    UNUSED Frustum* frustum = Frustum::getFrustum();
 
-    for (int i = 0; i < this->chunks.size(); i++) {
+    for (size_t i = 0; i < this->chunks.size(); i++) {
         std::shared_ptr<Chunk> chunk = this->chunks[i];
         if (chunk->isDirty()) {
             dirty.push_back(chunk);
@@ -44,7 +44,7 @@ std::vector<std::shared_ptr<Chunk>> LevelRenderer::getAllDirtyChunks() {
     return dirty;
 }
 
-void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) {
+void LevelRenderer::render(UNUSED std::shared_ptr<Player>& player, std::int32_t layer) {
     glEnable(GL_TEXTURE_2D);
     int id = Textures::loadTexture("terrain.png", GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, id);
@@ -61,13 +61,14 @@ void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) 
 
 bool comp(int a, int b){return a > b;}
 
-void LevelRenderer::updateDirtyChunks(std::unique_ptr<Player>& player) {
+void LevelRenderer::updateDirtyChunks(std::shared_ptr<Player>& player) {
     std::vector<std::shared_ptr<Chunk>> dirty = this->getAllDirtyChunks();
 
     if (dirty.size() != 0) {
-        std::sort(dirty.begin(), dirty.end(), DirtyChunkSorter::compare);
+        chunkSorterInit(player, Frustum::getFrustum());
+        std::sort(dirty.begin(), dirty.end(), chunkCompare);
 
-        for (int i = 0; i < 8 && i < dirty.size(); i++) {
+        for (size_t i = 0; i < 8 && i < dirty.size(); i++) {
             dirty.at(i)->rebuild();
         }
     }

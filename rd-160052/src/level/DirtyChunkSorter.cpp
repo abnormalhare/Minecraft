@@ -1,21 +1,29 @@
 #include "level/DirtyChunkSorter.hpp"
 
-DirtyChunkSorter::DirtyChunkSorter(std::shared_ptr<Player>& player, Frustum* frustum) : player(player), frustum(frustum) {}
+std::shared_ptr<Player> player;
+Frustum* frustum;
+std::int64_t now;
 
-int DirtyChunkSorter::compare(std::unique_ptr<Chunk>& c0, std::unique_ptr<Chunk>& c1) {
-    bool i0 = this->frustum->isVisible(c0->aabb);
-    bool i1 = this->frustum->isVisible(c1->aabb);
+void chunkSorterInit(std::shared_ptr<Player>& p, Frustum* f) {
+    player = p;
+    frustum = f;
+    now = Timer::getTimeInMilliSeconds();
+}
 
-    if (i0 && !i1) return -1;
-    else if (i1 && !i0) return 1;
+bool chunkCompare(const std::shared_ptr<Chunk>& c0, const std::shared_ptr<Chunk>& c1) {
+    bool i0 = frustum->isVisible(c0->aabb);
+    bool i1 = frustum->isVisible(c1->aabb);
+
+    if (i0 && !i1) return false;
+    else if (i1 && !i0) return true;
     else {
-        int t0 = (this->now - c0->dirtiedTime) / 2000;
-        int t1 = (this->now - c1->dirtiedTime) / 2000;
+        int t0 = (now - c0->dirtiedTime) / 2000;
+        int t1 = (now - c1->dirtiedTime) / 2000;
 
-        if (t0 < t1) return -1;
-        else if (t0 > t1) return 1;
+        if (t0 < t1) return false;
+        else if (t0 > t1) return true;
         else {
-            return c0->distanceToSqr(this->player) < c1->distanceToSqr(this->player) ? -1 : 1;
+            return c0->distanceToSqr(player) < c1->distanceToSqr(player);
         }
     }
 }

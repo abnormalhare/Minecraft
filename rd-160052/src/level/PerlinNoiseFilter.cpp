@@ -45,9 +45,9 @@ std::vector<int> PerlinNoiseFilter::read(int width, int height) {
                 int r = tmp[(x + stepx) % width + y * width];
                 int d = tmp[x + (y + stepx) % width * width];
 
-                int mu = tmp[(x + ss & width - 1) + (y + ss - stepx & height - 1) * width];
-                int ml = tmp[(x + ss - stepx & width - 1) + (y + ss & height - 1) * width];
-                int m = tmp[(x + ss) % width + ((y + ss) % height) * width];
+                int mu = tmp[((x + ss        ) & (width - 1)) + ((y + ss - stepx) & (height - 1)) * width];
+                int ml = tmp[((x + ss - stepx) & (width - 1)) + ((y + ss        ) & (height - 1)) * width];
+                int m  = tmp[(x + ss         ) % (width     ) + ((y + ss        ) % (height    )) * width];
 
                 std::uniform_int_distribution<> dist(0, val*2-1);
                 int u = (c + r + m + mu) / 4 + dist(gen) - val;

@@ -1,9 +1,12 @@
 #include "level/Level.hpp"
 
+#include "level/PerlinNoiseFilter.hpp"
+#include "tile/Tile.hpp"
+
 Level::Level(std::int32_t w, std::int32_t h, std::int32_t d) :
-    width(w), height(h), depth(d),
     levelListeners(std::vector<LevelListener*>()),
-    unprocessed(0)
+    unprocessed(0),
+    width(w), height(h), depth(d)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -146,7 +149,8 @@ std::vector<AABB> Level::getCubes(AABB& aabb) {
             for (int z = z0; z < z1; z++) {
                 Tile* tile = Tile::tiles[this->getTile(x, y, z)];
                 if (tile != nullptr) {
-                    aABBs.push_back(tile->getAABB(x, y, z));
+                    std::shared_ptr<AABB> c = tile->getAABB(x, y, z);
+                    aABBs.push_back(*c);
                 }
             }
         }
@@ -193,16 +197,17 @@ void Level::tick() {
     this->unprocessed -= ticks * 400;
 
     for (int i = 0; i < ticks; i++) {
-        std::uniform_int_distribution<> dist(0, this->width);
-        int x = dist(this->random);
-        std::uniform_int_distribution<> dist(0, this->height);
-        int y = dist(this->random);
-        std::uniform_int_distribution<> dist(0, this->depth);
-        int z = dist(this->random);
+        std::uniform_int_distribution<> dist1(0, this->width);
+        int x = dist1(this->random);
+        std::uniform_int_distribution<> dist2(0, this->height);
+        int y = dist2(this->random);
+        std::uniform_int_distribution<> dist3(0, this->depth);
+        int z = dist3(this->random);
 
         Tile* tile = Tile::tiles[this->getTile(x, y, z)];
         if (tile != nullptr) {
-            tile->tick(this, x, y, z, this->random);
+            std::shared_ptr<Level> level = this->shared_from_this();
+            tile->tick(level, x, y, z, this->random);
         }
     }
 }

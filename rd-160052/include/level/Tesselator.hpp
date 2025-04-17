@@ -16,11 +16,11 @@ class Tesselator {
         bool hasTexture = false;
         int len;
         int p;
-
-        Tesselator();
         
     public:
         static std::shared_ptr<Tesselator> instance;
+        Tesselator();
+        
         void flush(void);
         void clear(void);
         void init(void);

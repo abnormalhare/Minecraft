@@ -20,4 +20,4 @@ class Particle : public Entity {
 
         void tick();
         void render(std::shared_ptr<Tesselator>& t, float a, float xa, float ya, float za);
-}
+};
