@@ -17,8 +17,7 @@ class Cube {
         float x, y, z;
         float xRot, yRot, zRot;
 
-        Cube();
-        Cube(int xTexOffs, int yTexOffs);
+        Cube(int xTexOffs = 0, int yTexOffs = 0);
         void setTexOffs(int xTexOffs, int yTexOffs);
         void addBox(float x0, float y0, float z0, int w, int h, int d);
         void setPos(float x, float y, float z);

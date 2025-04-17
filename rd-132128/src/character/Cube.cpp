@@ -1,7 +1,5 @@
 #include "character/Cube.hpp"
 
-Cube::Cube(void) {}
-
 Cube::Cube(int _xTexOffs, int _yTexOffs)
     : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs) {}
 

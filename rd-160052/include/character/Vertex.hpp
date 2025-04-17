@@ -8,8 +8,7 @@ class Vertex {
         Vec3 pos;
         float u, v;
 
-        Vertex(void);
-        Vertex(float x, float y, float z, float u, float v);
+        Vertex(float x = 0.0f, float y = 0.0f, float z = 0.0f, float u = 0, float v = 0);
         Vertex remap(float u, float v);
         Vertex(Vertex& vertex, float u, float v);
         Vertex(Vec3& pos, float u, float v);

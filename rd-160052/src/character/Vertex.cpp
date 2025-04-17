@@ -1,7 +1,5 @@
 #include "character/Vertex.hpp"
 
-Vertex::Vertex(void) {}
-
 Vertex::Vertex(float x, float y, float z, float u, float v)
     : pos(x, y, z), u(u), v(v) {}
 
