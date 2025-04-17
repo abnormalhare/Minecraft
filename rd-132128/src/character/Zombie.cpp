@@ -24,7 +24,7 @@ Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float
     this->arm0.setPos(-5.0f, 2.0f, 0.0f);
 
     this->arm1 = Cube(40, 16);
-    this->arm1.addBox(-3.0f, -2.0f, -2.0f, 4, 12, 4);
+    this->arm1.addBox(-1.0f, -2.0f, -2.0f, 4, 12, 4);
     this->arm1.setPos(5.0f, 2.0f, 0.0f);
 
     this->leg0 = Cube(0, 16);
@@ -74,7 +74,7 @@ void Zombie::render(float a) {
     glBindTexture(GL_TEXTURE_2D, Textures::loadTexture("char.png", GL_NEAREST));
     glPushMatrix();
 
-    double time = Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
+    double time = 0; // Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
     float size = 0.058333334f;
     float yy = abs(sin(time * 0.6662)) * 5.0 - 23.0;
 
