@@ -64,6 +64,10 @@ void Level::generateMap() {
 bool Level::load() {
     try {
         std::ifstream dis("level.dat", std::ios::binary);
+        if (!dis.is_open()) {
+            return false;
+        }
+
         dis.read(this->blocks, this->width * this->height * this->depth);
         calcLightDepths(0, 0, this->width, this->height);
 
@@ -72,7 +76,7 @@ bool Level::load() {
         }
         dis.close();
         return true;
-    } catch (std::exception& e) {
+    } catch (const std::exception& e) {
         std::cerr << e.what() << std::endl;
         return false;
     }
