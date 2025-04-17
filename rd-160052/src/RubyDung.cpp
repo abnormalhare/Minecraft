@@ -4,11 +4,14 @@ class RubyDung {
     private:
         static const bool FULLSCREEN_MODE = false;
         int width, height;
-        float fogColor[4];
-        Timer timer = Timer(60.0f);
+        float fogColor0[4];
+        float fogColor1[4];
+        Timer timer = Timer(20.0f);
         std::shared_ptr<Level> level = nullptr;
         std::shared_ptr<LevelRenderer> levelRenderer = nullptr;
         std::shared_ptr<Player> player = nullptr;
+        int paintTexture = 1;
+        std::shared_ptr<ParticleEngine> particleEngine;
         std::vector<Zombie> zombies = std::vector<Zombie>();
         std::unique_ptr<HitResult> hitResult = nullptr;
 
@@ -89,6 +92,26 @@ class RubyDung {
         }
 
         void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+            if (action != GLFW_PRESS) return;
+
+            if (key == GLFW_KEY_ENTER) {
+                this->level->save();
+            }
+            if (key == GLFW_KEY_1) {
+                this->paintTexture = 1;
+            }
+            if (key == GLFW_KEY_2) {
+                this->paintTexture = 3;
+            }
+            if (key == GLFW_KEY_3) {
+                this->paintTexture = 4;
+            }
+            if (key == GLFW_KEY_4) {
+                this->paintTexture = 5;
+            }
+            if (key == GLFW_KEY_G) {
+                this->zombies.push_back(Zombie(this->level, this->player->x, this->player->y, this->player->z));
+            }
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
                 this->level->save();
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -96,15 +119,21 @@ class RubyDung {
         }
 
         void init(void) {
-            std::int32_t col = 0x0E0B0A;
+            std::int32_t col0 = 0xFEFBFA;
+            std::int32_t col1 = 0x0E0B0A;
             float fr = 0.5f;
             float fg = 0.8f;
             float fb = 1.0f;
 
-            this->fogColor[0] = ((col >> 16) & 0xFF) / 255.0f;
-            this->fogColor[1] = ((col >> 8 ) & 0xFF) / 255.0f;
-            this->fogColor[2] = ((col >> 0 ) & 0xFF) / 255.0f;
-            this->fogColor[3] = 1.0f;
+            this->fogColor0[0] = ((col0 >> 16) & 0xFF) / 255.0f;
+            this->fogColor0[1] = ((col0 >> 8 ) & 0xFF) / 255.0f;
+            this->fogColor0[2] = ((col0 >> 0 ) & 0xFF) / 255.0f;
+            this->fogColor0[3] = 1.0f;
+
+            this->fogColor1[0] = ((col1 >> 16) & 0xFF) / 255.0f;
+            this->fogColor1[1] = ((col1 >> 8 ) & 0xFF) / 255.0f;
+            this->fogColor1[2] = ((col1 >> 0 ) & 0xFF) / 255.0f;
+            this->fogColor1[3] = 1.0f;
 
             this->width = 1024;
             this->height = 768;
@@ -125,11 +154,14 @@ class RubyDung {
             this->level = std::make_shared<Level>(256, 256, 64);
             this->levelRenderer = std::make_shared<LevelRenderer>(this->level);
             this->player = std::make_shared<Player>(this->level, this->window);
+            this->particleEngine = std::make_shared<ParticleEngine>(this->level, this->window);
 
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
-            for (int i = 0; i < 100; i++) {
-                this->zombies.push_back(Zombie(this->level, this->window, 128.0f, 0.0f, 128.0f));
+            for (int i = 0; i < 10; i++) {
+                Zombie zombie = Zombie(this->level, this->window, 128.0f, 0.0f, 128.0f);
+                zombie.resetPos();
+                this->zombies.push_back(zombie);
             }
         }
 
@@ -143,7 +175,7 @@ class RubyDung {
 
         void run(void) {
             try {
-                init();
+                this->init();
             } catch (const std::exception& e) {
                 std::cerr << "Failed to start RubyDung" << std::endl;
                 exit(EXIT_SUCCESS);
@@ -175,9 +207,16 @@ class RubyDung {
         }
 
         void tick(void) {
+            this->level->tick();
+            this->particleEngine->tick();
+
             for (size_t i = 0; i < this->zombies.size(); i++) {
                 this->zombies[i].tick();
+                if (this->zombies.at(i).removed) {
+                    this->zombies.erase(i--);
+                }
             }
+            
             this->player->tick();
         }
 
@@ -201,6 +240,15 @@ class RubyDung {
             glMatrixMode(GL_MODELVIEW);
             glLoadIdentity();
             moveCameraToPlayer(a);
+        }
+
+        void setupOrthoCamera() {
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0.0f, this->width, this->height, 0.0f, 100.0f, 300.0f);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(0.0f, 0.0f, -200.0f)
         }
 
         void setupPickCamera(float a, int x, int y) {
@@ -260,24 +308,98 @@ class RubyDung {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
             setupCamera(a);
             glEnable(GL_CULL_FACE);
+            Frustum* frustum = Frustum::getFrustum();
+            this->levelRenderer->updateDirtyChunks(this->player);
+            this->setupFog(0);
             glEnable(GL_FOG);
-            glFogi(GL_FOG_MODE, 2048);
-            glFogf(GL_FOG_DENSITY, 0.2f);
-            glFogfv(GL_FOG_COLOR, this->fogColor);
-            glDisable(GL_FOG);
             this->levelRenderer->render(this->player, 0);
+
             for (size_t i = 0; i < this->zombies.size(); i++) {
-                this->zombies[i].render(a);
+                Zombie zombie = this->zombies.at(i);
+                if (zombie.isLit() && frustum->isVisible(zombie.bb)) {
+                    this->zombies[i].render(a);
+                }
             }
-            glEnable(GL_FOG);
+            
+            this->particleEngine->render(this->player, a, 0);
+            this->setupFog(1);
             this->levelRenderer->render(this->player, 1);
+
+            for (int ix = 0; ix < this->zombies.size(); ix++) {
+                Zombie zombie = this->zombies.at(ix);
+                if (!zombie.isLit() && frustum->isVisible(zombie.bb)) {
+                    this->zombies.at(i).render(a);
+                }
+            }
+            
+            this->particleEngine->render(this->player, a, 1);
+            glDisable(GL_LIGHTING);
             glDisable(GL_TEXTURE_2D);
+            glDisable(GL_FOG);
             if (this->hitResult != nullptr) {
                 this->levelRenderer->renderHit(this->hitResult);
             }
-            glDisable(GL_FOG);
+            
+            this->drawGui(a);
             glfwSwapBuffers(this->window);
             glfwPollEvents();
+        }
+
+    private:
+        void drawGui(float a) {
+            glClear(256);
+            this->setupOrthoCamera();
+            glPushMatrix();
+            glTranslatef(this->width - 48, 48.0f, 0.0f);
+            
+            std::shared_ptr<Tesselator> t = Tesselator::instance;
+            glScalef(48.0f, 48.0f, 48.0f);
+            glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
+            glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
+            glTranslatef(1.5f, -0.5f, -0.5f);
+
+            int id = Textures::loadTexture("terrain.png", GL_NEAREST);
+            glBindTexture(GL_TEXTURE_2D, id);
+            glEnable(GL_TEXTURE_2D);
+            t->init();
+            Tile::tiles[this->paintTexture]->render(t, this->level, 0, -2, 0, 0);
+            t->flush();
+            glDisable(GL_TEXTURE_2D);
+            glPopMatrix();
+            int wc = this->width / 2;
+            int hc = this->height / 2;
+            glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
+            t->init();
+            t->vertex(wc + 1, hc - 8, 0.0F);
+            t->vertex(wc - 0, hc - 8, 0.0F);
+            t->vertex(wc - 0, hc + 9, 0.0F);
+            t->vertex(wc + 1, hc + 9, 0.0F);
+            t->vertex(wc + 9, hc - 0, 0.0F);
+            t->vertex(wc - 8, hc - 0, 0.0F);
+            t->vertex(wc - 8, hc + 1, 0.0F);
+            t->vertex(wc + 9, hc + 1, 0.0F);
+            t->flush();
+        }
+
+        void setupFog(int i) {
+            if (i == 0) {
+                glFogi(GL_FOG_MODE, 2048);
+                glFogf(GL_FOG_DENSITY, 0.001f);
+                glFogfv(GL_FOG_COLOR, this->fogColor0);
+                glDisable(GL_LIGHTING);
+            } else if (i == 1) {
+                glFogi(GL_FOG_MODE, 2048);
+                glFogf(GL_FOG_DENSITY, 0.06f);
+                glFogfv(GL_FOG_COLOR, this->fogColor1);
+                glEnable(GL_LIGHTING);
+                glEnable(GL_COLOR_MATERIAL);
+                float br = 0.6f;
+                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(br, br, br, 1.0f));
+            }
+        }
+
+        float* getBuffer(float a, float b, float c, float d) {
+            return float[4](a, b, c, d);
         }
 };
 

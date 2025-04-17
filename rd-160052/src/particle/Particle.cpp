@@ -39,3 +39,20 @@ void Particle::tick() {
         this->zd *= 0.7f;
     }
 }
+
+void Particle::render(std::shared_ptr<Tesselator>& t, float a, float xa, float ya, float za) {
+    float u0 = (this->tex % 16 + this->uo / 4.0f) / 16.0f;
+    float u1 = u0 + (1.0f / 64.0f);
+    float v0 = (this->tex / 16 + this->vo / 4.0f) / 16.0f;
+    float v1 = v0 + (1.0f / 64.0f);
+
+    float r = 0.1f;
+    float x = this->xo + (this->x - this->xo) * a;
+    float y = this->yo + (this->y - this->yo) * a;
+    float z = this->zo + (this->z - this->zo) * a;
+
+    t->vertexUV(x - xa * r, y - ya * r, z - za * r, u0, u1);
+    t->vertexUV(x - xa * r, y + ya * r, z - za * r, u0, u0);
+    t->vertexUV(x + xa * r, y + ya * r, z + za * r, u1, u0);
+    t->vertexUV(x + xa * r, y - ya * r, z + za * r, u1, u1);
+}

@@ -5,6 +5,7 @@
 #include "character/Zombie.hpp"
 #include "level/Level.hpp"
 #include "level/LevelRenderer.hpp"
+#include "particle/ParticleEngine.hpp"
 #include "Timer.hpp"
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);

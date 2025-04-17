@@ -4,6 +4,7 @@
 
 #include "level/Level.hpp"
 #include "level/Tesselator.hpp"
+#include "particle/ParticleEngine.hpp"
 
 class Tile {
     private:
