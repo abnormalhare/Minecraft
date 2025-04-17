@@ -1,6 +1,6 @@
 #include "character/Polygon.hpp"
 
-PolygonRD::PolygonRD(void) {}
+PolygonRD::PolygonRD(void) : vertexCount(0) {}
 
 PolygonRD::PolygonRD(std::vector<Vertex>& vertices)
     : vertices(vertices), vertexCount(vertices.size()) {}

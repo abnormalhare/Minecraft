@@ -1,6 +1,8 @@
 #include "Entity.hpp"
 
 Entity::Entity(std::shared_ptr<Level>& level, GLFWwindow* window) : level(level), window(window) {
+    heightOffset = 0.0f;
+    onGround = false;
     resetPos();
 }
 

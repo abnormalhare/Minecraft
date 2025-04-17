@@ -15,17 +15,22 @@ Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float
 
     this->head = Cube(0, 0);
     this->head.addBox(-4.0f, -8.0f, -4.0f, 8, 8, 8);
+
     this->body = Cube(16, 16);
     this->body.addBox(-4.0f, 0.0f, -2.0f, 8, 12, 4);
+
     this->arm0 = Cube(40, 16);
     this->arm0.addBox(-3.0f, -2.0f, -2.0f, 4, 12, 4);
     this->arm0.setPos(-5.0f, 2.0f, 0.0f);
+
     this->arm1 = Cube(40, 16);
     this->arm1.addBox(-1.0f, -2.0f, -2.0f, 4, 12, 4);
     this->arm1.setPos(5.0f, 2.0f, 0.0f);
+
     this->leg0 = Cube(0, 16);
     this->leg0.addBox(-2.0f, 0.0f, -2.0f, 4, 12, 4);
     this->leg0.setPos(-2.0f, 12.0f, 0.0f);
+
     this->leg1 = Cube(0, 16);
     this->leg1.addBox(-2.0f, 0.0f, -2.0f, 4, 12, 4);
     this->leg1.setPos(2.0f, 12.0f, 0.0f);
@@ -40,8 +45,8 @@ void Zombie::tick(void) {
     float ya = 0.0f;
 
     this->rot += this->rotA;
-    this->rotA *= 0.99;
-    this->rotA = this->rotA + (randd - randd) * randd * randd * 0.01;
+    this->rotA = (double(this->rotA) * 0.99);
+    this->rotA = float(this->rotA + (randd - randd) * randd * randd * 0.01);
 
     xa = sin(this->rot);
     ya = cos(this->rot);
@@ -78,7 +83,7 @@ void Zombie::render(float a) {
     glScalef(size, size, size);
     glTranslatef(0.0f, yy, 0.0f);
 
-    float c = 57.29578f;
+    float c = 180.0 / PI;
     glRotatef(this->rot * c + 180.0f, 0.0f, 1.0f, 0.0f);
 
     this->head.yRot = sin(time * 0.83) * 1.0f;

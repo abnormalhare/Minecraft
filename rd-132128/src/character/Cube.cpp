@@ -79,7 +79,7 @@ void Cube::setPos(float x, float y, float z) {
 }
 
 void Cube::render(void) {
-    float c = 57.29578f;
+    float c = (180.0 / PI);
 
     glPushMatrix();
     
