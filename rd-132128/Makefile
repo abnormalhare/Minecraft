@@ -1,5 +1,5 @@
 CC = g++
-CFLAGS = -g -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall
+CFLAGS = -g -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra
 
 # Directories
 SRC_DIR = src
