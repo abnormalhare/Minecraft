@@ -2,7 +2,10 @@
 
 Entity::Entity(std::shared_ptr<Level>& level, GLFWwindow* window) : level(level), window(window) {
     heightOffset = 0.0f;
+    bbWidth = 0.6f;
+    bbHeight = 1.8f;
     onGround = false;
+    
     resetPos();
 }
 
@@ -15,6 +18,15 @@ void Entity::resetPos(void) {
     float y = this->level->depth + 10;
     float z = randd * this->level->height;
     setPos(x, y, z);
+}
+
+void Entity::remove() {
+    this->removed = true;
+}
+
+void Entity::setSize(float w, float h) {
+    this->bbWidth = w;
+    this->bbHeight = h;
 }
 
 void Entity::setPos(float x, float y, float z) {
@@ -90,4 +102,11 @@ void Entity::moveRelative(float xa, float za, float speed) {
 
     this->xd += xa * _cos - za * _sin;
     this->zd += za * _cos + xa * _sin;
+}
+
+bool Entity::isLit() {
+    int xTile = this->x;
+    int yTile = this->y;
+    int zTile = this->z;
+    return this->level->isLit(xTile, yTile, zTile);
 }

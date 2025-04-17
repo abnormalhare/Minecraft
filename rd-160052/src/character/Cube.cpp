@@ -1,7 +1,7 @@
 #include "character/Cube.hpp"
 
 Cube::Cube(int _xTexOffs, int _yTexOffs)
-    : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs) {}
+    : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs), compiled(false), list(0) {}
 
 void Cube::setTexOffs(int _xTexOffs, int _yTexOffs) {
     this->xTexOffs = _xTexOffs;
@@ -76,7 +76,8 @@ void Cube::setPos(float _x, float _y, float _z) {
     this->z = _z;
 }
 
-void Cube::render(void) {
+void Cube::render() {
+    if (!this->compiled) this->compile();
     float c = (180.0 / PI);
 
     glPushMatrix();
@@ -85,12 +86,19 @@ void Cube::render(void) {
     glRotatef(this->zRot * c, 0.0f, 0.0f, 1.0f);
     glRotatef(this->yRot * c, 0.0f, 1.0f, 0.0f);
     glRotatef(this->xRot * c, 1.0f, 0.0f, 0.0f);
+    glCallList(this->list);
+    glPopMatrix();
+}
+
+void Cube::compile() {
+    this->list = glGenLists(1);
+    glNewList(this->list, GL_COMPILE);
 
     glBegin(7);
-    for (size_t i = 0; i < this->polygons.size(); i++) {
+    for (int i = 0; i < this->polygons.size(); i++) {
         this->polygons[i].render();
     }
     glEnd();
-
-    glPopMatrix();
+    glEndList();
+    this->compiled = true;
 }

@@ -19,7 +19,7 @@ void PolygonRD::render(void) {
 
     for (int i = 3; i >= 0; i--) {
         Vertex v = vertices[i];
-        glTexCoord2f(v.u / 64.0f, v.v / 32.0f);
+        glTexCoord2f(v.u / 63.999f, v.v / 31.999f);
         glVertex3f(v.pos.x, v.pos.y, v.pos.z);
     }
 }

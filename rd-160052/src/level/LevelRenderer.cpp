@@ -2,9 +2,7 @@
 
 LevelRenderer::LevelRenderer(void) {}
 
-LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) {
-    this->t = std::make_unique<Tesselator>();
-    this->level = level;
+LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) : level(level) {
     this->level->addListener(this);
 
     this->xChunks = level->width / CHUNK_SIZE;
@@ -32,18 +30,51 @@ LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) {
     }
 }
 
+std::vector<std::shared_ptr<Chunk>> LevelRenderer::getAllDirtyChunks() {
+    std::vector<std::shared_ptr<Chunk>> dirty = std::vector<std::shared_ptr<Chunk>>();
+    Frustum* frustum = Frustum::getFrustum();
+
+    for (int i = 0; i < this->chunks.size(); i++) {
+        std::shared_ptr<Chunk> chunk = this->chunks[i];
+        if (chunk->isDirty()) {
+            dirty.push_back(chunk);
+        }
+    }
+
+    return dirty;
+}
+
 void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) {
-    Chunk::rebuiltThisFrame = 0;
+    glEnable(GL_TEXTURE_2D);
+    int id = Textures::loadTexture("terrain.png", GL_NEAREST);
+    glBindTexture(GL_TEXTURE_2D, id);
     Frustum* frustum = Frustum::getFrustum();
 
     for (int i = 0; i < xChunks * yChunks * zChunks; i++) {
-        if (frustum->cubeInFrustum(this->chunks[i]->aabb)) {
+        if (frustum->isVisible(this->chunks[i]->aabb)) {
             this->chunks[i]->render(layer);
+        }
+    }
+
+    glDisable(GL_TEXTURE_2D);
+}
+
+bool comp(int a, int b){return a > b;}
+
+void LevelRenderer::updateDirtyChunks(std::unique_ptr<Player>& player) {
+    std::vector<std::shared_ptr<Chunk>> dirty = this->getAllDirtyChunks();
+
+    if (dirty.size() != 0) {
+        std::sort(dirty.begin(), dirty.end(), DirtyChunkSorter::compare);
+
+        for (int i = 0; i < 8 && i < dirty.size(); i++) {
+            dirty.at(i)->rebuild();
         }
     }
 }
 
 void LevelRenderer::pick(std::shared_ptr<Player>& player) {
+    std::shared_ptr<Tesselator> t = Tesselator::instance;
     float r = 3.0f;
     AABB box = player->bb.grow(r, r, r);
 
@@ -61,13 +92,15 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player) {
             glPushName(y);
             for (int z = z0; z < z1; z++) {
                 glPushName(z);
-                if (this->level->isSolidTile(x, y, z)) {
+                
+                Tile* tile = Tile::tiles[this->level->getTile(x, y, z)];
+                if (tile != nullptr) {
                     glPushName(0);
                     for (int i = 0; i < 6; i++) {
                         glPushName(i);
-                        this->t->init();
-                        Tile::rock->renderFace(this->t, x, y, z, i);
-                        this->t->flush();
+                        t->init();
+                        Tile::rock->renderFace(t, x, y, z, i);
+                        t->flush();
                         glPopName();
                     }
                     glPopName();
@@ -81,6 +114,8 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player) {
 }
 
 void LevelRenderer::renderHit(std::unique_ptr<HitResult>& h) {
+    std::shared_ptr<Tesselator> t = Tesselator::instance;
+
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
@@ -88,9 +123,9 @@ void LevelRenderer::renderHit(std::unique_ptr<HitResult>& h) {
     float alpha = sin(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
-    this->t->init();
-    Tile::rock->renderFace(this->t, h->x, h->y, h->z, h->f);
-    this->t->flush();
+    t->init();
+    Tile::rock->renderFace(t, h->x, h->y, h->z, h->f);
+    t->flush();
     glDisable(GL_BLEND);
 }
 

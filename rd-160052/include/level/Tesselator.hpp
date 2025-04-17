@@ -1,25 +1,31 @@
 #pragma once
 
+#include <cstring>
 #include <GLFW/glfw3.h>
 #include "base.hpp"
 
 class Tesselator {
     private:
-        static const int MAX_VERTICES = 100000;
-        float vertexBuffer[MAX_VERTICES * 3];
-        float texCoordBuffer[MAX_VERTICES * 2];
-        float colorBuffer[MAX_VERTICES * 3];
-        std::int32_t vertices = 0;
+        static const int MAX_MEMORY_USE = 4194304;
+        static const int MAX_FLOATS = 524288;
+        float buffer[MAX_FLOATS];
+        std::int32_t vertices;
         float u, v;
         float r, g, b;
         bool hasColor = false;
         bool hasTexture = false;
+        int len;
+        int p;
+
+        Tesselator();
         
     public:
+        static std::shared_ptr<Tesselator> instance;
         void flush(void);
         void clear(void);
         void init(void);
         void tex(float u, float v);
         void color(float r, float g, float b);
+        void vertexUV(float x, float y, float z, float u, float v);
         void vertex(float x, float y, float z);
 };

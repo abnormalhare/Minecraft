@@ -5,8 +5,12 @@
 #include "Textures.hpp"
 #include "Timer.hpp"
 #include "character/Cube.hpp"
+#include "character/ZombieModel.hpp"
 
 class Zombie : public Entity {
+    private:
+        static ZombieModel zombieModel;
+
     public:
         Cube head;
         Cube body;

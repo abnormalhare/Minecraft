@@ -12,6 +12,11 @@ class Cube {
         std::array<Vertex, 8> vertices;
         std::array<PolygonRD, 6> polygons;
         int xTexOffs, yTexOffs;
+
+        bool compiled;
+        int list;
+
+        void compile();
     
     public:
         float x, y, z;

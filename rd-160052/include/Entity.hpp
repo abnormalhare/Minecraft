@@ -11,12 +11,14 @@ class Entity {
         std::shared_ptr<Level> level;
         GLFWwindow* window;
 
-        void setPos(float x, float y, float z);
         
     protected:
-        float heightOffset = 0.0f;
+        float heightOffset;
+        float bbWidth, bbHeight;
 
-        void resetPos(void);
+        void setSize(float w, float h);
+        void setPos(float x, float y, float z);
+        void resetPos();
 
     public:
         float xo, yo, zo;
@@ -25,11 +27,14 @@ class Entity {
         float yRot, xRot;
         AABB bb;
         bool onGround = false;
+        bool removed = false;
         
         Entity(std::shared_ptr<Level>& level, GLFWwindow* window);
         GLFWwindow* getWindow(void);
+        void remove();
         void turn(float xo, float yo);
         void tick(void);
         void move(float xa, float ya, float za);
         void moveRelative(float xa, float za, float speed);
+        bool isLit();
 };
