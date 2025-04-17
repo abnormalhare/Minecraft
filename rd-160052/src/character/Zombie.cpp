@@ -1,5 +1,7 @@
 #include "character/Zombie.hpp"
 
+ZombieModel Zombie::zombieModel;
+
 Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float y, float z) : Entity(level, window) {
     this->rotA = (randd + 1.0) * 0.01f;
     zombieModel = ZombieModel();

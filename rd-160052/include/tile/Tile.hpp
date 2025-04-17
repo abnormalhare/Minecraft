@@ -12,12 +12,11 @@ class Tile {
         bool shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer);
 
     protected:
-
+        Tile(std::int32_t id);
+        Tile(std::int32_t id, std::int32_t tex);
         std::int32_t getTexture(std::int32_t face);
     
     public:
-        Tile(std::int32_t id);
-        Tile(std::int32_t id, std::int32_t tex);
         
         static Tile* tiles[256];
         static Tile* empty;

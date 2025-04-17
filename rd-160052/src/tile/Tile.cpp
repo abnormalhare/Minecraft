@@ -3,12 +3,13 @@
 #include "tile/DirtTile.hpp"
 #include "tile/GrassTile.hpp"
 
-Tile* empty = nullptr;
-Tile* rock = new Tile(1, 1);
-Tile* grass = new GrassTile(2);
-Tile* dirt = new DirtTile(3, 2);
-Tile* stoneBrick = new Tile(4, 16);
-Tile* wood = new Tile(5, 4);
+Tile* Tile::tiles[256];
+Tile* Tile::empty = nullptr;
+Tile* Tile::rock = new Tile(1, 1);
+Tile* Tile::grass = new GrassTile(2);
+Tile* Tile::dirt = new DirtTile(3, 2);
+Tile* Tile::stoneBrick = new Tile(4, 16);
+Tile* Tile::wood = new Tile(5, 4);
 
 Tile::Tile(std::int32_t id) : id(id) {
     tiles[id] = this;
