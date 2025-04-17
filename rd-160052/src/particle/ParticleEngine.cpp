@@ -33,7 +33,7 @@ void ParticleEngine::render(std::shared_ptr<Player>& player, float a, int layer)
 
     for (int i = 0; this->particles.size(); i++) {
         Particle p = this->particles.at(i);
-        if ((p.isLit() ^ layer) == 1) {
+        if (p.isLit() ^ (layer == 1)) {
             p.render(t, a, xa, ya, za);
         }
     }

@@ -51,7 +51,7 @@ void Tile::render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level,
 }
 
 bool Tile::shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer) {
-    return !level->isSolidTile(x, y, z) && (level->isLit(x, y, z) ^ layer) == 1;
+    return !level->isSolidTile(x, y, z) && level->isLit(x, y, z) ^ (layer == 1);
 }
 
 std::int32_t Tile::getTexture(UNUSED std::int32_t face) {
