@@ -11,8 +11,8 @@ Chunk::Chunk(std::shared_ptr<Level>& level, int x0, int y0, int z0, int x1, int 
     x((x0+x1)/2.0f), y((y0+y1)/2.0f), z((z0+z1)/2.0f)
 {
     dirty = true;
-    lists = 1;
     dirtiedTime = 0;
+    lists = glGenLists(2);
 }
 
 void Chunk::rebuild(std::int32_t layer) {

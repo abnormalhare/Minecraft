@@ -340,8 +340,8 @@ class RubyDung {
             if (this->hitResult != nullptr) {
                 this->levelRenderer->renderHit(this->hitResult);
             }
-            
             this->drawGui(a);
+            
             glfwSwapBuffers(this->window);
             glfwPollEvents();
         }
@@ -395,7 +395,9 @@ class RubyDung {
                 glEnable(GL_LIGHTING);
                 glEnable(GL_COLOR_MATERIAL);
                 float br = 0.6f;
-                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(br, br, br, 1.0f));
+                float* buf = this->getBuffer(br, br, br, 1.0f);
+                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, buf);
+                delete buf;
             }
         }
 

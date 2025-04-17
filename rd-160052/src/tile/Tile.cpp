@@ -59,10 +59,10 @@ std::int32_t Tile::getTexture(UNUSED std::int32_t face) {
 }
 
 void Tile::renderFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
-    int tex = this->getTexture(face);
-    float u0 = tex % 16 / 16.0f;
+    int _tex = this->getTexture(face);
+    float u0 = _tex % 16 / 16.0f;
     float u1 = u0 + 0.0624375f;
-    float v0 = tex / 16 / 16.0f;
+    float v0 = _tex / 16 / 16.0f;
     float v1 = v0 + 0.0624375f;
 
     float x0 = x + 0.0f;

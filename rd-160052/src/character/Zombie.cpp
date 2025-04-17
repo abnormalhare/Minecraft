@@ -53,7 +53,7 @@ void Zombie::render(float a) {
     glBindTexture(GL_TEXTURE_2D, Textures::loadTexture("char.png", GL_NEAREST));
     glPushMatrix();
 
-    double time =  Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
+    double time = Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
     float size = 0.058333334f;
     float yy = abs(sin(time * 0.6662)) * 5.0 - 23.0;
 

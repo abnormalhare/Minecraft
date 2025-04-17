@@ -5,7 +5,7 @@
 
 class GrassTile : public Tile {
     protected:
-        int getTexture(int face);
+        std::int32_t getTexture(std::int32_t face) override;
     
     public:
         GrassTile(int id);

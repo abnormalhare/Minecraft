@@ -1,12 +1,13 @@
 #include "tile/GrassTile.hpp"
 
 GrassTile::GrassTile(int id) : Tile(id) {
-    this->tex = 3;
+    this->tex = 0;
 }
 
-int GrassTile::getTexture(int face) {
+std::int32_t GrassTile::getTexture(std::int32_t face) {
     if (face == 1) return 0;
-    else return face == 0 ? 2 : 3;
+    else if (face == 0) return 2;
+    else return 3;
 }
 
 void GrassTile::tick(std::shared_ptr<Level>& level, int x, int y, int z, std::mt19937 random) {

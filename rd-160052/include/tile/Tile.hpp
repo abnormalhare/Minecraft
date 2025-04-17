@@ -14,7 +14,7 @@ class Tile {
     protected:
         Tile(std::int32_t id);
         Tile(std::int32_t id, std::int32_t tex);
-        std::int32_t getTexture(std::int32_t face);
+        virtual std::int32_t getTexture(std::int32_t face);
     
     public:
         
