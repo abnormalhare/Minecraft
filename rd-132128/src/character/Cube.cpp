@@ -2,12 +2,12 @@
 
 Cube::Cube(void) {}
 
-Cube::Cube(int xTexOffs, int yTexOffs)
-    : xTexOffs(xTexOffs), yTexOffs(yTexOffs) {}
+Cube::Cube(int _xTexOffs, int _yTexOffs)
+    : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs) {}
 
-void Cube::setTexOffs(int xTexOffs, int yTexOffs) {
-    this->xTexOffs = xTexOffs;
-    this->yTexOffs = yTexOffs;
+void Cube::setTexOffs(int _xTexOffs, int _yTexOffs) {
+    this->xTexOffs = _xTexOffs;
+    this->yTexOffs = _yTexOffs;
 }
 
 void Cube::addBox(float x0, float y0, float z0, int w, int h, int d) {
@@ -72,10 +72,10 @@ void Cube::addBox(float x0, float y0, float z0, int w, int h, int d) {
     );
 }
 
-void Cube::setPos(float x, float y, float z) {
-    this->x = x;
-    this->y = y;
-    this->z = z;
+void Cube::setPos(float _x, float _y, float _z) {
+    this->x = _x;
+    this->y = _y;
+    this->z = _z;
 }
 
 void Cube::render(void) {

@@ -45,7 +45,7 @@ void Zombie::tick(void) {
     float ya = 0.0f;
 
     this->rot += this->rotA;
-    this->rotA = (double(this->rotA) * 0.99);
+    this->rotA *= 0.99;
     this->rotA = float(this->rotA + (randd - randd) * randd * randd * 0.01);
 
     xa = sin(this->rot);
@@ -74,7 +74,7 @@ void Zombie::render(float a) {
     glBindTexture(GL_TEXTURE_2D, Textures::loadTexture("char.png", GL_NEAREST));
     glPushMatrix();
 
-    double time = 0; // Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
+    double time =  Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;
     float size = 0.058333334f;
     float yy = abs(sin(time * 0.6662)) * 5.0 - 23.0;
 
