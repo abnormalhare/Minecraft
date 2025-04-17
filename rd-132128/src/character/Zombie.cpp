@@ -24,7 +24,7 @@ Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float
     this->arm0.setPos(-5.0f, 2.0f, 0.0f);
 
     this->arm1 = Cube(40, 16);
-    this->arm1.addBox(-1.0f, -2.0f, -2.0f, 4, 12, 4);
+    this->arm1.addBox(-3.0f, -2.0f, -2.0f, 4, 12, 4);
     this->arm1.setPos(5.0f, 2.0f, 0.0f);
 
     this->leg0 = Cube(0, 16);
