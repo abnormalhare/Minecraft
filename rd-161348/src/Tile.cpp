@@ -2,6 +2,7 @@
 
 #include "tile/DirtTile.hpp"
 #include "tile/GrassTile.hpp"
+#include "tile/Bush.hpp"
 
 Tile* Tile::tiles[256];
 Tile* Tile::empty = nullptr;
@@ -10,6 +11,7 @@ Tile* Tile::grass = new GrassTile(2);
 Tile* Tile::dirt = new DirtTile(3, 2);
 Tile* Tile::stoneBrick = new Tile(4, 16);
 Tile* Tile::wood = new Tile(5, 4);
+Tile* Tile::bush = new Bush(6);
 
 Tile::Tile(std::int32_t id) : id(id) {
     tiles[id] = this;
@@ -159,6 +161,10 @@ void Tile::renderFaceNoTexture(std::shared_ptr<Tesselator>& t, std::int32_t x, s
         t->vertex(x1, y1, z0);
         t->vertex(x1, y1, z1);
     }
+}
+
+const std::shared_ptr<AABB> Tile::getTileAABB(std::int32_t x, std::int32_t y, std::int32_t z) {
+    return std::make_shared<AABB>(x, y, z, x + 1, y + 1, z + 1);
 }
 
 std::shared_ptr<AABB> Tile::getAABB(std::int32_t x, std::int32_t y, std::int32_t z) {

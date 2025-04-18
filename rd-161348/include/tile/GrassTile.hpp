@@ -10,5 +10,5 @@ class GrassTile : public Tile {
     public:
         GrassTile(int id);
         
-        void tick(std::shared_ptr<Level>& level, int x, int y, int z, std::mt19937 random);
+        void tick(std::shared_ptr<Level>& level, int x, int y, int z, std::mt19937 random) override;
 };

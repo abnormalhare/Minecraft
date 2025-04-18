@@ -154,7 +154,7 @@ std::vector<AABB> Level::getCubes(AABB& aabb) {
                 Tile* tile = Tile::tiles[this->getTile(x, y, z)];
                 if (tile != nullptr) {
                     std::shared_ptr<AABB> c = tile->getAABB(x, y, z);
-                    aABBs.push_back(*c);
+                    if (c != nullptr) aABBs.push_back(*c);
                 }
             }
         }

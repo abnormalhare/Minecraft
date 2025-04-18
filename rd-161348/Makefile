@@ -14,10 +14,11 @@ PHYS_DIR = $(SRC_DIR)/phys
 CHAR_DIR = $(SRC_DIR)/character
 TILE_DIR = $(SRC_DIR)/tile
 PART_DIR = $(SRC_DIR)/particle
+MC_DIR = $(SRC_DIR)/minecraft
 OBJ_DIR = build
 
 # Files
-C_FILES = $(wildcard $(SRC_DIR)/*.cpp $(LEVEL_DIR)/*.cpp $(PHYS_DIR)/*.cpp $(CHAR_DIR)/*.cpp $(TILE_DIR)/*.cpp $(PART_DIR)/*.cpp)
+C_FILES = $(wildcard $(SRC_DIR)/*.cpp $(LEVEL_DIR)/*.cpp $(PHYS_DIR)/*.cpp $(CHAR_DIR)/*.cpp $(TILE_DIR)/*.cpp $(PART_DIR)/*.cpp $(MC_DIR)/*.cpp)
 OBJ_FILES = $(C_FILES:.cpp=.o)
 
 # Build

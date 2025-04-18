@@ -71,7 +71,7 @@ void LevelRenderer::updateDirtyChunks(std::shared_ptr<Player>& player) {
     }
 }
 
-void LevelRenderer::pick(std::shared_ptr<Player>& player) {
+void LevelRenderer::pick(std::shared_ptr<Player>& player, Frustum* frustum) {
     std::shared_ptr<Tesselator> t = Tesselator::instance;
     float r = 3.0f;
     AABB box = player->bb.grow(r, r, r);
@@ -84,31 +84,36 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player) {
     int z1 = (int)(box.z1 + 1.0f);
 
     glInitNames();
+    glPushName(0);
+    glPushName(0);
     for (int x = x0; x < x1; x++) {
-        glPushName(x);
+        glLoadName(x);
+        glPushName(0);
         for (int y = y0; y < y1; y++) {
-            glPushName(y);
+            glLoadName(y);
+            glPushName(0);
             for (int z = z0; z < z1; z++) {
-                glPushName(z);
-                
                 Tile* tile = Tile::tiles[this->level->getTile(x, y, z)];
-                if (tile != nullptr) {
+                std::shared_ptr<AABB> aabb = tile->getTileAABB(x, y, z);
+                if (tile != nullptr && frustum->isVisible(*aabb)) {
+                    glLoadName(z);
                     glPushName(0);
+
                     for (int i = 0; i < 6; i++) {
-                        glPushName(i);
+                        glLoadName(i);
                         t->init();
                         Tile::rock->renderFaceNoTexture(t, x, y, z, i);
                         t->flush();
-                        glPopName();
                     }
                     glPopName();
                 }
-                glPopName();
             }
             glPopName();
         }
         glPopName();
     }
+    glPopName();
+    glPopName();
 }
 
 void LevelRenderer::renderHit(std::unique_ptr<HitResult>& h) {
@@ -117,8 +122,8 @@ void LevelRenderer::renderHit(std::unique_ptr<HitResult>& h) {
     glEnable(GL_BLEND);
     glBlendFunc(GL_SRC_ALPHA, GL_ONE);
 
-    int time = Timer::getTimeInMilliSeconds();      // for some reason this doesnt work
-    float alpha = sin(time / 100.0) * 0.2f + 0.4f; // unless i split it up like this
+    int64_t time = Timer::getTimeInMilliSeconds();         // for some reason this doesnt work
+    float alpha = (sin(time / 100.0) * 0.2f + 0.4f) * 0.5; // unless i split it up like this
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
     t->init();

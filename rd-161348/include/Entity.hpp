@@ -33,7 +33,7 @@ class Entity {
         void resetPos();
         void remove();
         void turn(float xo, float yo);
-        void tick(void);
+        void tick();
         void move(float xa, float ya, float za);
         void moveRelative(float xa, float za, float speed);
         bool isLit();

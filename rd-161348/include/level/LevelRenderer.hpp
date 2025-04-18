@@ -28,7 +28,7 @@ class LevelRenderer: public LevelListener {
         std::vector<std::shared_ptr<Chunk>> getAllDirtyChunks();
         void render(std::shared_ptr<Player>& player, std::int32_t layer);
         void updateDirtyChunks(std::shared_ptr<Player>& player);
-        void pick(std::shared_ptr<Player>& player);
+        void pick(std::shared_ptr<Player>& player, Frustum* frustum);
         void renderHit(std::unique_ptr<HitResult>& h);
         void setDirty(std::int32_t x0, std::int32_t y0, std::int32_t z0, std::int32_t x1, std::int32_t y1, std::int32_t z1);
         void tileChanged(std::int32_t x, std::int32_t y, std::int32_t z) override;

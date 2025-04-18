@@ -30,15 +30,17 @@ class RubyDung {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-            if (isFullscreen) {
-                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
-
+            GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+            if (!this->width || !this->height) {
                 const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
                 this->width = vidMode->width;
                 this->height = vidMode->height;
-                
+            }
+
+            if (isFullscreen) {
                 this->window = glfwCreateWindow(this->width, this->height, "Game", monitor, NULL);
             } else {
+                
                 this->window = glfwCreateWindow(this->width, this->height, "Game", NULL, NULL);
             }
             if (!this->window) {
@@ -123,6 +125,9 @@ class RubyDung {
             if (key == GLFW_KEY_4) {
                 this->paintTexture = 5;
             }
+            if (key == GLFW_KEY_6) {
+                this->paintTexture = 6;
+            }
             if (key == GLFW_KEY_G) {
                 std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, this->player->x, this->player->y, this->player->z);
                 this->zombies.push_back(zombie);
@@ -150,7 +155,8 @@ class RubyDung {
             this->fogColor1[2] = ((col1 >> 0 ) & 0xFF) / 255.0f;
             this->fogColor1[3] = 1.0f;
 
-            this->setFullscreen(true);
+            this->width = this->height = 0;
+            this->setFullscreen(false);
             cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
             glfwSetCursor(this->window, this->cursor);
 
@@ -160,6 +166,8 @@ class RubyDung {
             glClearDepth(1.0f);
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LEQUAL);
+            glEnable(GL_ALPHA_TEST);
+            glAlphaFunc(GL_GREATER, 0);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
@@ -255,15 +263,6 @@ class RubyDung {
             moveCameraToPlayer(a);
         }
 
-        void setupOrthoCamera() {
-            glMatrixMode(GL_PROJECTION);
-            glLoadIdentity();
-            glOrtho(0.0f, this->width, this->height, 0.0f, 100.0f, 300.0f);
-            glMatrixMode(GL_MODELVIEW);
-            glLoadIdentity();
-            glTranslatef(0.0f, 0.0f, -200.0f);
-        }
-
         void setupPickCamera(float a, int x, int y) {
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
@@ -281,7 +280,7 @@ class RubyDung {
             glSelectBuffer(2000, this->selectBuffer);
             glRenderMode(GL_SELECT);
             setupPickCamera(a, this->width / 2, this->height / 2);
-            levelRenderer->pick(this->player);
+            levelRenderer->pick(this->player, Frustum::getFrustum());
             
             int hits = glRenderMode(GL_RENDER);
             std::int64_t closest = 0;
@@ -350,7 +349,9 @@ class RubyDung {
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_FOG);
             if (this->hitResult != nullptr) {
+                glEnable(GL_ALPHA_TEST);
                 this->levelRenderer->renderHit(this->hitResult);
+                glDisable(GL_ALPHA_TEST);
             }
             this->drawGui(a);
             
@@ -360,16 +361,24 @@ class RubyDung {
 
     private:
         void drawGui(UNUSED float a) {
+            int screenWidth = this->width * 240 / this->height;
+            int screenHeight = this->height * 240 / this->height;
             glClear(256);
-            this->setupOrthoCamera();
+            glMatrixMode(GL_PROJECTION);
+            glLoadIdentity();
+            glOrtho(0.0, screenWidth, screenHeight, 0.0, 100.0, 300.0);
+            glMatrixMode(GL_MODELVIEW);
+            glLoadIdentity();
+            glTranslatef(0.0f, 0.0f, -200.0f);
             glPushMatrix();
-            glTranslatef(this->width - 48, 48.0f, 0.0f);
+            glTranslatef(screenWidth - 16, 16.0f, 0.0f);
             
             std::shared_ptr<Tesselator> t = Tesselator::instance;
-            glScalef(48.0f, 48.0f, 48.0f);
+            glScalef(16.0f, 16.0f, 16.0f);
             glRotatef(30.0f, 1.0f, 0.0f, 0.0f);
             glRotatef(45.0f, 0.0f, 1.0f, 0.0f);
-            glTranslatef(1.5f, -0.5f, -0.5f);
+            glTranslatef(-1.5f, 0.5f, -0.5f);
+            glScalef(-1.0f, -1.0f, 1.0f);
 
             int id = Textures::loadTexture("terrain.png", GL_NEAREST);
             glBindTexture(GL_TEXTURE_2D, id);
@@ -379,18 +388,19 @@ class RubyDung {
             t->flush();
             glDisable(GL_TEXTURE_2D);
             glPopMatrix();
-            int wc = this->width / 2;
-            int hc = this->height / 2;
+
+            int wc = screenWidth / 2;
+            int hc = screenHeight / 2;
             glColor4f(1.0f, 1.0f, 1.0f, 1.0f);
             t->init();
-            t->vertex(wc + 1, hc - 8, 0.0F);
-            t->vertex(wc - 0, hc - 8, 0.0F);
-            t->vertex(wc - 0, hc + 9, 0.0F);
-            t->vertex(wc + 1, hc + 9, 0.0F);
-            t->vertex(wc + 9, hc - 0, 0.0F);
-            t->vertex(wc - 8, hc - 0, 0.0F);
-            t->vertex(wc - 8, hc + 1, 0.0F);
-            t->vertex(wc + 9, hc + 1, 0.0F);
+            t->vertex(wc + 1, hc - 4, 0.0F);
+            t->vertex(wc - 0, hc - 4, 0.0F);
+            t->vertex(wc - 0, hc + 5, 0.0F);
+            t->vertex(wc + 1, hc + 5, 0.0F);
+            t->vertex(wc + 5, hc - 0, 0.0F);
+            t->vertex(wc - 4, hc - 0, 0.0F);
+            t->vertex(wc - 4, hc + 1, 0.0F);
+            t->vertex(wc + 5, hc + 1, 0.0F);
             t->flush();
         }
 

@@ -90,7 +90,7 @@ void Tesselator::vertex(float x, float y, float z) {
     this->buffer[this->p++] = y;
     this->buffer[this->p++] = z;
     this->vertices++;
-    if (this->p >= MAX_FLOATS - this->len) {
+    if (this->vertices % 4 == 0 && this->p >= MAX_FLOATS - this->len * 4) {
         flush();
     }
 }

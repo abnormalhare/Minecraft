@@ -33,7 +33,7 @@ build
 
 # Executables
 *.exe
-Minecraft
+./Minecraft
 *.out
 *.app
 
