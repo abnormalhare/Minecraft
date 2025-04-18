@@ -80,7 +80,11 @@ class RubyDung {
         void mouseButtonCallback(UNUSED GLFWwindow* window, int button, int action, UNUSED int mods) {
             if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
                 if (this->hitResult != nullptr) {
-                    this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
+                    Tile* oldTile = Tile::tiles[this->level->getTile(this->hitResult->x, this->hitResult->y, this->hitResult->z)];
+                    bool changed = this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
+                    if (oldTile != nullptr && changed) {
+                        oldTile->destroy(this->level, this->window, this->hitResult->x, this->hitResult->y, this->hitResult->z, this->particleEngine);
+                    } 
                 }
             }
             if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {

@@ -5,6 +5,7 @@ Entity::Entity(std::shared_ptr<Level>& level, GLFWwindow* window) : level(level)
     bbWidth = 0.6f;
     bbHeight = 1.8f;
     onGround = false;
+    removed = false;
     
     resetPos();
 }

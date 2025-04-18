@@ -31,7 +31,7 @@ void ParticleEngine::render(std::shared_ptr<Player>& player, float a, int layer)
     glColor4f(0.8f, 0.8f, 0.8f, 1.0f);
     t->init();
 
-    for (int i = 0; this->particles.size(); i++) {
+    for (size_t i = 0; i < this->particles.size(); i++) {
         Particle p = this->particles.at(i);
         if (p.isLit() ^ (layer == 1)) {
             p.render(t, a, xa, ya, za);
