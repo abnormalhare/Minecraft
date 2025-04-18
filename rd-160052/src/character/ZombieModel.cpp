@@ -24,7 +24,7 @@ ZombieModel::ZombieModel() {
     this->leg1.setPos(2.0f, 12.0f, 0.0f);
 }
 
-void ZombieModel::render(float time) {
+void ZombieModel::render(double time) {
     this->head.yRot = sin(time * 0.83) * 1.0f;
     this->head.xRot = sin(time) * 0.8f;
     this->arm0.xRot = sin(time * 0.6662 + PI) * 2.0f;

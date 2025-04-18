@@ -1,7 +1,11 @@
 #include "character/Cube.hpp"
 
 Cube::Cube(int _xTexOffs, int _yTexOffs)
-    : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs), compiled(false), list(0) {}
+    : xTexOffs(_xTexOffs), yTexOffs(_yTexOffs)
+{
+    this->compiled = false;
+    this->list = 0;
+}
 
 void Cube::setTexOffs(int _xTexOffs, int _yTexOffs) {
     this->xTexOffs = _xTexOffs;

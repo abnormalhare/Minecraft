@@ -20,7 +20,7 @@ Level::Level(std::int32_t w, std::int32_t h, std::int32_t d) :
         this->generateMap();
     }
 
-    calcLightDepths(0, 0, w, h);
+    this->calcLightDepths(0, 0, w, h);
 }
 
 void Level::generateMap() {
@@ -99,7 +99,7 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
             std::int32_t oldDepth = this->lightDepths[x + z * this->width];
             std::int32_t y = this->depth - 1;
 
-            while (y > 0 && !isLightBlocker(x, y, z)) {
+            while (y > 0 && !this->isLightBlocker(x, y, z)) {
                 y--;
             }
             this->lightDepths[x + z * this->width] = y;

@@ -58,8 +58,6 @@ void LevelRenderer::render(UNUSED std::shared_ptr<Player>& player, std::int32_t 
     glDisable(GL_TEXTURE_2D);
 }
 
-bool comp(int a, int b){return a > b;}
-
 void LevelRenderer::updateDirtyChunks(std::shared_ptr<Player>& player) {
     std::vector<std::shared_ptr<Chunk>> dirty = this->getAllDirtyChunks();
 
@@ -99,7 +97,7 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player) {
                     for (int i = 0; i < 6; i++) {
                         glPushName(i);
                         t->init();
-                        Tile::rock->renderFace(t, x, y, z, i);
+                        Tile::rock->renderFaceNoTexture(t, x, y, z, i);
                         t->flush();
                         glPopName();
                     }

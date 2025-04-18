@@ -14,5 +14,5 @@ class ZombieModel {
 
         ZombieModel();
 
-        void render(float time);
+        void render(double time);
 };

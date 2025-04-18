@@ -34,8 +34,8 @@ void Entity::setPos(float x, float y, float z) {
     this->x = x;
     this->y = y;
     this->z = z;
-    float w = 0.3f;
-    float h = 0.9f;
+    float w = this->bbWidth / 2.0;
+    float h = this->bbHeight / 2.0;
     this->bb = AABB(x - w, y - h, z - w, x + w, y + h, z + w);
 }
 

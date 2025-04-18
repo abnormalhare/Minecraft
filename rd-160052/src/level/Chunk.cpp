@@ -2,11 +2,11 @@
 
 std::shared_ptr<Tesselator> Chunk::t = Tesselator::instance;
 std::int32_t Chunk::updates = 0;
-std::int32_t Chunk::totalUpdates = 0;
 std::int64_t Chunk::totalTime = 0;
+std::int32_t Chunk::totalUpdates = 0;
 
 Chunk::Chunk(std::shared_ptr<Level>& level, int x0, int y0, int z0, int x1, int y1, int z1)
-    : lists(glGenLists(2)), aabb(x0, y0, z0, x1, y1, z1), level(level),
+    : aabb(x0, y0, z0, x1, y1, z1), level(level),
     x0(x0), y0(y0), z0(z0), x1(x1), y1(y1), z1(z1),
     x((x0+x1)/2.0f), y((y0+y1)/2.0f), z((z0+z1)/2.0f)
 {

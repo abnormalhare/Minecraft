@@ -100,7 +100,7 @@ class RubyDung {
                     if (this->hitResult->f == 4) x--;
                     if (this->hitResult->f == 5) x++;
 
-                    this->level->setTile(x, y, z, 1);
+                    this->level->setTile(x, y, z, this->paintTexture);
                 }
             }
         }
