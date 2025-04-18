@@ -94,7 +94,7 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player, Frustum* frustum) {
             glPushName(0);
             for (int z = z0; z < z1; z++) {
                 Tile* tile = Tile::tiles[this->level->getTile(x, y, z)];
-                std::shared_ptr<AABB> aabb = tile->getTileAABB(x, y, z);
+                const std::shared_ptr<AABB> aabb = tile->getTileAABB(x, y, z);
                 if (tile != nullptr && frustum->isVisible(*aabb)) {
                     glLoadName(z);
                     glPushName(0);
