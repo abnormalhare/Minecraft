@@ -1,8 +1,10 @@
 CXX ?= g++
 ifeq ($(OS), Windows_NT)
 CXXFLAGS += -g -Og -std=c++17 -DWIN -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
+MKDIR = mkdir
 else
 CXXFLAGS += -g -Og -std=c++17 -Iinclude -lglfw -lz -lOpenGL -lGLU -m64 -Wall -Wextra -Werror
+MKDIR = mkdir -p
 endif
 
 # Directories
@@ -37,4 +39,7 @@ $(EXEC): $(OBJ_FILES)
 clean:
 	rm -f $(OBJ_FILES) $(EXEC)
 
-.PHONY: clean
+init:
+	$(MKDIR) $(OBJ_DIR)
+
+.PHONY: clean init
