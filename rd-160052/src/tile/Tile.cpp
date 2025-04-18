@@ -180,7 +180,7 @@ void Tile::destroy(std::shared_ptr<Level>& level, GLFWwindow* window, std::int32
                 float xp = x + (xx + 0.5f) / SD;
                 float yp = y + (yy + 0.5f) / SD;
                 float zp = z + (zz + 0.5f) / SD;
-                Particle p = Particle(level, window, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, this->tex);
+                std::shared_ptr<Particle> p = std::make_shared<Particle>(level, window, xp, yp, zp, xp - x - 0.5f, yp - y - 0.5f, zp - z - 0.5f, this->tex);
                 particleEngine->add(p);
             }
         }

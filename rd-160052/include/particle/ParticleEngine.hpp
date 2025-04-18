@@ -7,7 +7,7 @@
 
 class ParticleEngine {
     private:
-        std::vector<Particle> particles = std::vector<Particle>();
+        std::vector<std::shared_ptr<Particle>> particles;
 
     protected:
         std::shared_ptr<Level> level;
@@ -15,7 +15,7 @@ class ParticleEngine {
     public:
         ParticleEngine(std::shared_ptr<Level>& level);
 
-        void add(Particle& p);
+        void add(std::shared_ptr<Particle>& p);
         void tick();
         void render(std::shared_ptr<Player>& player, float a, int layer);
 };
