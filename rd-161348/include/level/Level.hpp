@@ -32,7 +32,7 @@ class Level : public std::enable_shared_from_this<Level> {
         void addListener(LevelListener* listener);
         void removeListener(LevelListener* listener);
         bool isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z);
-        std::vector<AABB> getCubes(AABB& aabb);
+        std::vector<std::shared_ptr<AABB>> getCubes(AABB& aabb);
         bool setTile(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
         bool isLit(std::int32_t x, std::int32_t y, std::int32_t z);
         int getTile(std::int32_t x, std::int32_t y, std::int32_t z);

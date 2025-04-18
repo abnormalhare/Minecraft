@@ -16,9 +16,9 @@ void Bush::render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level,
         int tex = this->getTexture(15);
 
         float u0 = tex % 16 / 16.0f;
-        float u1 = u0 + (1.0f / 64.0f);
+        float u1 = u0 + (0.999f / 16.0f);
         float v0 = tex / 16 / 16.0f;
-        float v1 = v0 + (1.0f / 64.0f);
+        float v1 = v0 + (0.999f / 16.0f);
 
         int rots = 2;
         t->color(1.0f, 1.0f, 1.0f);

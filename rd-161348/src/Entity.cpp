@@ -63,20 +63,20 @@ void Entity::move(float xa, float ya, float za) {
     float zaOrg = za;
 
     AABB aabb = this->bb.expand(xa, ya, za);
-    std::vector<AABB> aabbs = this->level->getCubes(aabb);
+    std::vector<std::shared_ptr<AABB>> aabbs = this->level->getCubes(aabb);
 
     for (size_t i = 0; i < aabbs.size(); i++) {
-        ya = aabbs[i].clipYCollide(this->bb, ya);
+        ya = aabbs[i]->clipYCollide(this->bb, ya);
     }
     this->bb.move(0.0f, ya, 0.0f);
 
     for (size_t i = 0; i < aabbs.size(); i++) {
-        xa = aabbs[i].clipXCollide(this->bb, xa);
+        xa = aabbs[i]->clipXCollide(this->bb, xa);
     }
     this->bb.move(xa, 0.0f, 0.0f);
 
     for (size_t i = 0; i < aabbs.size(); i++) {
-        za = aabbs[i].clipZCollide(this->bb, za);
+        za = aabbs[i]->clipZCollide(this->bb, za);
     }
     this->bb.move(0.0f, 0.0f, za);
 

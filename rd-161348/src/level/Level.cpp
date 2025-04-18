@@ -132,8 +132,8 @@ bool Level::isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z) {
     return tile == nullptr ? false : tile->blocksLight();
 }
 
-std::vector<AABB> Level::getCubes(AABB& aabb) {
-    std::vector<AABB> aABBs = std::vector<AABB>();
+std::vector<std::shared_ptr<AABB>> Level::getCubes(AABB& aabb) {
+    std::vector<std::shared_ptr<AABB>> aABBs = std::vector<std::shared_ptr<AABB>>();
     int x0 = (int)aabb.x0;
     int x1 = (int)(aabb.x1 + 1.0f);
     int y0 = (int)aabb.y0;
@@ -154,7 +154,7 @@ std::vector<AABB> Level::getCubes(AABB& aabb) {
                 Tile* tile = Tile::tiles[this->getTile(x, y, z)];
                 if (tile != nullptr) {
                     std::shared_ptr<AABB> c = tile->getAABB(x, y, z);
-                    if (c != nullptr) aABBs.push_back(*c);
+                    if (c != nullptr) aABBs.push_back(c);
                 }
             }
         }

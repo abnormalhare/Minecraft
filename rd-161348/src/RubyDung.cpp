@@ -167,7 +167,7 @@ class RubyDung {
             glEnable(GL_DEPTH_TEST);
             glDepthFunc(GL_LEQUAL);
             glEnable(GL_ALPHA_TEST);
-            glAlphaFunc(GL_GREATER, 0);
+            glAlphaFunc(GL_GREATER, 0.5f);
             glMatrixMode(GL_PROJECTION);
             glLoadIdentity();
             glMatrixMode(GL_MODELVIEW);
@@ -280,27 +280,28 @@ class RubyDung {
             glSelectBuffer(2000, this->selectBuffer);
             glRenderMode(GL_SELECT);
             setupPickCamera(a, this->width / 2, this->height / 2);
-            levelRenderer->pick(this->player, Frustum::getFrustum());
+            this->levelRenderer->pick(this->player, Frustum::getFrustum());
             
             int hits = glRenderMode(GL_RENDER);
             std::int64_t closest = 0;
             std::int32_t names[10];
             int hitNameCount = 0;
             int index = 0;
+            // change because vineflower
             for (int i = 0; i < hits; i++) {
                 int nameCount = this->selectBuffer[index++];
                 std::int64_t minZ = this->selectBuffer[index++];
                 index++;
-
-                std::int64_t dist = minZ;
-                if (dist < closest || i == 0) {
-                    closest = dist;
+                if (minZ >= closest && i != 0) {
+                    for (int j = 0; j < nameCount; j++) {
+                        index++;
+                    }
+                } else {
+                    closest = minZ;
                     hitNameCount = nameCount;
                     for (int j = 0; j < nameCount; j++) {
                         names[j] = this->selectBuffer[index++];
                     }
-                } else {
-                    index += nameCount;
                 }
             }
             if (hitNameCount > 0) {
@@ -349,9 +350,9 @@ class RubyDung {
             glDisable(GL_TEXTURE_2D);
             glDisable(GL_FOG);
             if (this->hitResult != nullptr) {
-                glEnable(GL_ALPHA_TEST);
-                this->levelRenderer->renderHit(this->hitResult);
                 glDisable(GL_ALPHA_TEST);
+                this->levelRenderer->renderHit(this->hitResult);
+                glEnable(GL_ALPHA_TEST);
             }
             this->drawGui(a);
             

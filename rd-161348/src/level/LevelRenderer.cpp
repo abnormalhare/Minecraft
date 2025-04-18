@@ -95,14 +95,15 @@ void LevelRenderer::pick(std::shared_ptr<Player>& player, Frustum* frustum) {
             for (int z = z0; z < z1; z++) {
                 Tile* tile = Tile::tiles[this->level->getTile(x, y, z)];
                 const std::shared_ptr<AABB> aabb = tile->getTileAABB(x, y, z);
-                if (tile != nullptr && frustum->isVisible(*aabb)) {
+                if (frustum->isVisible(*aabb)) {
+                    if (tile == nullptr) continue;
                     glLoadName(z);
                     glPushName(0);
 
                     for (int i = 0; i < 6; i++) {
                         glLoadName(i);
                         t->init();
-                        Tile::rock->renderFaceNoTexture(t, x, y, z, i);
+                        tile->renderFaceNoTexture(t, x, y, z, i);
                         t->flush();
                     }
                     glPopName();
