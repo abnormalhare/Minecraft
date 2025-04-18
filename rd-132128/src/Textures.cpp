@@ -27,7 +27,7 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
         stbi_image_free(img);
         
         return id;
-    } catch (std::exception e) {
+    } catch (const std::exception& e) {
         std::cout << "!!" << std::endl;
         return -1;
     }

@@ -9,7 +9,7 @@ class RubyDung {
         std::shared_ptr<Level> level = nullptr;
         std::shared_ptr<LevelRenderer> levelRenderer = nullptr;
         std::shared_ptr<Player> player = nullptr;
-        std::vector<Zombie> zombies = std::vector<Zombie>();
+        std::vector<std::shared_ptr<Zombie>> zombies = std::vector<std::shared_ptr<Zombie>>();
         std::unique_ptr<HitResult> hitResult = nullptr;
 
         std::int32_t viewportBuffer[16];
@@ -64,7 +64,7 @@ class RubyDung {
         }
 
     public:
-        void mouseButtonCallback(GLFWwindow* window, int button, int action, int mods) {
+        void mouseButtonCallback(UNUSED GLFWwindow* window, int button, int action, UNUSED int mods) {
             if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
                 if (this->hitResult != nullptr) {
                     this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
@@ -88,7 +88,7 @@ class RubyDung {
             }
         }
 
-        void keyCallback(GLFWwindow* window, int key, int scancode, int action, int mods) {
+        void keyCallback(GLFWwindow* window, int key, UNUSED int scancode, int action, UNUSED int mods) {
             if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
                 this->level->save();
                 glfwSetWindowShouldClose(window, GLFW_TRUE);
@@ -129,7 +129,8 @@ class RubyDung {
             glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
             for (int i = 0; i < 100; i++) {
-                this->zombies.push_back(Zombie(this->level, this->window, 128.0f, 0.0f, 128.0f));
+                std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, 128.0f, 0.0f, 128.0f);
+                this->zombies.push_back(zombie);
             }
         }
 
@@ -176,7 +177,7 @@ class RubyDung {
 
         void tick(void) {
             for (size_t i = 0; i < this->zombies.size(); i++) {
-                this->zombies[i].tick();
+                this->zombies[i]->tick();
             }
             this->player->tick();
         }
@@ -267,7 +268,7 @@ class RubyDung {
             glDisable(GL_FOG);
             this->levelRenderer->render(this->player, 0);
             for (size_t i = 0; i < this->zombies.size(); i++) {
-                this->zombies[i].render(a);
+                this->zombies[i]->render(a);
             }
             glEnable(GL_FOG);
             this->levelRenderer->render(this->player, 1);

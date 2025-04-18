@@ -32,7 +32,7 @@ LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) {
     }
 }
 
-void LevelRenderer::render(std::shared_ptr<Player>& player, std::int32_t layer) {
+void LevelRenderer::render(UNUSED std::shared_ptr<Player>& player, std::int32_t layer) {
     Chunk::rebuiltThisFrame = 0;
     Frustum* frustum = Frustum::getFrustum();
 

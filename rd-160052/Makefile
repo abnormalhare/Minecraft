@@ -1,4 +1,4 @@
-CC = g++
+CXX ?= g++
 ifeq ($(OS), Windows_NT)
 CXXFLAGS += -g -Og -std=c++17 -DWIN -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
 else
@@ -27,11 +27,11 @@ EXEC = Minecraft
 
 # Rule to build the executable
 $(EXEC): $(OBJ_FILES)
-	$(CC) -o $@ $(E_OBJ) $(CXXFLAGS)
+	$(CXX) -o $@ $(E_OBJ) $(CXXFLAGS)
 
 # Rule to compile each .cpp file into a .o file
 %.o: %.cpp
-	$(CC) $(CXXFLAGS) -c $< -o $(OBJ)
+	$(CXX) $(CXXFLAGS) -c $< -o $(OBJ)
 
 # Clean rule to remove compiled files
 clean:
