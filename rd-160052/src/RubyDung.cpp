@@ -407,9 +407,7 @@ class RubyDung {
                 glEnable(GL_LIGHTING);
                 glEnable(GL_COLOR_MATERIAL);
                 float br = 0.6f;
-                float* buf = this->getBuffer(br, br, br, 1.0f);
-                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, buf);
-                delete buf;
+                glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(br, br, br, 1.0f));
             }
         }
 

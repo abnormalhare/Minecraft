@@ -1,5 +1,9 @@
 CC = g++
-CFLAGS = -g -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
+ifeq ($(OS), Windows_NT)
+CXXFLAGS += -g -Og -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
+else
+CXXFLAGS += -g -Og -std=c++17 -Iinclude -lglfw -lz -lOpenGL32 -lGLU32 -m64 -Wall -Wextra -Werror
+endif
 
 # Directories
 SRC_DIR = src
@@ -23,11 +27,11 @@ EXEC = Minecraft
 
 # Rule to build the executable
 $(EXEC): $(OBJ_FILES)
-	$(CC) -o $@ $(E_OBJ) $(CFLAGS)
+	$(CC) -o $@ $(E_OBJ) $(CXXFLAGS)
 
 # Rule to compile each .cpp file into a .o file
 %.o: %.cpp
-	$(CC) $(CFLAGS) -c $< -o $(OBJ)
+	$(CC) $(CXXFLAGS) -c $< -o $(OBJ)
 
 # Clean rule to remove compiled files
 clean:
