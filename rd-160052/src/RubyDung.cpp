@@ -21,7 +21,7 @@ class RubyDung {
         GLFWwindow* window;
         GLFWcursor* cursor;
 
-        void setDisplayMode(std::int32_t width, std::int32_t height) {
+        void setFullscreen(bool isFullscreen) {
             if (!glfwInit()) {
                 std::cerr << "Failed to initialize GLFW" << std::endl;
                 exit(EXIT_FAILURE);
@@ -30,7 +30,17 @@ class RubyDung {
             glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 1);
             glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 1);
 
-            this->window = glfwCreateWindow(width, height, "Game", NULL, NULL);
+            if (isFullscreen) {
+                GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+
+                const GLFWvidmode* vidMode = glfwGetVideoMode(monitor);
+                this->width = vidMode->width;
+                this->height = vidMode->height;
+                
+                this->window = glfwCreateWindow(this->width, this->height, "Game", monitor, NULL);
+            } else {
+                this->window = glfwCreateWindow(this->width, this->height, "Game", NULL, NULL);
+            }
             if (!this->window) {
                 glfwTerminate();
                 std::cerr << "Failed to create window" << std::endl;
@@ -136,9 +146,7 @@ class RubyDung {
             this->fogColor1[2] = ((col1 >> 0 ) & 0xFF) / 255.0f;
             this->fogColor1[3] = 1.0f;
 
-            this->width = 1024;
-            this->height = 768;
-            this->setDisplayMode(this->width, this->height);
+            this->setFullscreen(true);
             cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
             glfwSetCursor(this->window, this->cursor);
 

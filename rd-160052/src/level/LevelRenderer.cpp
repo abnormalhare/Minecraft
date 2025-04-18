@@ -32,7 +32,6 @@ LevelRenderer::LevelRenderer(std::shared_ptr<Level>& level) : level(level) {
 
 std::vector<std::shared_ptr<Chunk>> LevelRenderer::getAllDirtyChunks() {
     std::vector<std::shared_ptr<Chunk>> dirty = std::vector<std::shared_ptr<Chunk>>();
-    UNUSED Frustum* frustum = Frustum::getFrustum();
 
     for (size_t i = 0; i < this->chunks.size(); i++) {
         std::shared_ptr<Chunk> chunk = this->chunks[i];
