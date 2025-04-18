@@ -2,6 +2,14 @@
 
 #include "base.hpp"
 
+#include <GLFW/glfw3.h>
+
+#ifdef WIN
+#include <windef.h>
+#endif
+
+#include <GL/glu.h>
+#include "level/Tesselator.hpp"
 #include "character/Zombie.hpp"
 #include "level/Level.hpp"
 #include "level/LevelRenderer.hpp"

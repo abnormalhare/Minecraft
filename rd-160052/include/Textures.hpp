@@ -1,8 +1,12 @@
 #pragma once
 
 #include "base.hpp"
-#include <unordered_map>
+
+#ifdef WIN
 #include <windef.h>
+#endif
+
+#include <unordered_map>
 #include <GL/glu.h>
 #include <GLFW/glfw3.h>
 

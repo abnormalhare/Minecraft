@@ -44,7 +44,7 @@ void Tesselator::clear(void) {
 }
 
 void Tesselator::init(void) {
-    clear();
+    this->clear();
     this->hasColor = false;
     this->hasTexture = false;
 }

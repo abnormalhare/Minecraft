@@ -1,8 +1,8 @@
 CC = g++
 ifeq ($(OS), Windows_NT)
-CXXFLAGS += -g -Og -std=c++17 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
+CXXFLAGS += -g -Og -std=c++17 -DWIN=1 -Iinclude -lglfw3 -lz -lopengl32 -lglu32 -m64 -Wall -Wextra -Werror
 else
-CXXFLAGS += -g -Og -std=c++17 -Iinclude -lglfw -lz -lOpenGL32 -lGLU32 -m64 -Wall -Wextra -Werror
+CXXFLAGS += -g -Og -std=c++17 -DWIN=0 -Iinclude -lglfw -lz -lOpenGL -lGLU -m64 -Wall -Wextra -Werror
 endif
 
 # Directories

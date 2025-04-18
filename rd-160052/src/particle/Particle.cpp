@@ -12,9 +12,9 @@ Particle::Particle(std::shared_ptr<Level>& level, GLFWwindow* window, float x, f
     
     float speed = (randd + randd + 1.0) * 0.15f;
     float dd = sqrt(this->xd * this->xd + this->yd * this->yd + this->zd * this->zd);
-    this->xd = this->xd / dd * speed * 0.7;
+    this->xd = this->xd / dd * speed * 0.7f;
     this->yd = this->yd / dd * speed;
-    this->zd = this->zd / dd * speed * 0.7;
+    this->zd = this->zd / dd * speed * 0.7f;
 
     this->uo = randd * 3.0f;
     this->vo = randd * 3.0f;
