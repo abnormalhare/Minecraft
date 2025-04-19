@@ -1,0 +1,1 @@
+java -jar vineflower.jar versions\%1.jar > versions\%1.java
