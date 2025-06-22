@@ -10,6 +10,7 @@
 class Zombie : public Entity {
     private:
         static ZombieModel zombieModel;
+        std::shared_ptr<Textures> textureManager;
 
     public:
         Cube head;
@@ -24,7 +25,7 @@ class Zombie : public Entity {
         float speed;
         float rotA;
 
-        Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float y, float z);
+        Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, std::shared_ptr<Textures> &textures, float x, float y, float z);
         void tick(void);
         void render(float a);
 };

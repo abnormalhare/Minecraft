@@ -59,15 +59,15 @@ void Tesselator::tex(float u, float v) {
     this->v = v;
 }
 
-void Tesselator::color(float r, float g, float b) {
+void Tesselator::color(int r, int g, int b) {
     if (!this->hasColor) {
         this->len += 3;
     }
 
     this->hasColor = true;
-    this->r = r;
-    this->g = g;
-    this->b = b;
+    this->r = float(r) / 255.0;
+    this->g = float(g) / 255.0;
+    this->b = float(b) / 255.0;
 }
 
 void Tesselator::vertexUV(float x, float y, float z, float u, float v) {
@@ -93,4 +93,11 @@ void Tesselator::vertex(float x, float y, float z) {
     if (this->vertices % 4 == 0 && this->p >= MAX_FLOATS - this->len * 4) {
         flush();
     }
+}
+
+void Tesselator::color(int rgb) {
+    int r = (rgb >> 16) & 0xFF;
+    int g = (rgb >> 8)  & 0xFF;
+    rgb &= 0xFF;
+    this->color(r, g, b);
 }

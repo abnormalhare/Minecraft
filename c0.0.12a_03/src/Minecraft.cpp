@@ -1,6 +1,6 @@
-#include "RubyDung.hpp"
+#include "Minecraft.hpp"
 
-class RubyDung {
+class Minecraft {
     private:
         static const bool FULLSCREEN_MODE = false;
         int width, height;
@@ -198,7 +198,7 @@ class RubyDung {
             try {
                 this->init();
             } catch (const std::exception& e) {
-                std::cerr << "Failed to start RubyDung" << std::endl;
+                std::cerr << "Failed to start Minecraft" << std::endl;
                 exit(EXIT_SUCCESS);
             }
 
@@ -428,18 +428,18 @@ class RubyDung {
         }
 };
 
-RubyDung rubyDung;
+Minecraft minecraft;
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
-    rubyDung.mouseButtonCallback(window, button, action, mods);
+    minecraft.mouseButtonCallback(window, button, action, mods);
 }
 
 void key_callback(GLFWwindow* window, int key, int scancode, int action, int mods) {
-    rubyDung.keyCallback(window, key, scancode, action, mods);
+    minecraft.keyCallback(window, key, scancode, action, mods);
 }
 
 int main(void) {
     std::srand(std::time({}));
-    rubyDung = RubyDung();
-    rubyDung.run();
+    minecraft = Minecraft();
+    minecraft.run();
 }

@@ -25,7 +25,8 @@ class Tesselator {
         void clear(void);
         void init(void);
         void tex(float u, float v);
-        void color(float r, float g, float b);
+        void color(int r, int g, int b);
+        void color(int rgb);
         void vertexUV(float x, float y, float z, float u, float v);
         void vertex(float x, float y, float z);
 };

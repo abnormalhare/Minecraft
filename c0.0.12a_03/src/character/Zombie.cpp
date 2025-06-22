@@ -2,9 +2,10 @@
 
 ZombieModel Zombie::zombieModel;
 
-Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, float x, float y, float z) : Entity(level, window) {
-    this->rotA = (randd + 1.0) * 0.01f;
+Zombie::Zombie(std::shared_ptr<Level>& level, GLFWwindow* window, std::shared_ptr<Textures> &textures, float x, float y, float z) : Entity(level, window) {
+    this->textureManager = textures;
     zombieModel = ZombieModel();
+    this->rotA = (randd + 1.0) * 0.01f;
     
     this->setPos(x, y, z);
     
@@ -50,7 +51,7 @@ void Zombie::tick(void) {
 
 void Zombie::render(float a) {
     glEnable(GL_TEXTURE_2D);
-    glBindTexture(GL_TEXTURE_2D, Textures::loadTexture("char.png", GL_NEAREST));
+    glBindTexture(GL_TEXTURE_2D, this->textureManager->loadTexture("char.png", GL_NEAREST));
     glPushMatrix();
 
     double time = Timer::getTimeInNanoSeconds() / 1.0E9 * 10.0 * this->speed + this->timeOffs;

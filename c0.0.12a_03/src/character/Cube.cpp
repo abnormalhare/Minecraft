@@ -98,7 +98,7 @@ void Cube::compile() {
     this->list = glGenLists(1);
     glNewList(this->list, GL_COMPILE);
 
-    glBegin(7);
+    glBegin(GL_QUADS);
     for (size_t i = 0; i < this->polygons.size(); i++) {
         this->polygons[i].render();
     }
