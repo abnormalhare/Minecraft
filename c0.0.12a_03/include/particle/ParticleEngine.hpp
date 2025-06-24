@@ -1,8 +1,8 @@
 #pragma once
 
 #include "particle/Particle.hpp"
-#include "level/Tesselator.hpp"
-#include "Textures.hpp"
+#include "render/Tesselator.hpp"
+#include "render/Textures.hpp"
 #include "Player.hpp"
 
 class ParticleEngine {

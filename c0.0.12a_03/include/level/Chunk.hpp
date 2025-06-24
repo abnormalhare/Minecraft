@@ -3,11 +3,11 @@
 #include <GLFW/glfw3.h>
 #include "base.hpp"
 #include "level/Level.hpp"
-#include "level/Tesselator.hpp"
-#include "tile/Tile.hpp"
+#include "render/Tesselator.hpp"
+#include "level/tile/Tile.hpp"
 #include "phys/AABB.hpp"
 #include "Player.hpp"
-#include "Textures.hpp"
+#include "render/Textures.hpp"
 #include "Timer.hpp"
 
 class Chunk {
@@ -36,4 +36,5 @@ class Chunk {
         void setDirty();
         bool isDirty();
         float distanceToSqr(std::shared_ptr<Player>& player);
+        void reset();
 };

@@ -85,7 +85,14 @@
 			"numeric": "cpp",
 			"xloctime": "cpp",
 			"xmemory": "cpp",
-			"xstring": "cpp"
+			"xstring": "cpp",
+			"xhash": "cpp",
+			"xiosbase": "cpp",
+			"xlocnum": "cpp",
+			"xtr1common": "cpp",
+			"xutility": "cpp",
+			"__hash_table": "cpp",
+			"__node_handle": "cpp"
 		},
 		"makefile.configureOnOpen": true
 	}

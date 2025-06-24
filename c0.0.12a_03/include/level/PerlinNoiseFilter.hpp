@@ -6,11 +6,11 @@
 class PerlinNoiseFilter {
     public:
         std::mt19937 random;
-        int seed;
         int levels;
         int fuzz;
+        bool flag;
 
-        PerlinNoiseFilter(int levels);
+        PerlinNoiseFilter(std::mt19937 random, int levels, bool flag);
 
         std::vector<int> read(int width, int height);
         

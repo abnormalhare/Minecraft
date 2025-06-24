@@ -3,9 +3,9 @@
 #include "base.hpp"
 
 #include <random>
-#include "tile/Tile.hpp"
+#include "level/tile/Tile.hpp"
 #include "level/Level.hpp"
-#include "level/Tesselator.hpp"
+#include "render/Tesselator.hpp"
 
 class Bush : public Tile {
     public:

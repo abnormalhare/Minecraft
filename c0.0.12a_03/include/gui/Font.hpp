@@ -1,8 +1,8 @@
 #pragma once
 
 #include "base.hpp"
-#include "Textures.hpp"
-#include "Level/Tesselator.hpp"
+#include "render/Textures.hpp"
+#include "render/Tesselator.hpp"
 
 class Font {
 private:

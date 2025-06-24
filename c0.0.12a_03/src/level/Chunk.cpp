@@ -17,8 +17,6 @@ Chunk::Chunk(std::shared_ptr<Level>& level, int x0, int y0, int z0, int x1, int 
 }
 
 void Chunk::rebuild(std::int32_t layer) {
-    this->dirty = false;
-    this->updates++;
     std::int64_t before = Timer::getTimeInNanoSeconds();
     glNewList(this->lists + layer, GL_COMPILE);
     t->init();
@@ -47,8 +45,11 @@ void Chunk::rebuild(std::int32_t layer) {
 }
 
 void Chunk::rebuild() {
+    updates++;
     this->rebuild(0);
     this->rebuild(1);
+    this->rebuild(2);
+    this->dirty = false;
 }
 
 void Chunk::render(std::int32_t layer) {
@@ -72,4 +73,13 @@ float Chunk::distanceToSqr(std::shared_ptr<Player>& player) {
     float yd = player->y - this->y;
     float zd = player->z - this->z;
     return xd * xd + yd * yd + zd * zd;
+}
+
+void Chunk::reset() {
+    this->dirty = true;
+
+    for (int i = 0; i < 3; i++) {
+        glNewList(this->lists + i, GL_COMPILE);
+        glEndList();
+    }
 }

@@ -3,9 +3,9 @@
 #include "base.hpp"
 
 #include "level/Chunk.hpp"
-#include "level/Frustum.hpp"
+#include "render/Frustum.hpp"
 #include "level/Level.hpp"
-#include "level/Tesselator.hpp"
+#include "render/Tesselator.hpp"
 #include "level/DirtyChunkSorter.hpp"
 #include "HitResult.hpp"
 #include "Player.hpp"

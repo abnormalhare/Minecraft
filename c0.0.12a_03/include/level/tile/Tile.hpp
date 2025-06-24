@@ -4,7 +4,7 @@
 
 #include <GLFW/glfw3.h>
 #include "level/Level.hpp"
-#include "level/Tesselator.hpp"
+#include "render/Tesselator.hpp"
 #include "particle/ParticleEngine.hpp"
 
 class Tile {
@@ -26,6 +26,8 @@ class Tile {
         static Tile* stoneBrick;
         static Tile* wood;
         static Tile* bush;
+        static Tile* calmWater;
+        static Tile* calmLava;
 
         const std::int32_t id;
         std::int32_t tex;
@@ -39,4 +41,6 @@ class Tile {
         virtual bool isSolid();
         virtual void tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::mt19937 random);
         void destroy(std::shared_ptr<Level>& level, GLFWwindow* window, std::int32_t x, std::int32_t y, std::int32_t z, std::shared_ptr<ParticleEngine>& particleEngine);
+        virtual int getLiquidType();
+        virtual void neighborChanged(Level *level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
 };

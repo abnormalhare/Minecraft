@@ -1,12 +1,7 @@
 #include "level/PerlinNoiseFilter.hpp"
 
-PerlinNoiseFilter::PerlinNoiseFilter(int levels) : levels(levels) {
-    std::random_device rd;
-    std::mt19937 eng(rd());
-    this->random = eng;
-    this->seed = eng();
-    this->fuzz = 16;
-}
+PerlinNoiseFilter::PerlinNoiseFilter(std::mt19937 random, int levels, bool flag)
+    : random(random), levels(levels), flag(flag) {}
 
 std::vector<int> PerlinNoiseFilter::read(int width, int height) {
     std::random_device rd;

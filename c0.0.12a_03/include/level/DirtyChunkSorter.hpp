@@ -1,7 +1,7 @@
 #pragma once
 
 #include "level/Chunk.hpp"
-#include "level/Frustum.hpp"
+#include "render/Frustum.hpp"
 #include "Player.hpp"
 #include "Timer.hpp"
 
