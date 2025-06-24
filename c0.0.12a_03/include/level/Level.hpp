@@ -21,12 +21,12 @@ class Level : public std::enable_shared_from_this<Level> {
         std::int32_t randValue;
         Minecraft* minecraft;
         int unprocessed;
-        int *coords;
+        int* coords;
 
-        std::int64_t floodFill(std::int32_t width, std::int32_t depth, std::int32_t height, UNUSED std::int32_t unk, std::int32_t tile);
         bool load();
         void calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, std::int32_t y1);
         void updateNeighborAt(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
+        std::int64_t floodFill(std::int32_t width, std::int32_t depth, std::int32_t height, UNUSED std::int32_t unk, std::int32_t tile);
         
     public:
         const std::int32_t width;

@@ -25,8 +25,9 @@ Level::Level(Minecraft* minecraft, std::int32_t w, std::int32_t h, std::int32_t 
     glTranslatef(0.0f, 0.0f, -200.0f);
     minecraft->showLoadingScreen("Loading level", "Reading..");
     
-    blocks = new char[this->width * this->height * this->depth];
-    lightDepths = new std::int32_t[this->width * this->height];
+    this->blocks = new char[this->width * this->height * this->depth];
+    this->lightDepths = new std::int32_t[this->width * this->height];
+    this->coords = new int[0x100000];
 
     bool mapLoaded = this->load();
     if (!mapLoaded) {
@@ -135,7 +136,7 @@ void Level::generateMap() {
     this->calcLightDepths(0, 0, this->width, this->height);
 
     for (int i = 0; i < this->levelListeners.size(); i++) {
-        this->levelListeners[i]->resetChunks();
+        this->levelListeners[i]->allChanged();
     }
 
     delete level_gen;
@@ -154,7 +155,7 @@ bool Level::load() {
         this->calcLightDepths(0, 0, this->width, this->height);
 
         for (size_t i = 0; i < this->levelListeners.size(); i++) {
-            this->levelListeners[i]->resetChunks();
+            this->levelListeners[i]->allChanged();
         }
 
         return true;
@@ -192,7 +193,7 @@ void Level::calcLightDepths(std::int32_t x0, std::int32_t y0, std::int32_t x1, s
                 int yl1 = (oldDepth > y) ? oldDepth : y;
 
                 for (size_t i = 0; i < this->levelListeners.size(); i++) {
-                    this->levelListeners[i]->setDirty(x - 1, yl0 - 1, z - 1, x + 1, yl1 + 1, z + 1);
+                    this->levelListeners[i]->lightColumnChanged(x, z, yl0, yl1);
                 }
             }
         }
@@ -267,7 +268,7 @@ bool Level::setTile(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t
     calcLightDepths(x, z, 1, 1);
 
     for (size_t i = 0; i < this->levelListeners.size(); i++) {
-        this->levelListeners.at(i)->setDirty(x - 1, y - 1, z - 1, x + 1, y + 1, z + 1);
+        this->levelListeners.at(i)->tileChanged(x, y, z);
     }
 
     return true;
@@ -356,4 +357,104 @@ void Level::tick() {
             tile->tick(level, x, y, z, this->random);
         }
     }
+}
+
+std::int64_t Level::floodFill(std::int32_t width, std::int32_t depth, std::int32_t height, UNUSED std::int32_t unk, std::int32_t tile) {
+    std::int8_t bTile = tile;
+    std::vector<int*> coordList = std::vector<int*>();
+    int h = this->height - 1;
+    int w = this->width - 1;
+    int d = 1;
+    this->coords[0] = (depth * 256) + (height * 256) + width;
+    std::int64_t blockCnt = 0;
+    width = this->width * this->height;
+
+    while (d > 0) {
+        d--;
+        depth = this->coords[d];
+
+        if (d == 0 && coordList.size() > 0) {
+            std::cout << "IT HAPPENED" << std::endl;
+            delete this->coords;
+            this->coords = coordList[coordList.size() - 1];
+            coordList.erase(coordList.begin() + (coordList.size() - 1));
+            d = 0x100000; // sizeof this->coords
+        }
+
+        height = (depth >> 8) & h;
+        int wdh = depth >> 16;
+        int dph = depth & w;
+
+        int i;
+        for (i = dph; dph > 0 && this->blocks[depth - 1] == 0; depth--) {
+            dph--;
+        }
+
+        while (i < this->width && this->blocks[depth + i - dph] == 0) {
+            i++;
+        }
+
+        int hgt2 = (depth >> 8) & h;
+        int wdh2 = depth >> 16;
+        if (hgt2 != height || wdh2 != wdh) {
+            std::cout << "hoooly fuck" << std::endl; // LMAO
+        }
+
+        bool prevIsEmpty1 = false;
+        bool prevIsEmpty2 = false;
+        bool prevIsEmpty3 = false;
+
+        blockCnt += i - dph;
+
+        for (int di = dph; di < i; di++) {
+            this->blocks[depth] = tile;
+            bool isEmpty;
+
+            if (height > 0) {
+                isEmpty = (this->blocks[depth - this->width] == 0);
+                if (isEmpty && !prevIsEmpty1) {
+                    if (d == 0x100000) {
+                        coordList.push_back(this->coords);
+                        this->coords = new int[0x100000];
+                        d = 0;
+                    }
+
+                    this->coords[d++] = depth - this->width;
+                }
+                prevIsEmpty1 = isEmpty;
+            }
+
+            if (height < this->height - 1) {
+                isEmpty = (this->blocks[depth + this->width] == 0);
+                if (isEmpty && !prevIsEmpty2) {
+                    if (d == 0x100000) {
+                        coordList.push_back(this->coords);
+                        this->coords = new int[0x100000];
+                        d = 0;
+                    }
+
+                    this->coords[d++] = depth + this->width;
+                }
+                prevIsEmpty2 = isEmpty;
+            }
+
+            if (wdh > 0) {
+                isEmpty = (this->blocks[depth - width] == 0);
+                if (isEmpty && !prevIsEmpty3) {
+                    if (d == 0x100000) {
+                        coordList.push_back(this->coords);
+                        this->coords = new int[0x100000];
+                        d = 0;
+                    }
+
+                    this->coords[d++] = depth - width;
+                }
+                prevIsEmpty3 = isEmpty;
+            }
+
+            depth++;
+        }
+    }
+
+    return blockCnt;
 }

@@ -17,6 +17,20 @@ class Tile {
         virtual std::int32_t getTexture(std::int32_t face);
     
     public:
+        enum TileType {
+            EMPTY,
+            ROCK,
+            GRASS,
+            DIRT,
+            STONE_BRICK,
+            WOOD,
+            BUSH,
+            BEDROCK,
+            WATER,
+            CALM_WATER,
+            LAVA,
+            CALM_LAVA,
+        };
         
         static Tile* tiles[256];
         static Tile* empty;
