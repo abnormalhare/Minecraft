@@ -5,18 +5,35 @@
 #include "level/tile/Bush.hpp"
 
 Tile* Tile::tiles[256];
-Tile* Tile::empty = nullptr;
-Tile* Tile::rock = new Tile(1, 1);
-Tile* Tile::grass = new GrassTile(2);
-Tile* Tile::dirt = new DirtTile(3, 2);
-Tile* Tile::stoneBrick = new Tile(4, 16);
-Tile* Tile::wood = new Tile(5, 4);
-Tile* Tile::bush = new Bush(6);
-Tile* Tile::calmWater;
-Tile* Tile::calmLava;
+Tile* Tile::empty      = nullptr;
+Tile* Tile::rock       = new Tile           (Tile::ROCK, 1);
+Tile* Tile::grass      = new GrassTile      (Tile::GRASS);
+Tile* Tile::dirt       = new DirtTile       (Tile::DIRT, 2);
+Tile* Tile::stoneBrick = new Tile           (Tile::STONE_BRICK, 16);
+Tile* Tile::wood       = new Tile           (Tile::WOOD, 4);
+Tile* Tile::bush       = new Bush           (Tile::BUSH);
+Tile* Tile::bedrock    = new Tile           (Tile::BEDROCK, 17);
+Tile* Tile::water      = new LiquidTile     (Tile::WATER, 1);
+Tile* Tile::calmWater  = new CalmLiquidTile (Tile::CALM_WATER, 1);
+Tile* Tile::lava       = new LiquidTile     (Tile::LAVA, 2);
+Tile* Tile::calmLava   = new CalmLiquidTile (Tile::CALM_LAVA, 2);
 
 Tile::Tile(std::int32_t id) : id(id) {
     tiles[id] = this;
+    this->setShape(0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f);
+}
+
+void Tile::setTicking(bool isTick) {
+    this->shouldTick[this->id] = isTick;
+}
+
+void Tile::setShape(float x0, float y0, float z0, float x1, float y1, float z1) {
+    this->x0 = x0;
+    this->y0 = y0;
+    this->z0 = z0;
+    this->x1 = x1;
+    this->y1 = y1;
+    this->z1 = z1;
 }
 
 Tile::Tile(std::int32_t id, std::int32_t tex) : id(id), tex(tex) {
@@ -119,7 +136,7 @@ void Tile::renderFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32
     }
 }
 
-void Tile::renderFaceNoTexture(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
+void Tile::renderFaceNoTexture(std::shared_ptr<Player>& p, std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
     float x0 = x + 0.0f;
     float x1 = x + 1.0f;
     float y0 = y + 0.0f;

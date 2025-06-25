@@ -1,7 +1,8 @@
-#include "tile/Bush.hpp"
+#include "level/tile/Bush.hpp"
 
 Bush::Bush(std::int32_t id) : Tile(id) {
     this->tex = 15;
+    this->setTicking(true);
 }
 
 void Bush::tick(std::shared_ptr<Level>& level, int x, int y, int z, UNUSED std::mt19937 random) {
@@ -21,7 +22,7 @@ void Bush::render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level,
         float v1 = v0 + (0.999f / 16.0f);
 
         int rots = 2;
-        t->color(1.0f, 1.0f, 1.0f);
+        t->color(255, 255, 255);
         for (int r = 0; r < rots; r++) {
             float xa = sin(r * PI / rots + (PI / 4)) * 0.5;
             float za = cos(r * PI / rots + (PI / 4)) * 0.5;

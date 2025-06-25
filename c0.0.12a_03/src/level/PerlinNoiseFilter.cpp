@@ -1,19 +1,29 @@
 #include "level/PerlinNoiseFilter.hpp"
 
 PerlinNoiseFilter::PerlinNoiseFilter(std::mt19937 random, int levels, bool flag)
-    : random(random), levels(levels), flag(flag) {}
+    : fuzz(16), random(random), levels(levels), flag(flag) {}
 
 std::vector<int> PerlinNoiseFilter::read(int width, int height) {
     std::random_device rd;
     std::mt19937 gen(rd());
+
     std::vector<int> tmp = std::vector<int>(width * height);
     int level = this->levels;
     int step = width >> level;
 
     for (int y = 0; y < height; y += step) {
         for (int x = 0; x < width; x += step) {
-            std::uniform_int_distribution<> dist(0,255);
+            std::uniform_int_distribution<> dist(0,256 - 1);
             tmp[x + y * width] = (dist(gen) - 128) * this->fuzz;
+
+            if (this->flag) {
+                if (x != 0 && y != 0) {
+                    std::uniform_int_distribution<> dist(0,192 - 1);
+                    tmp[x + y * width] = (dist(gen) - 64) * this->fuzz;
+                } else {
+                    tmp[x + y * width] = 0;
+                }
+            }
         }
     }
 
@@ -31,6 +41,10 @@ std::vector<int> PerlinNoiseFilter::read(int width, int height) {
                 std::uniform_int_distribution<> dist(0, val*2-1);
                 int m = (ul + ur + dl + dr) / 4 + dist(gen) - val;
                 tmp[x + ss + (y + ss) * width] = m;
+
+                if (this->flag && (x == 0 || y == 0)) {
+                    tmp[x + y * width] = 0;
+                }
             }
         }
 

@@ -1,4 +1,4 @@
-#include "level/Tesselator.hpp"
+#include "render/Tesselator.hpp"
 
 std::shared_ptr<Tesselator> Tesselator::instance = std::make_shared<Tesselator>();
 
@@ -100,4 +100,8 @@ void Tesselator::color(int rgb) {
     int g = (rgb >> 8)  & 0xFF;
     rgb &= 0xFF;
     this->color(r, g, b);
+}
+
+void Tesselator::noColor() {
+    this->hasNoColor = true;
 }

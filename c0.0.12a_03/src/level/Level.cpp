@@ -118,11 +118,11 @@ void Level::generateMap() {
     this->minecraft->showLoadingScreen("Generate level", "Melting..");
     int lavaCount = 0;
     for (int i = 0; i < 400; i++) {
-        static std::uniform_int_distribution<> dist1(0, this->width);
+        static std::uniform_int_distribution<> dist1(0, this->width - 1);
         int width  = dist1(this->random);
-        static std::uniform_int_distribution<> dist2(0, this->depth / 2);
+        static std::uniform_int_distribution<> dist2(0, this->depth / 2 - 1);
         int depth  = dist2(this->random);
-        static std::uniform_int_distribution<> dist3(0, this->height);
+        static std::uniform_int_distribution<> dist3(0, this->height - 1);
         int height = dist3(this->random);
 
         if (this->getTile(width, depth, height) == 0) {

@@ -17,17 +17,4 @@ bool chunkCompare(const std::shared_ptr<Chunk>& c0, const std::shared_ptr<Chunk>
     if (i0 && !i1) return false;
     else if ((!i1 || i0) && c0->distanceToSqr(player) < c1->distanceToSqr(player)) return false;
     else return true;
-
-    // if (i0 && !i1) return false;
-    // else if (i1 && !i0) return true;
-    // else {
-    //     int t0 = (now - c0->dirtiedTime) / 2000;
-    //     int t1 = (now - c1->dirtiedTime) / 2000;
-
-    //     if (t0 < t1) return false;
-    //     else if (t0 > t1) return true;
-    //     else {
-    //         return c0->distanceToSqr(player) < c1->distanceToSqr(player);
-    //     }
-    // }
 }

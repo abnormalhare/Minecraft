@@ -28,6 +28,7 @@ class Chunk {
         const float x, y, z;
         static std::int32_t updates;
         std::int64_t dirtiedTime;
+        bool visible;
 
         
         Chunk(std::shared_ptr<Level>& level, int x0, int y0, int z0, int x1, int y1, int z1);

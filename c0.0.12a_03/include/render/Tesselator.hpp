@@ -14,6 +14,7 @@ class Tesselator {
         float r, g, b;
         bool hasColor = false;
         bool hasTexture = false;
+        bool hasNoColor = false;
         int len;
         int p;
         
@@ -29,4 +30,5 @@ class Tesselator {
         void color(int rgb);
         void vertexUV(float x, float y, float z, float u, float v);
         void vertex(float x, float y, float z);
+        void noColor();
 };
