@@ -3,6 +3,8 @@
 #include "level/tile/DirtTile.hpp"
 #include "level/tile/GrassTile.hpp"
 #include "level/tile/Bush.hpp"
+#include "level/tile/LiquidTile.hpp"
+#include "level/tile/CalmLiquidTile.hpp"
 
 Tile* Tile::tiles[256];
 Tile* Tile::empty      = nullptr;
@@ -72,6 +74,10 @@ void Tile::render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level,
 }
 
 bool Tile::shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer) {
+    if (x < 0 && y < 0 && z < 0 && x >= level->width && y >= level->depth && z >= level->height) {
+        return false;
+    }
+
     return !level->isSolidTile(x, y, z) && level->isLit(x, y, z) ^ (layer == 1);
 }
 
@@ -136,6 +142,63 @@ void Tile::renderFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32
     }
 }
 
+void Tile::renderBackFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
+    int _tex = this->getTexture(face);
+    float u0 = _tex % 16 / 16.0f;
+    float u1 = u0 + (0.999f / 16.0f);
+    float v0 = _tex / 16 / 16.0f;
+    float v1 = v0 + (0.999f / 16.0f);
+
+    float x0 = x + 0.0f;
+    float x1 = x + 1.0f;
+    float y0 = y + 0.0f;
+    float y1 = y + 1.0f;
+    float z0 = z + 0.0f;
+    float z1 = z + 1.0f;
+
+    if (face == 0) {
+        t->vertexUV(x1, y0, z1, u1, v1);
+        t->vertexUV(x1, y0, z0, u1, v0);
+        t->vertexUV(x0, y0, z0, u0, v0);
+        t->vertexUV(x0, y0, z1, u0, v1);
+    }
+
+    if (face == 1) {
+        t->vertexUV(x0, y1, z1, u0, v1);
+        t->vertexUV(x0, y1, z0, u0, v0);
+        t->vertexUV(x1, y1, z0, u1, v0);
+        t->vertexUV(x1, y1, z1, u1, v1);
+    }
+
+    if (face == 2) {
+        t->vertexUV(x0, y0, z0, u1, v1);
+        t->vertexUV(x1, y0, z0, u0, v1);
+        t->vertexUV(x1, y1, z0, u0, v0);
+        t->vertexUV(x0, y1, z0, u1, v0);
+    }
+
+    if (face == 3) {
+        t->vertexUV(x1, y1, z1, u1, v0);
+        t->vertexUV(x1, y0, z1, u1, v1);
+        t->vertexUV(x0, y0, z1, u0, v1);
+        t->vertexUV(x0, y1, z1, u0, v0);
+    }
+
+    if (face == 4) {
+        t->vertexUV(x0, y0, z1, u1, v1);
+        t->vertexUV(x0, y0, z0, u0, v1);
+        t->vertexUV(x0, y1, z0, u0, v0);
+        t->vertexUV(x0, y1, z1, u1, v0);
+    }
+
+    if (face == 5) {
+        t->vertexUV(x1, y1, z1, u0, v0);
+        t->vertexUV(x1, y1, z0, u1, v0);
+        t->vertexUV(x1, y0, z0, u1, v1);
+        t->vertexUV(x1, y0, z1, u0, v1);
+    }
+}
+
 void Tile::renderFaceNoTexture(std::shared_ptr<Player>& p, std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
     float x0 = x + 0.0f;
     float x1 = x + 1.0f;
@@ -190,9 +253,11 @@ std::shared_ptr<AABB> Tile::getAABB(std::int32_t x, std::int32_t y, std::int32_t
     return std::make_shared<AABB>(x, y, z, x + 1, y + 1, z + 1);
 }
 
-bool Tile::blocksLight() { return true; } // cant wait for this one
+bool Tile::blocksLight() { return true; }
 
-bool Tile::isSolid() { return true; } // ...whats the difference?
+bool Tile::isSolid() { return true; }
+
+bool Tile::mayPick() { return true; }
 
 void Tile::tick(UNUSED std::shared_ptr<Level>& level, UNUSED std::int32_t x, UNUSED std::int32_t y, UNUSED std::int32_t z, UNUSED std::mt19937 random) {}
 
@@ -212,4 +277,8 @@ void Tile::destroy(std::shared_ptr<Level>& level, GLFWwindow* window, std::int32
     }
 }
 
-void Tile::neighborChanged(Level *level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type) {}
+int Tile::getLiquidType() {
+    return 0;
+}
+
+void Tile::neighborChanged(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type) {}

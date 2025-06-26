@@ -21,7 +21,7 @@
 
 class Minecraft {
 private:
-    static const bool FULLSCREEN_MODE = false;
+    bool fullscreen = false;
     float fogColor0[4];
     float fogColor1[4];
     Timer timer = Timer(20.0f);
@@ -30,10 +30,11 @@ private:
     std::shared_ptr<Player> player = nullptr;
     int paintTexture = 1;
     std::shared_ptr<ParticleEngine> particleEngine;
-
-    //...
-    Textures textureManager;
+    char* fpsString = "";
+    bool mouseGrabbed = false;
+    std::shared_ptr<Textures> textureManager;
     Font *font;
+    int editMode = 0;
     
     std::vector<std::shared_ptr<Zombie>> zombies = std::vector<std::shared_ptr<Zombie>>();
     std::unique_ptr<HitResult> hitResult = nullptr;
@@ -47,9 +48,13 @@ private:
     double lastMouseX = 0.0;
     double lastMouseY = 0.0;
 
-    void setFullscreen(bool isFullscreen);
+    void setFullscreen(bool isFullscreen, const char* title);
     float getMouseDX();
     float getMouseDY();
+    void grabMouse();
+    void releaseMouse();
+
+    static void reportGLError(const char* error);
 
     void moveCameraToPlayer(float a);
     void setupCamera(float a);
@@ -63,8 +68,9 @@ private:
 public:
     int width, height;
     volatile bool pause = false;
+    volatile bool running = false;
 
-    Minecraft() {};
+    Minecraft(std::int32_t width, std::int32_t height, bool fullscreen);
     void mouseButtonCallback(UNUSED GLFWwindow* window, int button, int action, UNUSED int mods);
     void keyCallback(GLFWwindow* window, int key, UNUSED int scancode, int action, UNUSED int mods);
     void init();

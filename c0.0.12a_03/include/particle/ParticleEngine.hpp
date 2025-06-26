@@ -8,12 +8,13 @@
 class ParticleEngine {
     private:
         std::vector<std::shared_ptr<Particle>> particles;
+        std::shared_ptr<Textures> textureManager;
 
     protected:
         std::shared_ptr<Level> level;
 
     public:
-        ParticleEngine(std::shared_ptr<Level>& level);
+        ParticleEngine(std::shared_ptr<Level>& level, std::shared_ptr<Textures>& textureManager);
 
         void add(std::shared_ptr<Particle>& p);
         void tick();

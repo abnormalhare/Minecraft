@@ -11,16 +11,14 @@ class Tile {
     private:
         float x0, y0, z0;
         float x1, y1, z1;
-        
-        bool shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer);
-
     protected:
         Tile(std::int32_t id);
         Tile(std::int32_t id, std::int32_t tex);
         void setTicking(bool isTick);
         void setShape(float x0, float y0, float z0, float x1, float y1, float z1);
+        bool shouldRenderFace(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t layer);
         virtual std::int32_t getTexture(std::int32_t face);
-    
+        
     public:
         enum TileType {
             EMPTY,
@@ -58,13 +56,15 @@ class Tile {
         
         virtual void render(std::shared_ptr<Tesselator>& t, std::shared_ptr<Level>& level, std::int32_t layer, std::int32_t x, std::int32_t y, std::int32_t z);
         void renderFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face);
+        void renderBackFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face);
         static void renderFaceNoTexture(std::shared_ptr<Player>& p, std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face);
         const std::shared_ptr<AABB> getTileAABB(std::int32_t x, std::int32_t y, std::int32_t z);
         virtual std::shared_ptr<AABB> getAABB(std::int32_t x, std::int32_t y, std::int32_t z);
         virtual bool blocksLight();
         virtual bool isSolid();
+        virtual bool mayPick();
         virtual void tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::mt19937 random);
         void destroy(std::shared_ptr<Level>& level, GLFWwindow* window, std::int32_t x, std::int32_t y, std::int32_t z, std::shared_ptr<ParticleEngine>& particleEngine);
         virtual int getLiquidType();
-        virtual void neighborChanged(Level *level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
+        virtual void neighborChanged(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type);
 };

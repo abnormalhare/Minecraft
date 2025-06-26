@@ -10,7 +10,6 @@ class Entity {
     private:
         std::shared_ptr<Level> level;
         GLFWwindow* window;
-
         
     protected:
         float heightOffset;
@@ -35,6 +34,9 @@ class Entity {
         void turn(float xo, float yo);
         void tick();
         void move(float xa, float ya, float za);
+        bool isInWater();
+        bool isInLava();
         void moveRelative(float xa, float za, float speed);
         bool isLit();
+        void render(float a);
 };

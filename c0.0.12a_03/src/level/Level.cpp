@@ -219,12 +219,12 @@ bool Level::isLightBlocker(std::int32_t x, std::int32_t y, std::int32_t z) {
 
 std::vector<std::shared_ptr<AABB>> Level::getCubes(AABB& aabb) {
     std::vector<std::shared_ptr<AABB>> aABBs = std::vector<std::shared_ptr<AABB>>();
-    int x0 = (int)aabb.x0;
-    int x1 = (int)(aabb.x1 + 1.0f);
-    int y0 = (int)aabb.y0;
-    int y1 = (int)(aabb.y1 + 1.0f);
-    int z0 = (int)aabb.z0;
-    int z1 = (int)(aabb.z1 + 1.0f);
+    int x0 = floor(aabb.x0 + 0.0f);
+    int x1 = floor(aabb.x1 + 1.0f);
+    int y0 = floor(aabb.y0 + 0.0f);
+    int y1 = floor(aabb.y1 + 1.0f);
+    int z0 = floor(aabb.z0 + 0.0f);
+    int z1 = floor(aabb.z1 + 1.0f);
 
     if (x0 < 0) x0 = 0;
     if (y0 < 0) y0 = 0;
@@ -291,7 +291,8 @@ void Level::updateNeighborAt(std::int32_t x, std::int32_t y, std::int32_t z, std
     if (x < 0 || y < 0 || z < 0 || x >= this->width || y >= this->depth || z >= this->height) {
         Tile *tile = Tile::tiles[this->blocks[(y * this->height + z) * this->width + x]];
         if (tile != nullptr) {
-            tile->neighborChanged(this, x, y, z, type);
+            std::shared_ptr<Level> level = std::make_shared<Level>(*this);
+            tile->neighborChanged(level, x, y, z, type);
         }
     }
 }

@@ -1,8 +1,9 @@
 #include "particle/ParticleEngine.hpp"
 
-ParticleEngine::ParticleEngine(std::shared_ptr<Level>& level) {
+ParticleEngine::ParticleEngine(std::shared_ptr<Level>& level, std::shared_ptr<Textures>& textureManager) {
     this->level = level;
     this->particles = std::vector<std::shared_ptr<Particle>>();
+    this->textureManager = textureManager;
 }
 
 void ParticleEngine::add(std::shared_ptr<Particle>& p) {
@@ -20,9 +21,10 @@ void ParticleEngine::tick() {
 }
 
 void ParticleEngine::render(std::shared_ptr<Player>& player, float a, int layer) {
+    if (this->particles.size() == 0) return;
+    
     glEnable(GL_TEXTURE_2D);
-    int id = Textures::loadTexture("terrain.png", GL_NEAREST);
-    glBindTexture(GL_TEXTURE_2D, id);
+    glBindTexture(GL_TEXTURE_2D, this->textureManager->loadTexture("terrain.png", GL_NEAREST));
 
     float xa = -cos(player->yRot * PI / 180.0);
     float za = -sin(player->yRot * PI / 180.0);

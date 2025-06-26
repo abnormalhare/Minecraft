@@ -90,6 +90,14 @@ void Entity::move(float xa, float ya, float za) {
     this->z = (this->bb.z0 + this->bb.z1) / 2.0f;
 }
 
+bool Entity::isInWater() {
+    return this->level->containsLiquid(&this->bb, 1);
+}
+
+bool Entity::isInLava() {
+    return this->level->containsLiquid(&this->bb, 2);
+}
+
 void Entity::moveRelative(float xa, float za, float speed) {
     float dist = xa * xa + za * za;
     if (dist < 0.01f) return;
@@ -111,3 +119,5 @@ bool Entity::isLit() {
     int zTile = this->z;
     return this->level->isLit(xTile, yTile, zTile);
 }
+
+void Entity::render(float a) {}

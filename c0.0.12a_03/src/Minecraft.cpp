@@ -1,6 +1,13 @@
 #include "Minecraft.hpp"
 
-void Minecraft::setFullscreen(bool isFullscreen) {
+Minecraft::Minecraft(std::int32_t width, std::int32_t height, bool fullscreen) {
+    this->width = width;
+    this->height = height;
+    this->fullscreen = fullscreen;
+    this->textureManager = std::shared_ptr<Textures>();
+}
+
+void Minecraft::setFullscreen(bool isFullscreen, const char* title) {
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
         exit(EXIT_FAILURE);
@@ -17,10 +24,9 @@ void Minecraft::setFullscreen(bool isFullscreen) {
     }
 
     if (isFullscreen) {
-        this->window = glfwCreateWindow(this->width, this->height, "Game", monitor, NULL);
+        this->window = glfwCreateWindow(this->width, this->height, title, monitor, NULL);
     } else {
-        
-        this->window = glfwCreateWindow(this->width, this->height, "Game", NULL, NULL);
+        this->window = glfwCreateWindow(this->width, this->height, title, NULL, NULL);
     }
     if (!this->window) {
         glfwTerminate();
@@ -54,14 +60,35 @@ float Minecraft::getMouseDY(void) {
     return mouseDY;
 }
 
+void Minecraft::grabMouse() {
+    if (!this->mouseGrabbed) {
+        this->mouseGrabbed = true;
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
+    }
+}
+
+void Minecraft::releaseMouse() {
+    if (!this->mouseGrabbed) {
+        this->mouseGrabbed = false;
+        glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_NORMAL);
+    }
+}
+
 void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int action, UNUSED int mods) {
+    if (!this->mouseGrabbed) {
+        this->grabMouse();
+        return;
+    }
+    
     if (button == GLFW_MOUSE_BUTTON_RIGHT && action == GLFW_PRESS) {
-        if (this->hitResult != nullptr) {
-            Tile* oldTile = Tile::tiles[this->level->getTile(this->hitResult->x, this->hitResult->y, this->hitResult->z)];
-            bool changed = this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
-            if (oldTile != nullptr && changed) {
-                oldTile->destroy(this->level, this->window, this->hitResult->x, this->hitResult->y, this->hitResult->z, this->particleEngine);
-            } 
+        if (this->editMode == 0) {
+            if (this->hitResult != nullptr) {
+                Tile* oldTile = Tile::tiles[this->level->getTile(this->hitResult->x, this->hitResult->y, this->hitResult->z)];
+                bool changed = this->level->setTile(this->hitResult->x, this->hitResult->y, this->hitResult->z, 0);
+                if (oldTile != nullptr && changed) {
+                    oldTile->destroy(this->level, this->window, this->hitResult->x, this->hitResult->y, this->hitResult->z, this->particleEngine);
+                } 
+            }
         }
     }
     if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
@@ -113,16 +140,37 @@ void Minecraft::keyCallback(GLFWwindow* window, int key, UNUSED int scancode, in
     }
 }
 
+void Minecraft::reportGLError(const char* error) {
+    GLenum err = glGetError();
+    if (error != 0) {
+        const GLubyte* errorStr = gluErrorString(err);
+        
+        std::cout << "########## GL ERROR ##########" << std::endl
+                  << "@ " << error << std::endl
+                  << err << ": " << errorStr << std::endl;
+        exit(EXIT_SUCCESS);
+    }
+}
+
+void Minecraft::destroy(void) {
+    this->level->save();
+
+    glfwDestroyCursor(this->cursor);
+    glfwDestroyWindow(this->window);
+    glfwTerminate();
+}
+
 void Minecraft::init(void) {
     std::int32_t col0 = 0xFEFBFA;
     std::int32_t col1 = 0x0E0B0A;
+
     float fr = 0.5f;
     float fg = 0.8f;
     float fb = 1.0f;
 
-    this->fogColor0[0] = ((col0 >> 16) & 0xFF) / 255.0f;
-    this->fogColor0[1] = ((col0 >> 8 ) & 0xFF) / 255.0f;
-    this->fogColor0[2] = ((col0 >> 0 ) & 0xFF) / 255.0f;
+    this->fogColor0[0] = fr;
+    this->fogColor0[1] = fg;
+    this->fogColor0[2] = fb;
     this->fogColor0[3] = 1.0f;
 
     this->fogColor1[0] = ((col1 >> 16) & 0xFF) / 255.0f;
@@ -131,22 +179,33 @@ void Minecraft::init(void) {
     this->fogColor1[3] = 1.0f;
 
     this->width = this->height = 0;
-    this->setFullscreen(false);
+    if (this->fullscreen) {
+        this->setFullscreen(false, "Minecraft 0.0.12a_03");
+    } else {
+        this->setFullscreen(true, "Minecraft 0.0.12a_03");
+    }
     this->cursor = glfwCreateStandardCursor(GLFW_ARROW_CURSOR);
     glfwSetCursor(this->window, this->cursor);
+
+    this->reportGLError("Pre startup");
 
     glEnable(GL_TEXTURE_2D);
     glShadeModel(GL_SMOOTH);
     glClearColor(fr, fg, fb, 0.0f);
-    glClearDepth(1.0f);
+    glClearDepth(1.0);
     glEnable(GL_DEPTH_TEST);
     glDepthFunc(GL_LEQUAL);
     glEnable(GL_ALPHA_TEST);
     glAlphaFunc(GL_GREATER, 0.5f);
+    glCullFace(GL_BACK);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glMatrixMode(GL_MODELVIEW);
+    reportGLError("Startup");
 
+    this->font = new Font("default.gif", this->textureManager);
+    
+    glViewport(0, 0, this->width, this->height);
     this->level = std::make_shared<Level>(256, 256, 64);
     this->levelRenderer = std::make_shared<LevelRenderer>(this->level);
     this->player = std::make_shared<Player>(this->level, this->window);
@@ -159,17 +218,13 @@ void Minecraft::init(void) {
         zombie->resetPos();
         this->zombies.push_back(zombie);
     }
-}
 
-void Minecraft::destroy(void) {
-    this->level->save();
-
-    glfwDestroyCursor(this->cursor);
-    glfwDestroyWindow(this->window);
-    glfwTerminate();
+    reportGLError("Post startup");
 }
 
 void Minecraft::run(void) {
+    this->running = true;
+
     try {
         this->init();
     } catch (const std::exception& e) {
@@ -181,16 +236,32 @@ void Minecraft::run(void) {
     int frames = 0;
 
     try {
-        while (!glfwWindowShouldClose(this->window)) {
+        while (this->running) {
+            if (this->pause) {
+                _sleep(100);
+                continue;
+            }
+            
+            if (!glfwWindowShouldClose(this->window)) {
+                this->running = false;
+            }
+
             this->timer.advanceTime();
             for (int i = 0; i < this->timer.ticks; i++) {
                 this->tick();
             }
-            this->render(this->timer.a);
-            frames++;
 
+            reportGLError("Pre render");
+            this->render(this->timer.a);
+            reportGLError("Post render");
+
+            frames++;
             while (Timer::getTimeInMilliSeconds() >= lastTime + 1000) {
-                std::cout << frames << " fps, " << Chunk::updates << std::endl;
+                delete this->fpsString;
+                char *buffer = new char[0x100];
+                sprintf(buffer, "%d fps, %d chunk updates", frames, Chunk::updates);
+                this->fpsString = buffer;
+
                 Chunk::updates = 0;
                 lastTime += 1000;
                 frames = 0;
