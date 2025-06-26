@@ -40,7 +40,7 @@ Font::Font(const char* font_file, std::shared_ptr<Textures>& textureManager) : f
 }
 
 void Font::drawShadow(const char* text, int x, int y, int color) {
-    this->draw(text, x + 1, y = 1, color, true);
+    this->draw(text, x + 1, y + 1, color, true);
     this->draw(text, x, y, color, false);
 }
 

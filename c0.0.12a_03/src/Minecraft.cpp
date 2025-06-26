@@ -291,7 +291,7 @@ void Minecraft::run(void) {
                 continue;
             }
             
-            if (!glfwWindowShouldClose(this->window)) {
+            if (glfwWindowShouldClose(this->window)) {
                 this->running = false;
             }
 
