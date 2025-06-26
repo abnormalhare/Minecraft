@@ -3,7 +3,7 @@
 HitResult::HitResult(std::int32_t type, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t f) :
             type(type), x(x), y(y), z(z), f(f) {}
 
-float HitResult::distanceTo(std::shared_ptr<Player>& p, std::int32_t unk) {
+float HitResult::distanceTo(UNUSED std::shared_ptr<Player>& p, std::int32_t unk) {
     int x = this->x;
     int y = this->y;
     int z = this->z;

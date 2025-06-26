@@ -101,7 +101,7 @@ void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int a
             int x = this->hitResult->x;
             int y = this->hitResult->y;
             int z = this->hitResult->z;
-            int entity;
+            size_t entity;
 
             if (this->hitResult->f == 0) y--;
             if (this->hitResult->f == 1) y++;
@@ -113,7 +113,7 @@ void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int a
             std::shared_ptr<AABB> c = Tile::tiles[this->paintTexture]->getAABB(x, y, z);
             if (c != nullptr) {
                 // this is 100% its own function, but i dont care enough to find where it should go
-                bool retValue = false;
+                UNUSED bool retValue = false;
                 if (this->player->bb.intersects(*c)) {
                     retValue = false;
                 } else {
@@ -142,7 +142,7 @@ void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int a
     }
 }
 
-void Minecraft::keyCallback(GLFWwindow* window, int key, UNUSED int scancode, int action, UNUSED int mods) {
+void Minecraft::keyCallback(UNUSED GLFWwindow* window, int key, UNUSED int scancode, int action, UNUSED int mods) {
     if (action != GLFW_PRESS) return;
 
     if (key == GLFW_KEY_ESCAPE && !this->fullscreen) {
@@ -208,7 +208,7 @@ void Minecraft::destroy(void) {
 }
 
 void Minecraft::init(void) {
-    std::int32_t col0 = 0xFEFBFA;
+    UNUSED std::int32_t col0 = 0xFEFBFA;
     std::int32_t col1 = 0x0E0B0A;
 
     float fr = 0.5f;
@@ -253,15 +253,15 @@ void Minecraft::init(void) {
     this->font = new Font("default.gif", this->textureManager);
     
     glViewport(0, 0, this->width, this->height);
-    this->level = std::make_shared<Level>(256, 256, 64);
-    this->levelRenderer = std::make_shared<LevelRenderer>(this->level);
+    this->level = std::make_shared<Level>(this, 256, 256, 64);
+    this->levelRenderer = std::make_shared<LevelRenderer>(this->level, this->textureManager);
     this->player = std::make_shared<Player>(this->level, this->window);
-    this->particleEngine = std::make_shared<ParticleEngine>(this->level);
+    this->particleEngine = std::make_shared<ParticleEngine>(this->level, this->textureManager);
 
     glfwSetInputMode(this->window, GLFW_CURSOR, GLFW_CURSOR_DISABLED);
 
     for (int i = 0; i < 10; i++) {
-        std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, 128.0f, 0.0f, 128.0f);
+        std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, this->textureManager, 128.0f, 0.0f, 128.0f);
         zombie->resetPos();
         this->zombies.push_back(zombie);
     }
@@ -285,7 +285,7 @@ void Minecraft::run(void) {
     try {
         while (this->running) {
             if (this->pause) {
-                _sleep(100);
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
                 continue;
             }
             
@@ -304,7 +304,7 @@ void Minecraft::run(void) {
 
             frames++;
             while (Timer::getTimeInMilliSeconds() >= lastTime + 1000) {
-                delete this->fpsString;
+                if (this->fpsString != nullptr) delete this->fpsString;
                 char *buffer = new char[0x100];
                 sprintf(buffer, "%d fps, %d chunk updates", frames, Chunk::updates);
                 this->fpsString = buffer;
@@ -375,14 +375,13 @@ void Minecraft::pick(float a) {
     this->levelRenderer->pick(this->player, Frustum::getFrustum());
     
     int hits = glRenderMode(GL_RENDER);
-    std::int64_t closest = 0;
     std::int32_t names[10];
     std::shared_ptr<HitResult> result;
     int index = 0;
     // change because vineflower
     for (int i = 0; i < hits; i++) {
         int nameCount = this->selectBuffer[index++];
-        std::int64_t minZ = this->selectBuffer[index++];
+        UNUSED std::int64_t minZ = this->selectBuffer[index++];
         index++;
         
         for (int j = 0; j < nameCount; j++) {
@@ -407,7 +406,7 @@ void Minecraft::render(float a) {
 
     glViewport(0, 0, this->width, this->height);
 
-    float yaxis;
+    UNUSED float yaxis;
     if (this->mouseGrabbed) {
         float xo = getMouseDX();
         float yo = getMouseDY();
@@ -598,11 +597,11 @@ void Minecraft::showLoadingScreen(const char* top_text, const char* bottom_text)
 
     this->update();
 
-    _sleep(200);
+    std::this_thread::sleep_for(std::chrono::milliseconds(200));
 }
 
 
-Minecraft minecraft;
+Minecraft minecraft = Minecraft(640, 480, false);
 
 void mouse_button_callback(GLFWwindow* window, int button, int action, int mods) {
     minecraft.mouseButtonCallback(window, button, action, mods);
@@ -614,6 +613,5 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 int main(void) {
     std::srand(std::time({}));
-    minecraft = Minecraft(640, 480, false);
     minecraft.run();
 }

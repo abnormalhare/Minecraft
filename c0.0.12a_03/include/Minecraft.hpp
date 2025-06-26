@@ -3,6 +3,7 @@
 #include "base.hpp"
 
 #include <GLFW/glfw3.h>
+#include <thread>
 
 #ifdef WIN
 #include <windef.h>
@@ -31,7 +32,7 @@ private:
     int paintTexture = 1;
     std::shared_ptr<ParticleEngine> particleEngine;
     std::vector<Entity> entities;
-    char* fpsString = "";
+    char* fpsString = nullptr;
     bool mouseGrabbed = false;
     int yMouseAxis = 1;
     std::shared_ptr<Textures> textureManager;

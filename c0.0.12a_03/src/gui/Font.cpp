@@ -58,7 +58,7 @@ void Font::draw(const char* text, int x, int y, int color, bool dim) {
     t->color(color);
 
     int xOff = 0;
-    for (int i = 0; i < strlen(text); i++) {
+    for (size_t i = 0; i < strlen(text); i++) {
         int var9;
         if (text[i] == '&') {
             if (text[i + 1] - '0' < 10) {
@@ -86,7 +86,7 @@ void Font::draw(const char* text, int x, int y, int color, bool dim) {
         t->vertexUV(x + xOff + 8, y,     0.0f, (color + 8) / 128.0f, var9       / 128.0f);
         t->vertexUV(x + xOff,     y,     0.0f, color       / 128.0f, var9       / 128.0f);
 
-        xOff += this->charWidths[text[i]];
+        xOff += this->charWidths[(size_t)text[i]];
     }
 
     t->flush();
@@ -96,11 +96,11 @@ void Font::draw(const char* text, int x, int y, int color, bool dim) {
 int Font::getWidth(const char* text) {
     int width = 0;
 
-    for (int i = 0; i < strlen(text); i++) {
+    for (size_t i = 0; i < strlen(text); i++) {
         if (text[i] == '&') {
             i++; // skip this one and the next one
         } else {
-            width += this->charWidths[text[i]];
+            width += this->charWidths[(size_t)text[i]];
         }
     }
 }
