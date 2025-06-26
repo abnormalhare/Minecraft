@@ -30,14 +30,16 @@ private:
     std::shared_ptr<Player> player = nullptr;
     int paintTexture = 1;
     std::shared_ptr<ParticleEngine> particleEngine;
+    std::vector<Entity> entities;
     char* fpsString = "";
     bool mouseGrabbed = false;
+    int yMouseAxis = 1;
     std::shared_ptr<Textures> textureManager;
     Font *font;
     int editMode = 0;
     
     std::vector<std::shared_ptr<Zombie>> zombies = std::vector<std::shared_ptr<Zombie>>();
-    std::unique_ptr<HitResult> hitResult = nullptr;
+    std::shared_ptr<HitResult> hitResult = nullptr;
 
     std::int32_t viewportBuffer[16];
     std::uint32_t selectBuffer[2000];
@@ -48,6 +50,7 @@ private:
     double lastMouseX = 0.0;
     double lastMouseY = 0.0;
 
+    void update();
     void setFullscreen(bool isFullscreen, const char* title);
     float getMouseDX();
     float getMouseDY();

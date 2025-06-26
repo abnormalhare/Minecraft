@@ -340,22 +340,22 @@ bool Level::containsLiquid(AABB *aabb, std::int32_t type) {
 }
 
 void Level::tick() {
-    this->unprocessed = this->unprocessed + this->width * this->height * this->depth;
-    int ticks = this->unprocessed / 400;
-    this->unprocessed -= ticks * 400;
+    this->unprocessed += this->width * this->height * this->depth;
+    int ticks = this->unprocessed / 200;
+    this->unprocessed -= ticks * 200;
 
     for (int i = 0; i < ticks; i++) {
-        std::uniform_int_distribution<> dist1(0, this->width);
-        int x = dist1(this->random);
-        std::uniform_int_distribution<> dist2(0, this->height);
-        int y = dist2(this->random);
-        std::uniform_int_distribution<> dist3(0, this->depth);
-        int z = dist3(this->random);
+        this->randValue = this->randValue * 1664525 + 1013904223;
+        int x = this->randValue >> 16 & this->width - 1;
+        this->randValue = this->randValue * 1664525 + 1013904223;
+        int y = this->randValue >> 16 & this->depth - 1;
+        this->randValue = this->randValue * 1664525 + 1013904223;
+        int z = this->randValue >> 16 & this->height - 1;
 
-        Tile* tile = Tile::tiles[this->getTile(x, y, z)];
-        if (tile != nullptr) {
+        char block = this->blocks[(y * this->height + z) * this->width + x];
+        if (Tile::shouldTick[block]) {
             std::shared_ptr<Level> level = this->shared_from_this();
-            tile->tick(level, x, y, z, this->random);
+            Tile::tiles[block]->tick(level, x, y, z, this->random);
         }
     }
 }

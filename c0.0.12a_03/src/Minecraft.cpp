@@ -7,6 +7,11 @@ Minecraft::Minecraft(std::int32_t width, std::int32_t height, bool fullscreen) {
     this->textureManager = std::shared_ptr<Textures>();
 }
 
+void Minecraft::update() {
+    glfwSwapBuffers(this->window);
+    glfwPollEvents();
+}
+
 void Minecraft::setFullscreen(bool isFullscreen, const char* title) {
     if (!glfwInit()) {
         std::cerr << "Failed to initialize GLFW" << std::endl;
@@ -89,13 +94,14 @@ void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int a
                     oldTile->destroy(this->level, this->window, this->hitResult->x, this->hitResult->y, this->hitResult->z, this->particleEngine);
                 } 
             }
+            return;
         }
-    }
-    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        
         if (this->hitResult != nullptr) {
             int x = this->hitResult->x;
             int y = this->hitResult->y;
             int z = this->hitResult->z;
+            int entity;
 
             if (this->hitResult->f == 0) y--;
             if (this->hitResult->f == 1) y++;
@@ -104,13 +110,44 @@ void Minecraft::mouseButtonCallback(UNUSED GLFWwindow* window, int button, int a
             if (this->hitResult->f == 4) x--;
             if (this->hitResult->f == 5) x++;
 
+            std::shared_ptr<AABB> c = Tile::tiles[this->paintTexture]->getAABB(x, y, z);
+            if (c != nullptr) {
+                // this is 100% its own function, but i dont care enough to find where it should go
+                bool retValue = false;
+                if (this->player->bb.intersects(*c)) {
+                    retValue = false;
+                } else {
+                    entity = 0;
+                    while (true) {
+                        if (entity >= this->entities.size()) {
+                            retValue = true;
+                            break;
+                        }
+
+                        if (this->entities[entity].bb.intersects(*c)) {
+                            retValue = false;
+                            break;
+                        }
+
+                        entity++;
+                    }
+                }
+            }
+
             this->level->setTile(x, y, z, this->paintTexture);
         }
+    }
+    if (button == GLFW_MOUSE_BUTTON_LEFT && action == GLFW_PRESS) {
+        this->editMode = ~this->editMode;
     }
 }
 
 void Minecraft::keyCallback(GLFWwindow* window, int key, UNUSED int scancode, int action, UNUSED int mods) {
     if (action != GLFW_PRESS) return;
+
+    if (key == GLFW_KEY_ESCAPE && !this->fullscreen) {
+        this->releaseMouse();
+    }
 
     if (key == GLFW_KEY_ENTER) {
         this->level->save();
@@ -130,13 +167,23 @@ void Minecraft::keyCallback(GLFWwindow* window, int key, UNUSED int scancode, in
     if (key == GLFW_KEY_6) {
         this->paintTexture = 6;
     }
+    if (key == GLFW_KEY_Y) {
+        this->yMouseAxis = -this->yMouseAxis;
+    }
     if (key == GLFW_KEY_G) {
-        std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, this->player->x, this->player->y, this->player->z);
+        std::shared_ptr<Zombie> zombie = std::make_shared<Zombie>(this->level, this->window, this->textureManager, this->player->x, this->player->y, this->player->z);
         this->zombies.push_back(zombie);
     }
-    if (key == GLFW_KEY_ESCAPE && action == GLFW_PRESS) {
-        this->level->save();
-        glfwSetWindowShouldClose(window, GLFW_TRUE);
+    if (key == GLFW_KEY_N) {
+        this->level->generateMap();
+        this->player->resetPos();
+
+        while (this->entities.size() > 0) {
+            this->entities.erase(this->entities.begin());
+        }
+    }
+    if (key == GLFW_KEY_F) {
+        this->levelRenderer->drawDistance = (this->levelRenderer->drawDistance + 1) % 4;
     }
 }
 
@@ -330,46 +377,61 @@ void Minecraft::pick(float a) {
     int hits = glRenderMode(GL_RENDER);
     std::int64_t closest = 0;
     std::int32_t names[10];
-    int hitNameCount = 0;
+    std::shared_ptr<HitResult> result;
     int index = 0;
     // change because vineflower
     for (int i = 0; i < hits; i++) {
         int nameCount = this->selectBuffer[index++];
         std::int64_t minZ = this->selectBuffer[index++];
         index++;
-        if (minZ >= closest && i != 0) {
-            for (int j = 0; j < nameCount; j++) {
-                index++;
-            }
-        } else {
-            closest = minZ;
-            hitNameCount = nameCount;
-            for (int j = 0; j < nameCount; j++) {
-                names[j] = this->selectBuffer[index++];
+        
+        for (int j = 0; j < nameCount; j++) {
+            names[j] = this->selectBuffer[index++];
+        }
+
+        this->hitResult = std::make_shared<HitResult>(names[0], names[1], names[2], names[3], names[4]);
+        if (result != nullptr) {
+            if (this->hitResult->distanceTo(this->player, this->editMode) >= result->distanceTo(this->player, this->editMode)) {
+                continue;
             }
         }
-    }
-    if (hitNameCount > 0) {
-        this->hitResult = std::make_unique<HitResult>(names[0], names[1], names[2], names[3], names[4]);
-    } else {
-        this->hitResult = nullptr;
+
+        result = this->hitResult;
     }
 }
 
 void Minecraft::render(float a) {
-    float xo = getMouseDX();
-    float yo = getMouseDY();
-    this->player->turn(xo, yo);
+    if (glfwGetWindowAttrib(this->window, GLFW_FOCUSED)) {
+        this->releaseMouse();
+    }
+
+    glViewport(0, 0, this->width, this->height);
+
+    float yaxis;
+    if (this->mouseGrabbed) {
+        float xo = getMouseDX();
+        float yo = getMouseDY();
+        yaxis = yo * this->yMouseAxis;
+        this->player->turn(xo, yo);
+    }
+
+    this->reportGLError("Set viewport");
     this->pick(a);
+    this->reportGLError("Picked");
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
     this->setupCamera(a);
+    this->reportGLError("Set up camera");
+
     glEnable(GL_CULL_FACE);
     Frustum* frustum = Frustum::getFrustum();
     this->levelRenderer->updateDirtyChunks(this->player);
+    this->reportGLError("Update chunks");
+    
     this->setupFog(0);
     glEnable(GL_FOG);
     this->levelRenderer->render(this->player, 0);
+    this->reportGLError("Rendered level");
 
     for (size_t i = 0; i < this->zombies.size(); i++) {
         std::shared_ptr<Zombie> zombie = this->zombies.at(i);
@@ -377,8 +439,11 @@ void Minecraft::render(float a) {
             this->zombies[i]->render(a);
         }
     }
+    this->reportGLError("Rendered entities");
     
     this->particleEngine->render(this->player, a, 0);
+    this->reportGLError("Rendered particles");
+
     this->setupFog(1);
     this->levelRenderer->render(this->player, 1);
 
@@ -390,30 +455,44 @@ void Minecraft::render(float a) {
     }
     
     this->particleEngine->render(this->player, a, 1);
+    this->levelRenderer->renderSurround(0);
+    glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+    this->setupFog(0);
+    this->levelRenderer->renderSurround(1);
+    glEnable(GL_BLEND);
+    glDepthMask(false);
+    this->levelRenderer->render(this->player, 2);
+    glDepthMask(true);
+    glDisable(GL_BLEND);
     glDisable(GL_LIGHTING);
     glDisable(GL_TEXTURE_2D);
     glDisable(GL_FOG);
+    this->reportGLError("Rendered rest");
+    
     if (this->hitResult != nullptr) {
         glDisable(GL_ALPHA_TEST);
-        this->levelRenderer->renderHit(this->hitResult);
+        this->levelRenderer->renderHit(this->player, this->hitResult, this->editMode, this->paintTexture);
         glEnable(GL_ALPHA_TEST);
     }
+    this->reportGLError("Rendered hit");
+
     this->drawGui(a);
-    
-    glfwSwapBuffers(this->window);
-    glfwPollEvents();
+
+    this->update();
 }
 
 void Minecraft::drawGui(UNUSED float a) {
     int screenWidth = this->width * 240 / this->height;
     int screenHeight = this->height * 240 / this->height;
-    glClear(256);
+    glClear(GL_DEPTH_BUFFER_BIT);
     glMatrixMode(GL_PROJECTION);
     glLoadIdentity();
     glOrtho(0.0, screenWidth, screenHeight, 0.0, 100.0, 300.0);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glTranslatef(0.0f, 0.0f, -200.0f);
+    reportGLError("GUI: Init");
+
     glPushMatrix();
     glTranslatef(screenWidth - 16, 16.0f, 0.0f);
     
@@ -424,7 +503,7 @@ void Minecraft::drawGui(UNUSED float a) {
     glTranslatef(-1.5f, 0.5f, -0.5f);
     glScalef(-1.0f, -1.0f, 1.0f);
 
-    int id = Textures::loadTexture("terrain.png", GL_NEAREST);
+    int id = this->textureManager->loadTexture("terrain.png", GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, id);
     glEnable(GL_TEXTURE_2D);
     t->init();
@@ -432,6 +511,11 @@ void Minecraft::drawGui(UNUSED float a) {
     t->flush();
     glDisable(GL_TEXTURE_2D);
     glPopMatrix();
+    this->reportGLError("GUI: Draw selected");
+
+    this->font->drawShadow("0.0.12a_03", 2, 2, 0xFFFFFF);
+    this->font->drawShadow(this->fpsString, 2, 12, 0xFFFFFF);
+    this->reportGLError("GUI: Draw text");
 
     int wc = screenWidth / 2;
     int hc = screenHeight / 2;
@@ -446,23 +530,39 @@ void Minecraft::drawGui(UNUSED float a) {
     t->vertex(wc - 4, hc + 1, 0.0F);
     t->vertex(wc + 5, hc + 1, 0.0F);
     t->flush();
+    this->reportGLError("GUI: Draw crosshair");
+    this->reportGLError("Rendered gui");
 }
 
 void Minecraft::setupFog(int i) {
-    if (i == 0) {
-        glFogi(GL_FOG_MODE, 2048);
+    Tile *tile = Tile::tiles[this->level->getTile(this->player->x, this->player->y, this->player->z)];
+
+    if (tile != nullptr && tile->getLiquidType() == 1) {
+        glFogi(GL_FOG_MODE, GL_EXP);
+        glFogf(GL_FOG_DENSITY, 0.1f);
+        glFogfv(GL_FOG_COLOR, this->getBuffer(0.02f, 0.02f, 0.2f, 1.0f));
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(0.3f, 0.3f, 0.5f, 1.0f));
+    } else if (tile != nullptr && tile->getLiquidType() == 2) {
+        glFogi(GL_FOG_MODE, GL_EXP);
+        glFogf(GL_FOG_DENSITY, 0.2f);
+        glFogfv(GL_FOG_COLOR, this->getBuffer(0.5f, 0.3f, 0.0f, 1.0f));
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(0.4f, 0.3f, 0.3f, 1.0f));
+    } else if (i == 0) {
+        glFogi(GL_FOG_MODE, GL_EXP);
         glFogf(GL_FOG_DENSITY, 0.001f);
         glFogfv(GL_FOG_COLOR, this->fogColor0);
-        glDisable(GL_LIGHTING);
+        glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(1.0f, 1.0f, 1.0f, 1.0f));
     } else if (i == 1) {
-        glFogi(GL_FOG_MODE, 2048);
-        glFogf(GL_FOG_DENSITY, 0.06f);
+        glFogi(GL_FOG_MODE, GL_EXP);
+        glFogf(GL_FOG_DENSITY, 0.01f);
         glFogfv(GL_FOG_COLOR, this->fogColor1);
-        glEnable(GL_LIGHTING);
-        glEnable(GL_COLOR_MATERIAL);
         float br = 0.6f;
         glLightModelfv(GL_LIGHT_MODEL_AMBIENT, this->getBuffer(br, br, br, 1.0f));
     }
+
+    glEnable(GL_COLOR_MATERIAL);
+    glColorMaterial(GL_FRONT, GL_AMBIENT);
+    glEnable(GL_LIGHTING);
 }
 
 float* Minecraft::getBuffer(float a, float b, float c, float d) {
@@ -479,7 +579,7 @@ void Minecraft::showLoadingScreen(const char* top_text, const char* bottom_text)
     std::shared_ptr<Tesselator> t = Tesselator::instance;
     glEnable(GL_TEXTURE_2D);
 
-    int dirtTex = this->textureManager.loadTexture("dirt.png", GL_NEAREST);
+    int dirtTex = this->textureManager->loadTexture("dirt.png", GL_NEAREST);
     glBindTexture(GL_TEXTURE_2D, dirtTex);
 
     t->init();
@@ -495,6 +595,10 @@ void Minecraft::showLoadingScreen(const char* top_text, const char* bottom_text)
     glEnable(GL_TEXTURE_2D);
     this->font->drawShadow(top_text,    (u - this->font->getWidth(top_text))    / 2, v / 2 - 4 - 8, 0xFFFFFF);
     this->font->drawShadow(bottom_text, (u - this->font->getWidth(bottom_text)) / 2, v / 2 - 4 + 4, 0xFFFFFF);
+
+    this->update();
+
+    _sleep(200);
 }
 
 
@@ -510,6 +614,6 @@ void key_callback(GLFWwindow* window, int key, int scancode, int action, int mod
 
 int main(void) {
     std::srand(std::time({}));
-    minecraft = Minecraft();
+    minecraft = Minecraft(640, 480, false);
     minecraft.run();
 }

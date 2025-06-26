@@ -239,7 +239,7 @@ void LevelRenderer::compileSurroundingWater() {
     glDisable(GL_TEXTURE_2D);
 }
 
-void LevelRenderer::renderHit(std::shared_ptr<Player>& p, std::unique_ptr<HitResult>& h, std::int32_t unk, std::int32_t tile) {
+void LevelRenderer::renderHit(std::shared_ptr<Player>& p, std::shared_ptr<HitResult>& h, std::int32_t editMode, std::int32_t tile) {
     std::shared_ptr<Tesselator> t = Tesselator::instance;
 
     glEnable(GL_BLEND);
@@ -249,7 +249,7 @@ void LevelRenderer::renderHit(std::shared_ptr<Player>& p, std::unique_ptr<HitRes
     float alpha = (sin(time / 100.0) * 0.2f + 0.4f) * 0.5; // unless i split it up like this
     glColor4f(1.0f, 1.0f, 1.0f, alpha);
 
-    if (unk == 0) {
+    if (editMode == 0) {
         t->init();
         for (int face = 0; face < 6; face++) {
             Tile::renderFaceNoTexture(p, t, h->x, h->y, h->z, face);
@@ -315,6 +315,10 @@ void LevelRenderer::resetChunks() {
     for (int i = 0; i < this->chunks.size(); i++) {
         this->chunks[i].reset();
     }
+}
+
+void LevelRenderer::renderSurround(std::int32_t index) {
+    glCallList(this->surroundLists + index);
 }
 
 void LevelRenderer::tileChanged(std::int32_t x, std::int32_t y, std::int32_t z) {
