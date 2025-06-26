@@ -191,7 +191,7 @@ void Minecraft::keyCallback(UNUSED GLFWwindow* window, int key, UNUSED int scanc
 
 void Minecraft::reportGLError(const char* error) {
     GLenum err = glGetError();
-    if (error != 0) {
+    if (err != 0) {
         const GLubyte* errorStr = gluErrorString(err);
         
         std::cout << "########## GL ERROR ##########" << std::endl
@@ -228,7 +228,7 @@ void Minecraft::init(void) {
     this->fogColor1[3] = 1.0f;
 
     this->width = this->height = 0;
-    if (this->fullscreen) {
+    if (!this->fullscreen) {
         this->setFullscreen(false, "Minecraft 0.0.12a_03");
     } else {
         this->setFullscreen(true, "Minecraft 0.0.12a_03");
@@ -514,8 +514,10 @@ void Minecraft::drawGui(UNUSED float a) {
     glPopMatrix();
     this->reportGLError("GUI: Draw selected");
 
-    this->font->drawShadow("0.0.12a_03", 2, 2, 0xFFFFFF);
-    this->font->drawShadow(this->fpsString, 2, 12, 0xFFFFFF);
+    this->font->drawShadow("0.0.12a_03", 2, 2, 0xFFFFFF00);
+    if (this->fpsString) {
+        this->font->drawShadow(this->fpsString, 2, 12, 0xFFFFFF00);
+    }
     this->reportGLError("GUI: Draw text");
 
     int wc = screenWidth / 2;
@@ -594,8 +596,8 @@ void Minecraft::showLoadingScreen(const char* top_text, const char* bottom_text)
     t->flush();
 
     glEnable(GL_TEXTURE_2D);
-    this->font->drawShadow(top_text,    (u - this->font->getWidth(top_text))    / 2, v / 2 - 4 - 8, 0xFFFFFF);
-    this->font->drawShadow(bottom_text, (u - this->font->getWidth(bottom_text)) / 2, v / 2 - 4 + 4, 0xFFFFFF);
+    this->font->drawShadow(top_text,    (u - this->font->getWidth(top_text))    / 2, v / 2 - 4 - 8, 0xFFFFFF00);
+    this->font->drawShadow(bottom_text, (u - this->font->getWidth(bottom_text)) / 2, v / 2 - 4 + 4, 0xFFFFFF00);
 
     this->update();
 

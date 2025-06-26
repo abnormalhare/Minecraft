@@ -18,9 +18,9 @@ Font::Font(const char* font_file, std::shared_ptr<Textures>& textureManager) : f
             int var10 = (h << 3) + charWidth;
             var9 = true;
 
-            for (int j = 0; j < 8 && var9; charWidth++) {
+            for (int j = 0; j < 8 && var9; j++) {
                 int var12 = ((wIn << 3) + j) * w;
-                var12 = img[var10 + var12];
+                var12 = img[(var10 + var12) * 4 + 2];
                 if (var12 > 128) {
                     var9 = false;
                 }

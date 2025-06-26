@@ -49,7 +49,8 @@ void Level::generateMap() {
     std::vector<int> cf1        = PerlinNoiseFilter(level_gen->random, 2, false).read(w, h);
     std::vector<int> cf2        = PerlinNoiseFilter(level_gen->random, 4, false).read(w, h);
     std::vector<int> rockMap    = PerlinNoiseFilter(level_gen->random, 1, true ).read(w, h);
-    char *blocks    = new char(w * h * d);
+    delete this->blocks;
+    char *blocks    = new char[w * h * d];
     int df = d / 2;
 
     int dh2;
@@ -57,12 +58,12 @@ void Level::generateMap() {
     int dh;
     int rh;
     for (int x = 0; x < w; x++) {
-        for (int y = 0; y < d; y++) {
-            for (int z = 0; z < h; z++) {
-                int dh1 = heightmap1[x + z * this->width];
-                dh2     = heightmap2[x + z * this->width];
-                int ch1 = cf1[x + z * this->width];
-                ch2     = cf2[x + z * this->width];
+        for (int z = 0; z < d; z++) {
+            for (int y = 0; y < h; y++) {
+                int dh1 = heightmap1[x + y * this->width];
+                dh2     = heightmap2[x + y * this->width];
+                int ch1 = cf1[x + y * this->width];
+                ch2     = cf2[x + y * this->width];
 
                 if (ch1 < 128) dh2 = dh1;
 
@@ -71,7 +72,7 @@ void Level::generateMap() {
 
                 dh = (dh - 128) / 8;
                 dh = dh + df - 1;
-                rh = ((rockMap[x + z * this->width] - 128) / 6 + df + dh) / 2;
+                rh = ((rockMap[x + y * this->width] - 128) / 6 + df + dh) / 2;
 
                 if (ch2 < 92) {
                     dh = (dh / 2) << 1;
@@ -82,12 +83,12 @@ void Level::generateMap() {
                 if (dh < df - 2) rh = (rh - df) / 2 + df;
                 if (rh > dh - 2) rh = dh - 2;
 
-                int i = (y * this->height + z) * this->width + x;
+                int i = (z * level_gen->height + y) * level_gen->width + x;
                 int id = 0;
 
-                if (y == dh && y >= d / 2) id = Tile::grass->id;
-                if (y < dh) id = Tile::dirt->id;
-                if (y <= rh) id = Tile::rock->id;
+                if (z == dh && z >= d / 2) id = Tile::grass->id;
+                if (z < dh) id = Tile::dirt->id;
+                if (z <= rh) id = Tile::rock->id;
 
                 blocks[i] = id;
             }
@@ -116,7 +117,7 @@ void Level::generateMap() {
 
     std::int64_t end = Timer::getTimeInNanoSeconds();
 
-    this->minecraft->showLoadingScreen("Generate level", "Melting..");
+    this->minecraft->showLoadingScreen("Generating level", "Melting..");
     int lavaCount = 0;
     for (int i = 0; i < 400; i++) {
         static std::uniform_int_distribution<> dist1(0, this->width - 1);
@@ -133,7 +134,7 @@ void Level::generateMap() {
     }
 
     std::cout << "LavaCount: " << lavaCount << std::endl;
-    std::cout << "Flood filled " << flood << " tiles in " << (end - start) / 1000000.0 << "ms";
+    std::cout << "Flood filled " << flood << " tiles in " << (end - start) / 1000000.0 << "ms" << std::endl;
     this->calcLightDepths(0, 0, this->width, this->height);
 
     for (size_t i = 0; i < this->levelListeners.size(); i++) {
