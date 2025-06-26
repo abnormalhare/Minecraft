@@ -17,6 +17,9 @@ void Player::tick(void) {
     float xa = 0.0f;
     float ya = 0.0f;
 
+    bool inWater = this->isInWater();
+    bool inLava = this->isInLava();
+
     if (this->isKeyDown(GLFW_KEY_R)) this->resetPos();
 
     if (this->isKeyDown(GLFW_KEY_UP) || this->isKeyDown(GLFW_KEY_W)) {
@@ -32,18 +35,36 @@ void Player::tick(void) {
         xa++;
     }
     if (this->isKeyDown(GLFW_KEY_SPACE) || this->isKeyDown(GLFW_KEY_MENU)) {
-        if (this->onGround) this->yd = 0.5f;
+        if      (inWater)        this->yd += 0.06f;
+        else if (inLava)         this->yd += 0.04f;
+        else if (this->onGround) this->yd = 0.5f;
     }
 
-    this->moveRelative(xa, ya, this->onGround ? 0.1f : 0.02f);
-    this->yd -= 0.08;
-    this->move(this->xd, this->yd, this->zd);
-    this->xd *= 0.91f;
-    this->yd *= 0.98f;
-    this->zd *= 0.91f;
-
-    if (this->onGround) {
+    if (inWater) {
+        this->moveRelative(xa, ya, 0.02f);
+        this->move(this->xd, this->yd, this->zd);
         this->xd *= 0.7f;
+        this->yd *= 0.7f;
         this->zd *= 0.7f;
+        this->yd -= 0.02;
+    } else if (inLava) {
+        this->moveRelative(xa, ya, 0.02f);
+        this->move(this->xd, this->yd, this->zd);
+        this->xd *= 0.5f;
+        this->yd *= 0.5f;
+        this->zd *= 0.5f;
+        this->yd -= 0.02;
+    } else {
+        this->moveRelative(xa, ya, this->onGround ? 0.1f : 0.02f);
+        this->move(this->xd, this->yd, this->zd);
+        this->xd *= 0.91f;
+        this->yd *= 0.98f;
+        this->zd *= 0.91f;
+        this->yd -= 0.08;
+
+        if (this->onGround) {
+            this->xd *= 0.6f;
+            this->zd *= 0.6f;
+        }
     }
 }
