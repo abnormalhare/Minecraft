@@ -18,7 +18,7 @@ class Level : public std::enable_shared_from_this<Level> {
         std::vector<LevelListener*> levelListeners;
         std::mt19937 random;
         std::int32_t randValue;
-        struct Minecraft* minecraft;
+        class Minecraft* minecraft;
         int unprocessed;
         int* coords;
 
@@ -33,7 +33,7 @@ class Level : public std::enable_shared_from_this<Level> {
         const std::int32_t depth;
         char* blocks;
 
-        Level(struct Minecraft *minecraft, std::int32_t w, std::int32_t h, std::int32_t d);
+        Level(class Minecraft *minecraft, std::int32_t w, std::int32_t h, std::int32_t d);
         void generateMap();
         void save();
         void addListener(LevelListener* listener);

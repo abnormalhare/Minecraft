@@ -1,5 +1,7 @@
 #include "Minecraft.hpp"
 
+#include "character/Zombie.hpp"
+
 Minecraft::Minecraft(std::int32_t width, std::int32_t height, bool fullscreen) {
     this->width = width;
     this->height = height;
@@ -324,12 +326,12 @@ void Minecraft::tick(void) {
     this->level->tick();
     this->particleEngine->tick();
 
-    for (size_t i = 0; i < this->zombies.size(); i++) {
-        this->zombies[i]->tick();
-        if (this->zombies.at(i)->removed) {
-            this->zombies.erase(std::next(zombies.begin(), i--));
-        }
-    }
+    // for (size_t i = 0; i < this->zombies.size(); i++) {
+    //     this->zombies[i]->tick();
+    //     if (this->zombies.at(i)->removed) {
+    //         this->zombies.erase(std::next(zombies.begin(), i--));
+    //     }
+    // }
     
     this->player->tick();
 }
@@ -423,7 +425,7 @@ void Minecraft::render(float a) {
     this->reportGLError("Set up camera");
 
     glEnable(GL_CULL_FACE);
-    Frustum* frustum = Frustum::getFrustum();
+    UNUSED Frustum* frustum = Frustum::getFrustum();
     this->levelRenderer->updateDirtyChunks(this->player);
     this->reportGLError("Update chunks");
     
@@ -432,12 +434,12 @@ void Minecraft::render(float a) {
     this->levelRenderer->render(this->player, 0);
     this->reportGLError("Rendered level");
 
-    for (size_t i = 0; i < this->zombies.size(); i++) {
-        std::shared_ptr<Zombie> zombie = this->zombies.at(i);
-        if (zombie->isLit() && frustum->isVisible(zombie->bb)) {
-            this->zombies[i]->render(a);
-        }
-    }
+    // for (size_t i = 0; i < this->zombies.size(); i++) {
+    //     std::shared_ptr<Zombie> zombie = this->zombies.at(i);
+    //     if (zombie->isLit() && frustum->isVisible(zombie->bb)) {
+    //         this->zombies[i]->render(a);
+    //     }
+    // }
     this->reportGLError("Rendered entities");
     
     this->particleEngine->render(this->player, a, 0);
@@ -446,12 +448,12 @@ void Minecraft::render(float a) {
     this->setupFog(1);
     this->levelRenderer->render(this->player, 1);
 
-    for (size_t ix = 0; ix < this->zombies.size(); ix++) {
-        std::shared_ptr<Zombie> zombie = this->zombies.at(ix);
-        if (!zombie->isLit() && frustum->isVisible(zombie->bb)) {
-            this->zombies.at(ix)->render(a);
-        }
-    }
+    // for (size_t ix = 0; ix < this->zombies.size(); ix++) {
+    //     std::shared_ptr<Zombie> zombie = this->zombies.at(ix);
+    //     if (!zombie->isLit() && frustum->isVisible(zombie->bb)) {
+    //         this->zombies.at(ix)->render(a);
+    //     }
+    // }
     
     this->particleEngine->render(this->player, a, 1);
     this->levelRenderer->renderSurround(0);

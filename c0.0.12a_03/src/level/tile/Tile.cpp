@@ -6,6 +6,7 @@
 #include "level/tile/LiquidTile.hpp"
 #include "level/tile/CalmLiquidTile.hpp"
 
+bool Tile::shouldTick[256];
 Tile* Tile::tiles[256];
 Tile* Tile::empty      = nullptr;
 Tile* Tile::rock       = new Tile           (Tile::ROCK, 1);
@@ -199,7 +200,7 @@ void Tile::renderBackFace(std::shared_ptr<Tesselator>& t, std::int32_t x, std::i
     }
 }
 
-void Tile::renderFaceNoTexture(std::shared_ptr<Player>& p, std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
+void Tile::renderFaceNoTexture(UNUSED std::shared_ptr<Player>& p, std::shared_ptr<Tesselator>& t, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t face) {
     float x0 = x + 0.0f;
     float x1 = x + 1.0f;
     float y0 = y + 0.0f;
@@ -281,4 +282,4 @@ int Tile::getLiquidType() {
     return 0;
 }
 
-void Tile::neighborChanged(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type) {}
+void Tile::neighborChanged(UNUSED std::shared_ptr<Level>& level, UNUSED std::int32_t x, UNUSED std::int32_t y, UNUSED std::int32_t z, UNUSED std::int32_t type) {}

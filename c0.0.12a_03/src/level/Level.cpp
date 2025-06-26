@@ -1,12 +1,13 @@
 #include "level/Level.hpp"
 
+#include "Minecraft.hpp"
 #include "level/PerlinNoiseFilter.hpp"
 #include "level/tile/Tile.hpp"
 
 Level::Level(struct Minecraft* minecraft, std::int32_t w, std::int32_t h, std::int32_t d) :
     levelListeners(std::vector<LevelListener*>()),
     unprocessed(0),
-    width(256), height(256), depth(64)
+    width(w), height(h), depth(d)
 {
     std::random_device rd;
     std::mt19937 gen(rd());
@@ -135,7 +136,7 @@ void Level::generateMap() {
     std::cout << "Flood filled " << flood << " tiles in " << (end - start) / 1000000.0 << "ms";
     this->calcLightDepths(0, 0, this->width, this->height);
 
-    for (int i = 0; i < this->levelListeners.size(); i++) {
+    for (size_t i = 0; i < this->levelListeners.size(); i++) {
         this->levelListeners[i]->allChanged();
     }
 
@@ -289,7 +290,7 @@ bool Level::setTileNoUpdate(std::int32_t x, std::int32_t y, std::int32_t z, std:
 
 void Level::updateNeighborAt(std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t type) {
     if (x < 0 || y < 0 || z < 0 || x >= this->width || y >= this->depth || z >= this->height) {
-        Tile *tile = Tile::tiles[this->blocks[(y * this->height + z) * this->width + x]];
+        Tile *tile = Tile::tiles[(size_t)this->blocks[(y * this->height + z) * this->width + x]];
         if (tile != nullptr) {
             std::shared_ptr<Level> level = std::make_shared<Level>(*this);
             tile->neighborChanged(level, x, y, z, type);
@@ -346,13 +347,13 @@ void Level::tick() {
 
     for (int i = 0; i < ticks; i++) {
         this->randValue = this->randValue * 1664525 + 1013904223;
-        int x = this->randValue >> 16 & this->width - 1;
+        int x = (this->randValue >> 16) & (this->width - 1);
         this->randValue = this->randValue * 1664525 + 1013904223;
-        int y = this->randValue >> 16 & this->depth - 1;
+        int y = (this->randValue >> 16) & (this->depth - 1);
         this->randValue = this->randValue * 1664525 + 1013904223;
-        int z = this->randValue >> 16 & this->height - 1;
+        int z = (this->randValue >> 16) & (this->height - 1);
 
-        char block = this->blocks[(y * this->height + z) * this->width + x];
+        size_t block = (size_t)this->blocks[(y * this->height + z) * this->width + x];
         if (Tile::shouldTick[block]) {
             std::shared_ptr<Level> level = this->shared_from_this();
             Tile::tiles[block]->tick(level, x, y, z, this->random);
@@ -361,7 +362,7 @@ void Level::tick() {
 }
 
 std::int64_t Level::floodFill(std::int32_t width, std::int32_t depth, std::int32_t height, UNUSED std::int32_t unk, std::int32_t tile) {
-    std::int8_t bTile = tile;
+    UNUSED std::int8_t bTile = tile;
     std::vector<int*> coordList = std::vector<int*>();
     int h = this->height - 1;
     int w = this->width - 1;
@@ -408,7 +409,7 @@ std::int64_t Level::floodFill(std::int32_t width, std::int32_t depth, std::int32
         blockCnt += i - dph;
 
         for (int di = dph; di < i; di++) {
-            this->blocks[depth] = tile;
+            this->blocks[depth] = bTile;
             bool isEmpty;
 
             if (height > 0) {

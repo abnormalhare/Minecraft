@@ -1,6 +1,6 @@
 #include "gui/Font.hpp"
 
-#define STB_IMAGE_IMPLEMENTATION
+// stbi stuff defined in Textures.cpp
 #include "stb_image.h"
 
 Font::Font(const char* font_file, std::shared_ptr<Textures>& textureManager) : fontTexture(0) {
@@ -103,4 +103,6 @@ int Font::getWidth(const char* text) {
             width += this->charWidths[(size_t)text[i]];
         }
     }
+
+    return width;
 }

@@ -6,7 +6,7 @@ CalmLiquidTile::CalmLiquidTile(std::int32_t id, std::int32_t tex) : LiquidTile(i
     this->setTicking(false);
 }
 
-void CalmLiquidTile::tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::mt19937 random) {}
+void CalmLiquidTile::tick(UNUSED std::shared_ptr<Level>& level, UNUSED std::int32_t x, UNUSED std::int32_t y, UNUSED std::int32_t z, UNUSED std::mt19937 random) {}
 
 void CalmLiquidTile::neighborChanged(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::int32_t tile) {
     if (

@@ -70,7 +70,7 @@ void LevelRenderer::render(UNUSED std::shared_ptr<Player>& player, std::int32_t 
         std::sort(this->sortedChunks.begin(), this->sortedChunks.end(), distCompare);
     }
 
-    for (int i = 0; i < this->sortedChunks.size(); i++) {
+    for (size_t i = 0; i < this->sortedChunks.size(); i++) {
         if (this->sortedChunks[i]->visible) {
             y = 256 / (1 << this->drawDistance);
             if (this->drawDistance == 0 || this->sortedChunks[i]->distanceToSqr(player)) {
@@ -312,7 +312,7 @@ void LevelRenderer::setDirty(std::int32_t x0, std::int32_t y0, std::int32_t z0, 
 }
 
 void LevelRenderer::resetChunks() {
-    for (int i = 0; i < this->chunks.size(); i++) {
+    for (size_t i = 0; i < this->chunks.size(); i++) {
         this->chunks[i].reset();
     }
 }

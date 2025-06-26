@@ -1,7 +1,7 @@
 #include "level/PerlinNoiseFilter.hpp"
 
 PerlinNoiseFilter::PerlinNoiseFilter(std::mt19937 random, int levels, bool flag)
-    : fuzz(16), random(random), levels(levels), flag(flag) {}
+    : random(random), levels(levels), fuzz(16), flag(flag) {}
 
 std::vector<int> PerlinNoiseFilter::read(int width, int height) {
     std::random_device rd;

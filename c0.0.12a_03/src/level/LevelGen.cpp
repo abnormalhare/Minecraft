@@ -25,7 +25,7 @@ void LevelGen::carve(char* blocks) {
 
     int layer = w * h * d / 256 / 64;
 
-    int var25;
+    UNUSED int var25;
     for (int _idx = 0; _idx < layer; _idx++) {
         float randW = this->rand_float() * w;
         float randD = this->rand_float() * d;

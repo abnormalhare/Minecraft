@@ -18,7 +18,7 @@ LiquidTile::LiquidTile(std::int32_t id, std::int32_t tex) : Tile(id) {
     this->setTicking(true);
 }
 
-void LiquidTile::tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, std::mt19937 random) {
+void LiquidTile::tick(std::shared_ptr<Level>& level, std::int32_t x, std::int32_t y, std::int32_t z, UNUSED std::mt19937 random) {
     this->updateWater(level, x, y, z, 0);
 }
 
