@@ -9,7 +9,6 @@
 #include "level/LevelListener.hpp"
 #include "level/LevelGen.hpp"
 #include "phys/AABB.hpp"
-#include "Minecraft.hpp"
 
 class Level : public std::enable_shared_from_this<Level> {
     private:
@@ -19,7 +18,7 @@ class Level : public std::enable_shared_from_this<Level> {
         std::vector<LevelListener*> levelListeners;
         std::mt19937 random;
         std::int32_t randValue;
-        Minecraft* minecraft;
+        struct Minecraft* minecraft;
         int unprocessed;
         int* coords;
 
@@ -34,7 +33,7 @@ class Level : public std::enable_shared_from_this<Level> {
         const std::int32_t depth;
         char* blocks;
 
-        Level(Minecraft *minecraft, std::int32_t w, std::int32_t h, std::int32_t d);
+        Level(struct Minecraft *minecraft, std::int32_t w, std::int32_t h, std::int32_t d);
         void generateMap();
         void save();
         void addListener(LevelListener* listener);

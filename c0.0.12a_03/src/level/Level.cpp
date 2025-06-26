@@ -3,7 +3,7 @@
 #include "level/PerlinNoiseFilter.hpp"
 #include "level/tile/Tile.hpp"
 
-Level::Level(Minecraft* minecraft, std::int32_t w, std::int32_t h, std::int32_t d) :
+Level::Level(struct Minecraft* minecraft, std::int32_t w, std::int32_t h, std::int32_t d) :
     levelListeners(std::vector<LevelListener*>()),
     unprocessed(0),
     width(256), height(256), depth(64)

@@ -120,4 +120,4 @@ bool Entity::isLit() {
     return this->level->isLit(xTile, yTile, zTile);
 }
 
-void Entity::render(float a) {}
+void Entity::render(UNUSED float a) {}
