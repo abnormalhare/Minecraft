@@ -126,7 +126,7 @@ bool Frustum::cubeFullyInFrustum(float x1, float y1, float z1, float x2, float y
 }
 
 bool Frustum::cubeInFrustum(float x1, float y1, float z1, float x2, float y2, float z2) {
-    for (int i = 0; i < 6;) {
+    for (int i = 0; i < 6; i++) {
         if (m_Frustum[i][A] * x1 + m_Frustum[i][B] * y1 + m_Frustum[i][C] * z1 + m_Frustum[i][D] > 0.0f ||
             m_Frustum[i][A] * x2 + m_Frustum[i][B] * y1 + m_Frustum[i][C] * z1 + m_Frustum[i][D] > 0.0f ||
             m_Frustum[i][A] * x1 + m_Frustum[i][B] * y2 + m_Frustum[i][C] * z1 + m_Frustum[i][D] > 0.0f ||
@@ -135,7 +135,6 @@ bool Frustum::cubeInFrustum(float x1, float y1, float z1, float x2, float y2, fl
             m_Frustum[i][A] * x2 + m_Frustum[i][B] * y1 + m_Frustum[i][C] * z2 + m_Frustum[i][D] > 0.0f ||
             m_Frustum[i][A] * x1 + m_Frustum[i][B] * y2 + m_Frustum[i][C] * z2 + m_Frustum[i][D] > 0.0f ||
             m_Frustum[i][A] * x2 + m_Frustum[i][B] * y2 + m_Frustum[i][C] * z2 + m_Frustum[i][D] > 0.0f) {
-            i++;
             continue;
         }
         return false;

@@ -15,7 +15,7 @@ std::int32_t Textures::loadTexture(const char* resourceName, std::int32_t mode) 
         std::uint32_t id;
         glGenTextures(1, &id);
         idMap.insert(std::pair<std::string, std::int32_t>(resourceName, id));
-        std::cout << resourceName << " -> " << id << std::endl;
+        // std::cout << resourceName << " -> " << id << std::endl;
 
         glBindTexture(GL_TEXTURE_2D, id);
         glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, mode);

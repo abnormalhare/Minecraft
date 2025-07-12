@@ -6,7 +6,7 @@ Minecraft::Minecraft(std::int32_t width, std::int32_t height, bool fullscreen) {
     this->width = width;
     this->height = height;
     this->fullscreen = fullscreen;
-    this->textureManager = std::shared_ptr<Textures>();
+    this->textureManager = std::make_shared<Textures>();
 }
 
 void Minecraft::update() {
